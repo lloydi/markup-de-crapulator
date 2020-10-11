@@ -1,0 +1,121 @@
+ .visually-hidden,
+ .a11y,
+ .visuallyhidden,
+ .sr-text,
+ .sr-only {
+ clip-path: inset(100%);
+ clip: rect(1px, 1px, 1px, 1px);
+ height: 1px;
+ overflow: hidden;
+ position: absolute;
+ white-space: nowrap;
+ width: 1px;
+ }
+
+* {
+ -webkit-box-sizing: border-box;
+ box-sizing: border-box;
+}
+
+html {
+ /*border: .75em solid #fff;*/
+ min-height: 100vh;
+}
+
+body {
+ background: #f7f7f5;
+ color: #333;
+ font: 400 105%/1.4 "Work Sans", sans-serif;
+ margin: 1.5em auto;
+ max-width: 54em;
+ width: 90%;
+}
+
+/* Nicer link underlines */
+a:link,
+a:visited {
+ border-bottom: 1px solid rgba(42, 122, 130, .5);
+ color: #2b7a82;
+ text-decoration: none;
+}
+
+a:hover {
+ border-bottom: 2px solid;
+ color: #1e565c;
+}
+
+button:focus,
+a:focus {
+ box-shadow: none;
+ outline-offset: 2px;
+ outline: 3px solid rgba(42, 122, 130, .75);
+}
+
+a:focus {
+ border-bottom: none;
+}
+
+a:active {
+ background: #333;
+ color: #fff;
+}
+
+li + li {
+ margin-top: .5em;
+}
+
+code {
+ font-family: Consolas, monaco, monospace;
+ -moz-tab-size: 4;
+ tab-size: 4;
+ text-transform: none;
+ white-space: pre-wrap;
+ color:brown;
+}
+
+/* Direct descendants = scoped to avoid test markup */
+body > h1 {
+ font: 300 1.75em/1 "Work Sans", sans-serif;
+ margin: 0;
+}
+
+/* ============= */
+
+/*.step {border:1px solid #999;padding: 10px;}*/
+textarea {width: 100%}
+legend h2, legend h3 {margin: 0;}
+
+table {border-collapse: collapse;}
+th,td {padding: 10px;border:2px solid #2b7a82;}
+table caption {font-weight: bold;text-align: left;margin:1em 0;}
+label {font-weight: bold;}
+
+/* -------- */
+
+.help {font-size: .7rem;}
+legend {font-weight: bold;}
+button {padding: 0.5em;font-weight: bold;font-size: 14px;display: inline-block;background-color: lightcyan ;border:2px solid gray;border-radius: 3px;margin: 5px 0;}
+button.wide {width: 100%;}
+textarea,input {border:1px solid gray;border-radius: 3px;padding: 5px;}
+
+a.favelet-link {
+	position: fixed;
+	top: 5em;
+	right: 5em;
+	background: darkred;
+	color: white;
+	font-weight: bold;
+	display: inline-block;
+	border:none;
+	padding-right: 5px;
+}
+a.favelet-link:before {
+	content: "Drag link to your favourites toolbar → ";
+	display: inline-block;
+	background: #f7f7f5;
+	color:black;
+	font-weight: normal;
+	margin-right: 10px;
+	font-size: 12px;
+	padding: 5px;
+}

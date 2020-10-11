@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="simple-grid.css" />
+    <link rel="stylesheet" href="common.css" />
+    <link rel="stylesheet" href="highlight/styles/a11y-light.css">
+    <title>HTML De-crapulator</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, shrink-to-fit=no" />
+    <style>
+      #txtConverted {
+        margin-top: 10px;
+      }
+      [aria-pressed="true"] {
+        filter: invert();
+      }
+      h1:before {
+        background: url(poop.png);
+        background-size: cover;
+        display: inline-block;
+        width: 25px;
+        height: 25px;
+        content: "";
+        margin-right: 10px;
+      }
+      #indentLevel label {
+        margin-right: 10px;
+      }
+      #txtRaw {
+        height: 23em;
+      }
+      pre {
+        white-space: pre-wrap;
+      }
+      #txtConverted {
+        height: 38em;
+        display: block;
+        overflow: scroll;
+        font-size: 12px;
+        border:1px solid gray;
+        padding: 5px;
+        background: #fff;
+      }
+      #otherFilters h3 {margin: 10px 0 0 0;font-size: 1em;}
+    </style>
+  </head>
+
+  <body>
+    <main>
+      <h1>HTML De-crapulator</h1>
+      <form action="">
+        <div class="container">
+          <div class="row">
+            <div id="col1" class="column col-4">
+              <div><label for="txtRaw">Paste Raw HTML:</label></div>
+              <div>
+                <textarea id="txtRaw" rows="8" cols="55">&lt;div class="blah" style="whatever" ng-crap="yes"&gt;
+    &lt;span&gt;Nested tag with text in&lt;/span&gt;
+    &lt;strong&gt;&lt;/strong&gt;
+    &lt;onlyhascomment&gt;
+        &lt;!-- Empty tag --&gt;
+    &lt;/onlyhascomment&gt;
+    &lt;div&gt;
+        &lt;span&gt;
+            div with nested span
+        &lt;/span&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</textarea>
+              </div>
+              <div>
+                <fieldset id="indentLevel">
+                  <legend>Indenting</legend>
+                  <fieldset>
+                    <legend>Style</legend>
+                    <span><input value=" " id="rad_Indentstyle_1" name="rad_Indentstyle" type="radio" checked /> <label for="rad_Indentstyle_1">Spaces</label></span>
+                    <span><input value="	" id="rad_Indentstyle_2" name="rad_Indentstyle" type="radio" /> <label for="rad_Indentstyle_2">Tabs</label></span>
+                  </fieldset>
+                  <fieldset>
+                    <legend>Depth</legend>
+                    <span><input value="1" id="rad_Indentdepth_3" name="rad_Indentdepth" type="radio" checked /> <label for="rad_Indentdepth_3">1</label></span>
+                    <span><input value="2" id="rad_Indentdepth_4" name="rad_Indentdepth" type="radio" /> <label for="rad_Indentdepth_4">2</label></span>
+                    <span><input value="3" id="rad_Indentdepth_5" name="rad_Indentdepth" type="radio" /> <label for="rad_Indentdepth_5">3</label></span>
+                    <span><input value="4" id="rad_Indentdepth_6" name="rad_Indentdepth" type="radio" /> <label for="rad_Indentdepth_6">4</label></span>
+                  </fieldset>
+                </fieldset>
+              </div>
+            </div>
+            <div id="col2" class="column col-4">
+              <fieldset id="otherFilters">
+                <legend>Strip out the following:</legend>
+                <h3>Tags/Other:</h3>
+                <div class="row">
+                  <input id="chk_emptyTags" type="checkbox" />
+                  <span><label for="chk_emptyTags">empty tags</label></span>
+                </div>
+                <div>
+                  <input id="chk_angularNgCrapTags" type="checkbox" />
+                  <span><label for="chk_angularNgCrapTags">&lt;ng-* Angular tags &gt;</label></span>
+                </div>
+                <div>
+                  <input id="chk_HTMLcomments" type="checkbox" />
+                  <span><label for="chk_HTMLcomments">&lt;-- HTML comments --&gt;</label></span>
+                </div>
+                <h3>Attributes:</h3>
+                <div>
+                  <input id="chk_class" type="checkbox" />
+                  <span><label for="chk_class">class</label></span>
+                </div>
+                <div>
+                  <input id="chk_style" type="checkbox" />
+                  <span><label for="chk_style">style</label></span>
+                </div>
+                <div>
+                  <input id="chk_dataDash" type="checkbox" />
+                  <span><label for="chk_dataDash">data-*</label></span>
+                </div>
+                <div>
+                  <input id="chk_onclick" type="checkbox" />
+                  <span><label for="chk_onclick">onclick</label></span>
+                </div>
+                <div>
+                  <input id="chk_onClickReact" type="checkbox" />
+                  <span><label for="chk_onClickReact">onClick (React)</label></span>
+                </div>
+                <div>
+                  <input id="chk_angularNgCrapAttributes1" type="checkbox" />
+                  <span><label for="chk_angularNgCrapAttributes1">ng-* (Angular)</label></span>
+                </div>
+                <div>
+                  <input id="chk_angularNgCrapAttributes2" type="checkbox" />
+                  <span><label for="chk_angularNgCrapAttributes2">_ng* (Angular)</label></span>
+                </div>
+                <button type="button" class="wide" id="removeAll" aria-pressed="false">Remove the darn lot</button>
+                <div>
+                  <span><label for="txt_customAttrs">Custom data attributes</label></span>
+                  <input id="txt_customAttrs" placeholder="e.g. aria-,ds-" type="text" aria-describedby="custAttrHelp" />
+                  <div id="custAttrHelp" class="help">
+                    <!-- <div>e.g. type 'ds' to match attributes ds-id, ds-disabled and so on. You can enter multiple attributes (comma-separated)</div> -->
+                  </div>
+                </div>
+                <div>
+                  <span><label for="txt_otherMiscAttrs">Other misc attributes</label></span>
+                  <input id="txt_otherMiscAttrs" placeholder="e.g. tabindex, title" type="text" aria-describedby="otherMiscAttrHelp" />
+                  <div id="otherMiscAttrHelp" class="help">
+                    <!-- <div>Comma-separated list, e.g. title, alt'</div> -->
+                  </div>
+                </div>
+              </fieldset>
+              <!-- <div><input type="checkbox" checked id="chkCode"><label for="chkCode">Wrap in <code>code</code></label></div> -->
+              <button type="button" class="wide" id="convert">Convert</button>
+            </div>
+            <div id="col3" class="column col-4">
+              <div><label for="txtConverted">Cleaned-up HTML:</label></div>
+              <div><pre><code class="html" id="txtConverted" contenteditable="true"></code></pre></div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </main>
+    <div role="status" id="stat" class="visually-hidden"></div>
+    <div hidden id="tempDOMDumpingGround"></div>
+  </body>
+  <script src="../common.js"></script>
+  <script src="indent.js"></script>
+  <script src="highlight/highlight.pack.js"></script>
+  <script src="de-crapulator.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+</html>
