@@ -26,6 +26,7 @@ function removeStatus() {
 }
 
 function generateMarkup() {
+  indentStr = "";
   indentStyle = document.querySelector("[name=rad_Indentstyle]:checked").value;
   indentDepth = document.querySelector("[name=rad_Indentdepth]:checked").value;
   for (i = 0; i < indentDepth; i++) {
@@ -48,6 +49,7 @@ function generateMarkup() {
   Array.from(allElsInTempDom).forEach((el) => {
     if (filterEmpty.checked) {
       if (!el.hasChildNodes()) {
+        console.log("nodeType", el.nodeType);
         el.parentNode.removeChild(el);
       }
     }
@@ -83,7 +85,7 @@ function generateMarkup() {
       }
 
       if (filterCustomAttrs.value !== "") {
-        const arrFilterCustomAttrs = filterCustomAttrs.value.split(",");
+        let arrFilterCustomAttrs = filterCustomAttrs.value.split(",");
         Array.from(arrFilterCustomAttrs).forEach((arrFilterCustomAttr) => {
           arrFilterCustomAttr = arrFilterCustomAttr.trim();
           if (attr.name.indexOf(arrFilterCustomAttr + "-") === 0) {
@@ -92,7 +94,7 @@ function generateMarkup() {
         });
       }
       if (filterotherMiscAttrs.value !== "") {
-        const arrOtherMiscAttrs = filterotherMiscAttrs.value.split(",");
+        let arrOtherMiscAttrs = filterotherMiscAttrs.value.split(",");
         Array.from(arrOtherMiscAttrs).forEach((arrOtherMiscAttr) => {
           arrOtherMiscAttr = arrOtherMiscAttr.trim();
           if (attr.name.toLowerCase() === arrOtherMiscAttr.toLowerCase()) {
