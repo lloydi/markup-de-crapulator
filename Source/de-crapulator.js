@@ -1,34 +1,31 @@
-var btnConvert = document.querySelector("#convert");
-var raw = "";
-var indented = "";
-var input = document.querySelector("#txtRaw");
-var output = document.querySelector("#txtConverted");
-var stat = document.querySelector("#stat");
-var indentStyle;
-var indentDepth;
-var indent;
-var filterEmpty = document.querySelector("#chk_emptyTags");
-var filterClass = document.querySelector("#chk_class");
-var filterStyle = document.querySelector("#chk_style");
-var filterOnclick = document.querySelector("#chk_onclick");
-var filterOnClickReact = document.querySelector("#chk_onClickReact");
-var filterDataDash = document.querySelector("#chk_dataDash");
-var filterAngularNgCrapAttributes1 = document.querySelector("#chk_angularNgCrapAttributes1");
-var filterAngularNgCrapAttributes2 = document.querySelector("#chk_angularNgCrapAttributes2");
-var filterAngularNgCrapTags = document.querySelector("#chk_angularNgCrapTags");
-var filterHTMLcomments = document.querySelector("#chk_HTMLcomments");
-var filterCustomAttrs = document.querySelector("#txt_customAttrs");
-var filterotherMiscAttrs = document.querySelector("#txt_otherMiscAttrs");
-var otherFilters = document.querySelectorAll("#otherFilters [type=checkbox]");
-var removeAll = document.querySelector("#removeAll");
-var tempDOMDumpingGround = document.querySelector("#tempDOMDumpingGround");
+let raw = "";
+let indented = "";
+let indentStyle;
+let indentDepth;
+let indentStr = "";
+const btnConvert = document.querySelector("#convert");
+const output = document.querySelector("#txtConverted");
+const stat = document.querySelector("#stat");
+const filterEmpty = document.querySelector("#chk_emptyTags");
+const filterClass = document.querySelector("#chk_class");
+const filterStyle = document.querySelector("#chk_style");
+const filterOnclick = document.querySelector("#chk_onclick");
+const filterOnClickReact = document.querySelector("#chk_onClickReact");
+const filterDataDash = document.querySelector("#chk_dataDash");
+const filterAngularNgCrapAttributes1 = document.querySelector("#chk_angularNgCrapAttributes1");
+const filterAngularNgCrapAttributes2 = document.querySelector("#chk_angularNgCrapAttributes2");
+const filterAngularNgCrapTags = document.querySelector("#chk_angularNgCrapTags");
+const filterHTMLcomments = document.querySelector("#chk_HTMLcomments");
+const filterCustomAttrs = document.querySelector("#txt_customAttrs");
+const filterotherMiscAttrs = document.querySelector("#txt_otherMiscAttrs");
+const removeAll = document.querySelector("#removeAll");
+const tempDOMDumpingGround = document.querySelector("#tempDOMDumpingGround");
 
 function removeStatus() {
   stat.textContent = "";
 }
 
 function generateMarkup() {
-  indentStr = "";
   indentStyle = document.querySelector("[name=rad_Indentstyle]:checked").value;
   indentDepth = document.querySelector("[name=rad_Indentdepth]:checked").value;
   for (i = 0; i < indentDepth; i++) {
@@ -47,16 +44,15 @@ function generateMarkup() {
 
   tempDOMDumpingGround.innerHTML = raw;
 
-  var allElsInTempDom = tempDOMDumpingGround.querySelectorAll("*");
+  let allElsInTempDom = tempDOMDumpingGround.querySelectorAll("*");
   Array.from(allElsInTempDom).forEach((el) => {
     if (filterEmpty.checked) {
       if (!el.hasChildNodes()) {
-        console.log("nodeType", el.nodeType);
         el.parentNode.removeChild(el);
       }
     }
 
-    var attrs = el.attributes;
+    let attrs = el.attributes;
     if (filterClass.checked) {
       el.removeAttribute("class");
     }
@@ -87,7 +83,7 @@ function generateMarkup() {
       }
 
       if (filterCustomAttrs.value !== "") {
-        var arrFilterCustomAttrs = filterCustomAttrs.value.split(",");
+        const arrFilterCustomAttrs = filterCustomAttrs.value.split(",");
         Array.from(arrFilterCustomAttrs).forEach((arrFilterCustomAttr) => {
           arrFilterCustomAttr = arrFilterCustomAttr.trim();
           if (attr.name.indexOf(arrFilterCustomAttr + "-") === 0) {
@@ -96,7 +92,7 @@ function generateMarkup() {
         });
       }
       if (filterotherMiscAttrs.value !== "") {
-        var arrOtherMiscAttrs = filterotherMiscAttrs.value.split(",");
+        const arrOtherMiscAttrs = filterotherMiscAttrs.value.split(",");
         Array.from(arrOtherMiscAttrs).forEach((arrOtherMiscAttr) => {
           arrOtherMiscAttr = arrOtherMiscAttr.trim();
           if (attr.name.toLowerCase() === arrOtherMiscAttr.toLowerCase()) {
@@ -106,15 +102,10 @@ function generateMarkup() {
       }
     });
   });
-
   indented = tempDOMDumpingGround.innerHTML.split("><").join(">\n<");
-  // input.value = indent.js(indented, { tabString: indentStr });
-  // indented = indented.replace(/ class=\"([^"]*)\"/g, "");
   indented = indent.js(indented, { tabString: indentStr });
-
   indented = indented.split("<").join("&lt;");
   indented = indented.split(">").join("&gt;");
-  
   output.innerHTML = indented;
   hljs.highlightBlock(output);
   stat.textContent = "Markup updated";
@@ -125,13 +116,13 @@ function generateMarkup() {
 btnConvert.addEventListener("click", (ev) => {
   generateMarkup();
 });
-var radios = document.querySelectorAll("[name=rad_Indentstyle],[name=rad_Indentdepth]");
+const radios = document.querySelectorAll("[name=rad_Indentstyle],[name=rad_Indentdepth]");
 Array.from(radios).forEach((radio) => {
   radio.addEventListener("change", (e) => {
     generateMarkup();
   });
 });
-var otherFilterCheckboxes = document.querySelectorAll("#otherFilters [type=checkbox]");
+const otherFilterCheckboxes = document.querySelectorAll("#otherFilters [type=checkbox]");
 Array.from(otherFilterCheckboxes).forEach((otherFilterCheckboxes) => {
   otherFilterCheckboxes.addEventListener("click", (e) => {
     generateMarkup();
