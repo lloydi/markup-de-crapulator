@@ -43,6 +43,9 @@
         background: #fff;
       }
       #otherFilters h3 {margin: 10px 0 0 0;font-size: 1em;}
+      #log {text-align: center;min-height: 2.6em;background:#fff;padding: 0.7em 0 0.5em 0;border-radius: 5px;}
+      #log:empty {background: transparent;}
+      #log span {font-weight: bold;}
     </style>
   </head>
 
@@ -140,8 +143,8 @@
         </div>
       </form>
     </main>
-    <div role="status" id="stat" class="visually-hidden"></div>
     <div hidden id="tempDOMDumpingGround"></div>
+    <div id="log" aria-atomic="true" role="status"></div>
     <h2>Notes</h2>
     <ul>
       <li id="note1">Custom data attributes: or, in fact, any attribute that is hyphenated can be entered as a comma-separated list. This includes aria attributes</li>

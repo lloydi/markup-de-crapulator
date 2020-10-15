@@ -3,6 +3,9 @@ let indented = "";
 let indentStyle;
 let indentDepth;
 let indentStr = "";
+let beforeSize = 0;
+let afterSize = 0;
+let reduction = 0;
 const btnConvert = document.querySelector("#convert");
 const output = document.querySelector("#txtConverted");
 const stat = document.querySelector("#stat");
@@ -20,6 +23,7 @@ const filterCustomAttrs = document.querySelector("#txt_customAttrs");
 const filterotherMiscAttrs = document.querySelector("#txt_otherMiscAttrs");
 const removeAll = document.querySelector("#removeAll");
 const tempDOMDumpingGround = document.querySelector("#tempDOMDumpingGround");
+const log = document.querySelector("#log");
 
 function removeStatus() {
   stat.textContent = "";
@@ -34,6 +38,7 @@ function generateMarkup() {
   }
 
   raw = document.querySelector("#txtRaw").value;
+  beforeSize = raw.length;
 
   if (filterAngularNgCrapTags.checked) {
     raw = raw.replace(/<ng-(.*?)>/g, "");
@@ -109,8 +114,9 @@ function generateMarkup() {
   indented = indented.split("<").join("&lt;");
   indented = indented.split(">").join("&gt;");
   output.innerHTML = indented;
+  afterSize = output.textContent.length;
+  log.innerHTML = "<span class='visually-hidden'>Markup updated. </span>Size before: <span>" + beforeSize + " characters</span>. Size after: <span>" + afterSize + " characters</span>. Cleaned/indented = <span>" + ((afterSize / beforeSize) * 100).toFixed(2) + "%</span> of original markup";
   hljs.highlightBlock(output);
-  stat.textContent = "Markup updated";
   setTimeout(function () {
     removeStatus();
   }, 5000);
