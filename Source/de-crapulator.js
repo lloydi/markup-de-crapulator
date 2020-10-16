@@ -116,6 +116,12 @@ function generateMarkup() {
 clear.addEventListener("click", (ev) => {
   input.value="";
   input.focus();
+  document.querySelector("#rad_Indentstyle_1").click();
+  document.querySelector("#rad_Indentdepth_1").click();
+  unsetAllCheckboxes();
+  removeAll.setAttribute("aria-pressed", "false");
+  filterCustomAttrs.value="";
+  filterotherMiscAttrs.value="";
 });
 const radios = document.querySelectorAll("[name=rad_Indentstyle],[name=rad_Indentdepth]");
 Array.from(radios).forEach((radio) => {
