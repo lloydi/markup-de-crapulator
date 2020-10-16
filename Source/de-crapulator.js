@@ -9,7 +9,6 @@ let reduction = 0;
 const input = document.querySelector("#txtRaw");
 const output = document.querySelector("#txtConverted");
 const clear = document.querySelector("#clear");
-const stat = document.querySelector("#stat");
 const filterEmpty = document.querySelector("#chk_emptyTags");
 const filterClass = document.querySelector("#chk_class");
 const filterStyle = document.querySelector("#chk_style");
@@ -25,10 +24,6 @@ const filterotherMiscAttrs = document.querySelector("#txt_otherMiscAttrs");
 const removeAll = document.querySelector("#removeAll");
 const tempDOMDumpingGround = document.querySelector("#tempDOMDumpingGround");
 const log = document.querySelector("#log");
-
-function removeStatus() {
-  stat.textContent = "";
-}
 
 function generateMarkup() {
   indentStr = "";
@@ -55,7 +50,6 @@ function generateMarkup() {
   Array.from(allElsInTempDom).forEach((el) => {
     if (filterEmpty.checked) {
       if (!el.hasChildNodes()) {
-        console.log("nodeType", el.nodeType);
         el.parentNode.removeChild(el);
       }
     }
@@ -118,9 +112,6 @@ function generateMarkup() {
   afterSize = output.textContent.length;
   log.innerHTML = "<span class='visually-hidden'>Markup updated. </span>Size before: <span>" + beforeSize + " characters</span>. Size after: <span>" + afterSize + " characters</span>. Cleaned/indented = <span>" + ((afterSize / beforeSize) * 100).toFixed(2) + "%</span> of original markup";
   hljs.highlightBlock(output);
-  setTimeout(function () {
-    removeStatus();
-  }, 5000);
 }
 clear.addEventListener("click", (ev) => {
   input.value="";
