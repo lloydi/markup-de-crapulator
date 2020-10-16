@@ -4,6 +4,7 @@
     <meta charset="utf-8" />
     <link rel="stylesheet" href="simple-grid.css" />
     <link rel="stylesheet" href="common.css" />
+    <link rel="stylesheet" href="tooltip.css" />
     <link rel="stylesheet" href="highlight/styles/a11y-light.css">
     <title>HTML De-crapulator</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -58,6 +59,15 @@
       
       <h1>HTML De-crapulator</h1>
       
+      <div id="wut" class="tooltip user-activated">
+        <button type="button" aria-expanded="false">
+          <span>What is this thing?</span>
+          <span role="tooltip" hidden>
+            <span id="crapHelp">Well, it removes the crap (nonsense markup) that we seem to get in modern-day front end dev. It won't fix the problem at source (of course), but if you ever have to analyse markup and can’t see the wood for the trees, this may help you make sense of the chaos.</span>
+          </span>
+        </button>
+      </div>
+
       <form action="">
         <div class="container">
           <div class="row">
@@ -168,6 +178,7 @@
   </body>
   <script src="../common.js"></script>
   <script src="indent.js"></script>
+  <script src="tooltip.js"></script>
   <script src="highlight/highlight.pack.js"></script>
   <script src="de-crapulator.js"></script>
   <script>hljs.initHighlightingOnLoad();</script>

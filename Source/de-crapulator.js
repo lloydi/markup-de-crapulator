@@ -6,8 +6,9 @@ let indentStr = "";
 let beforeSize = 0;
 let afterSize = 0;
 let reduction = 0;
-const btnConvert = document.querySelector("#convert");
+const input = document.querySelector("#txtRaw");
 const output = document.querySelector("#txtConverted");
+const clear = document.querySelector("#clear");
 const stat = document.querySelector("#stat");
 const filterEmpty = document.querySelector("#chk_emptyTags");
 const filterClass = document.querySelector("#chk_class");
@@ -121,8 +122,9 @@ function generateMarkup() {
     removeStatus();
   }, 5000);
 }
-btnConvert.addEventListener("click", (ev) => {
-  generateMarkup();
+clear.addEventListener("click", (ev) => {
+  input.value="";
+  input.focus();
 });
 const radios = document.querySelectorAll("[name=rad_Indentstyle],[name=rad_Indentdepth]");
 Array.from(radios).forEach((radio) => {
@@ -167,4 +169,3 @@ function unsetAllCheckboxes() {
   });
   generateMarkup();
 }
-// btnConvert.click();
