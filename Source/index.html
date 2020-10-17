@@ -50,6 +50,7 @@
       #log span {font-weight: bold;}
       fieldset fieldset {border:none;padding: 0;}
       legend h2, legend h3 {margin: 0;font-size: 1em;}
+      #miscAttribs div {margin: 5px 0;}
     </style>
   </head>
 
@@ -135,15 +136,17 @@
 	                  <input id="chk_angularNgCrapAttributes2" type="checkbox" aria-label="_ng (Angular) underscore n g attributes" />
 	                  <span><label for="chk_angularNgCrapAttributes2">_ng (Angular)</label></span>
 	                </div>
-	                <button type="button" class="wide" id="removeAll" aria-pressed="false">Remove the darn lot</button>
-	                <div>
-	                  <span><label for="txt_customAttrs">Custom data attributes</label></span>
-	                  <input id="txt_customAttrs" placeholder="e.g. dt-, src-" type="text" aria-describedby="note1" />
-	                </div>
-	                <div>
-	                  <span><label for="txt_otherMiscAttrs">Other misc attributes</label></span>
-	                  <input id="txt_otherMiscAttrs" placeholder="e.g. tabindex, title" type="text" aria-describedby="note2" />
-	                </div>
+                  <button type="button" class="wide" id="removeAll" aria-pressed="false"><span aria-hidden="true">^ </span>Remove all of the above</button>
+                  <div id="miscAttribs">
+                    <div>
+                      <span><label for="txt_customAttrs">Custom data attributes</label></span>
+                      <input id="txt_customAttrs" placeholder="e.g. dt-, src-" type="text" aria-describedby="note1" />
+                    </div>
+                    <div>
+                      <span><label for="txt_otherMiscAttrs">Other misc attributes</label></span>
+                      <input id="txt_otherMiscAttrs" placeholder="e.g. tabindex, title" type="text" aria-describedby="note2" />
+                    </div>
+                  </div>
                 </fieldset>
               </fieldset>
             </div>
