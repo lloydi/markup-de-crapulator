@@ -6,6 +6,7 @@ let indentStr = "";
 let beforeSize = 0;
 let afterSize = 0;
 let reduction = 0;
+let urlEncoded = location.href.split("?markup=")[1];
 const input = document.querySelector("#txtRaw");
 const output = document.querySelector("#txtConverted");
 const clear = document.querySelector("#clear");
@@ -33,7 +34,14 @@ function generateMarkup() {
     indentStr += indentStyle;
   }
 
-  raw = document.querySelector("#txtRaw").value;
+  if (urlEncoded) {
+    raw = decodeURI(urlEncoded);
+    raw = raw.replace(/%3D/g, "=");
+    raw = raw.replace(/%2F/g, "/");
+    input.value = raw;
+  } else {
+    raw = document.querySelector("#txtRaw").value;
+  }
   beforeSize = raw.length;
 
   if (filterAngularNgCrapTags.checked) {
@@ -166,3 +174,14 @@ function unsetAllCheckboxes() {
   });
   generateMarkup();
 }
+
+if (urlEncoded) {
+  unsetAllCheckboxes();
+  generateMarkup();
+  filterEmpty.click();
+  filterAngularNgCrapAttributes1.click();
+  filterAngularNgCrapAttributes2.click();
+  filterAngularNgCrapTags.click();
+  filterHTMLcomments.click();
+}
+
