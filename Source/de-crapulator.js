@@ -54,14 +54,18 @@ function generateMarkup() {
 
   tempDOMDumpingGround.innerHTML = raw;
 
+  let emptyEls = tempDOMDumpingGround.querySelectorAll(":empty:not(area):not(base):not(br):not(col):not(embed):not(hr):not(img):not(input):not(keygen):not(link):not(meta):not(param):not(source):not(track):not(wbr)");
+  if (filterEmpty.checked) {
+    let emptyElCount = emptyEls.length;
+    Array.from(emptyEls).forEach((el) => {
+      el.parentNode.removeChild(el);
+    });
+    emptyEls = tempDOMDumpingGround.querySelectorAll("*:empty");
+    emptyElCount = emptyEls.length;
+  }
+  
   let allElsInTempDom = tempDOMDumpingGround.querySelectorAll("*");
   Array.from(allElsInTempDom).forEach((el) => {
-    if (filterEmpty.checked) {
-      if (!el.hasChildNodes()) {
-        el.parentNode.removeChild(el);
-      }
-    }
-
     let attrs = el.attributes;
     if (filterClass.checked) {
       el.removeAttribute("class");
@@ -145,13 +149,7 @@ Array.from(otherFilterCheckboxes).forEach((otherFilterCheckboxes) => {
 });
 
 removeAll.addEventListener("click", (e) => {
-  if (removeAll.getAttribute("aria-pressed") === "false") {
-    setAllCheckboxes();
-    removeAll.setAttribute("aria-pressed", "true");
-  } else {
-    unsetAllCheckboxes();
-    removeAll.setAttribute("aria-pressed", "false");
-  }
+  removeAllCrap();
 });
 filterCustomAttrs.addEventListener("keyup", (e) => {
   generateMarkup();
@@ -159,6 +157,16 @@ filterCustomAttrs.addEventListener("keyup", (e) => {
 filterotherMiscAttrs.addEventListener("keyup", (e) => {
   generateMarkup();
 });
+
+function removeAllCrap() {
+  if (removeAll.getAttribute("aria-pressed") === "false") {
+    setAllCheckboxes();
+    removeAll.setAttribute("aria-pressed", "true");
+  } else {
+    unsetAllCheckboxes();
+    removeAll.setAttribute("aria-pressed", "false");
+  }
+}
 
 function setAllCheckboxes() {
   Array.from(otherFilterCheckboxes).forEach((otherFilterCheckbox) => {
@@ -185,3 +193,5 @@ if (urlEncoded) {
   filterHTMLcomments.click();
 }
 
+// removeAllCrap();
+// generateMarkup();
