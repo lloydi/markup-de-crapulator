@@ -94,7 +94,7 @@
                 <fieldset>
                 	<legend><h3>Tags/Other:</h3></legend>
 	                <div class="row">
-	                  <input id="chk_emptyTags" type="checkbox" aria-describedby="note1" />
+	                  <input id="chk_emptyTags" type="checkbox" aria-describedby="note2" />
 	                  <span><label for="chk_emptyTags">empty tags</label></span>
 	                </div>
 	                <div>
@@ -105,6 +105,10 @@
 	                  <input id="chk_HTMLcomments" type="checkbox" />
 	                  <span><label for="chk_HTMLcomments">&lt;--&nbspHTML&nbspcomments&nbsp--&gt;</label></span>
 	                </div>
+                    <div>
+                      <span><label for="txt_anyHTMLtag">Any HTML tag</label></span>
+                      <input id="txt_anyHTMLtag" placeholder="e.g. svg, g, span" type="text" aria-describedby="note1" />
+                    </div>
                 </fieldset>
                 <fieldset>
                 	<legend><h3>Attributes:</h3></legend>
@@ -140,11 +144,11 @@
                   <div id="miscAttribs">
                     <div>
                       <span><label for="txt_customAttrs">Custom data attributes</label></span>
-                      <input id="txt_customAttrs" placeholder="e.g. dt-, src-" type="text" aria-describedby="note2" />
+                      <input id="txt_customAttrs" placeholder="e.g. dt-, src-" type="text" aria-describedby="note3" />
                     </div>
                     <div>
                       <span><label for="txt_otherMiscAttrs">Other misc attributes</label></span>
-                      <input id="txt_otherMiscAttrs" placeholder="e.g. tabindex, title" type="text" aria-describedby="note3" />
+                      <input id="txt_otherMiscAttrs" placeholder="e.g. tabindex, title" type="text" aria-describedby="note4" />
                     </div>
                   </div>
                 </fieldset>
@@ -162,9 +166,10 @@
     <div id="log" aria-atomic="true" role="status"></div>
     <h3>Notes</h3>
     <ul>
-      <li id="note1">Empty tags: means empty <code>&lt;div&gt;...&lt;/div&gt;</code> rather than empty elements liks <code>&lt;img&gt;</code> etc</li>
-      <li id="note2">Custom data attributes: or, in fact, any attribute that is hyphenated can be entered as a comma-separated list. This includes aria attributes</li>
-      <li id="note3">Other misc attributes: literally any other attribute that you want to remove. Enter in this field as a comma-separated list.</li>
+      <li id="note1">Any HTML tag (field): you can enter any tag that you want to remove in a comma-separated list. IMPORTANT: if you choose a tag that has child elements, those child elements will be removed along with the parent.</li>
+      <li id="note2">Empty tags checkbox: means empty <code>&lt;div&gt;...&lt;/div&gt;</code> rather than empty elements liks <code>&lt;img&gt;</code> etc</li>
+      <li id="note3">Custom data attributes (field): or, in fact, any attribute that is hyphenated can be entered as a comma-separated list. This includes aria attributes</li>
+      <li id="note4">Other misc attributes (field): literally any other attribute that you want to remove. Enter in this field as a comma-separated list.</li>
     </ul>
     <hr>
     <p>Made by <a href="https://twitter.com/lloydi" aria-label="Lloydi (Twitter)">Lloydi</a></p>
