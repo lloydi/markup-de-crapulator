@@ -20,6 +20,7 @@ const filterAngularNgCrapAttributes1 = document.querySelector("#chk_angularNgCra
 const filterAngularNgCrapAttributes2 = document.querySelector("#chk_angularNgCrapAttributes2");
 const filterAngularNgCrapTags = document.querySelector("#chk_angularNgCrapTags");
 const filterHTMLcomments = document.querySelector("#chk_HTMLcomments");
+const filterAngularNgEmptyComments = document.querySelector("#chk_angularNgEmptyComments");
 const filterCustomAttrs = document.querySelector("#txt_customAttrs");
 const filterotherMiscAttrs = document.querySelector("#txt_otherMiscAttrs");
 const removeAll = document.querySelector("#removeAll");
@@ -51,6 +52,9 @@ function generateMarkup() {
   if (filterHTMLcomments.checked) {
     raw = raw.replace(/<!--(.*?)-->/g, "");
   }
+  if (filterAngularNgEmptyComments.checked) {
+    raw = raw.replace(/<!--(-*?)-->/g, "");
+  }
 
   tempDOMDumpingGround.innerHTML = raw;
 
@@ -63,7 +67,7 @@ function generateMarkup() {
     emptyEls = tempDOMDumpingGround.querySelectorAll("*:empty");
     emptyElCount = emptyEls.length;
   }
-  
+
   let allElsInTempDom = tempDOMDumpingGround.querySelectorAll("*");
   Array.from(allElsInTempDom).forEach((el) => {
     let attrs = el.attributes;
@@ -191,6 +195,7 @@ if (urlEncoded) {
   filterAngularNgCrapAttributes2.click();
   filterAngularNgCrapTags.click();
   filterHTMLcomments.click();
+  filterAngularNgEmptyComments.click();
 }
 
 // removeAllCrap();
