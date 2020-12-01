@@ -150,6 +150,9 @@ clear.addEventListener("click", (ev) => {
   filterCustomAttrs.value="";
   filterotherMiscAttrs.value="";
 });
+input.addEventListener("blur", (ev) => {
+  generateMarkup();
+});
 const radios = document.querySelectorAll("[name=rad_Indentstyle],[name=rad_Indentdepth]");
 Array.from(radios).forEach((radio) => {
   radio.addEventListener("change", (e) => {
