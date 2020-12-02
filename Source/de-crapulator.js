@@ -19,9 +19,9 @@ const filterDataDash = document.querySelector("#chk_dataDash");
 const filterAngularNgCrapAttributes1 = document.querySelector("#chk_angularNgCrapAttributes1");
 const filterAngularNgCrapAttributes2 = document.querySelector("#chk_angularNgCrapAttributes2");
 const filterAngularNgCrapTags = document.querySelector("#chk_angularNgCrapTags");
-const filterAngularNgCrapClasses = document.querySelector("#chk_angularNgCrapClasses");
-const filterHTMLcomments = document.querySelector("#chk_HTMLcomments");
-const filterAngularNgEmptyComments = document.querySelector("#chk_angularNgEmptyComments");
+// const filterAngularNgCrapClasses = document.querySelector("#chk_angularNgCrapClasses");
+const filterAllHTMLcomments = document.querySelector("#chk_allHTMLcomments");
+const filterEmptyComments = document.querySelector("#chk_emptyHTMLComments");
 const filterCustomAttrs = document.querySelector("#txt_customAttrs");
 const filterotherMiscAttrs = document.querySelector("#txt_otherMiscAttrs");
 const removeAll = document.querySelector("#removeAll");
@@ -50,10 +50,10 @@ function generateMarkup() {
     raw = raw.replace(/<ng-(.*?)>/g, "");
     raw = raw.replace(/<\/ng-(.*?)>/g, "");
   }
-  if (filterHTMLcomments.checked) {
+  if (filterAllHTMLcomments.checked) {
     raw = raw.replace(/<!--(.*?)-->/g, "");
   }
-  if (filterAngularNgEmptyComments.checked) {
+  if (filterEmptyComments.checked) {
     raw = raw.replace(/<!--(-*?)-->/g, "");
   }
 
@@ -84,16 +84,16 @@ function generateMarkup() {
     if (filterOnClickReact.checked) {
       el.removeAttribute("onClick");
     }
-    if(filterAngularNgCrapClasses.checked) {
-      let CSSclasses = el.classList;
-      if (CSSclasses && CSSclasses.length > 0) {
-        Array.from(CSSclasses).forEach((CSSclass) => {
-          if (CSSclass.indexOf("ng-") === 0) {
-            el.classList.remove(CSSclass);
-          }
-        });
-      }
-    }
+    // if(filterAngularNgCrapClasses.checked) {
+    //   let CSSclasses = el.classList;
+    //   if (CSSclasses && CSSclasses.length > 0) {
+    //     Array.from(CSSclasses).forEach((CSSclass) => {
+    //       if (CSSclass.indexOf("ng-") === 0) {
+    //         el.classList.remove(CSSclass);
+    //       }
+    //     });
+    //   }
+    // }
     Array.from(attrs).forEach((attr) => {
       if (filterDataDash.checked) {
         if (attr.name.indexOf("data-") === 0) {
@@ -205,8 +205,8 @@ if (urlEncoded) {
   filterAngularNgCrapAttributes1.click();
   filterAngularNgCrapAttributes2.click();
   filterAngularNgCrapTags.click();
-  filterHTMLcomments.click();
-  filterAngularNgEmptyComments.click();
+  filterAllHTMLcomments.click();
+  filterEmptyComments.click();
 }
 
 // removeAllCrap();
