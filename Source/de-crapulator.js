@@ -19,7 +19,9 @@ const filterDataDash = document.querySelector("#chk_dataDash");
 const filterAngularNgCrapAttributes1 = document.querySelector("#chk_angularNgCrapAttributes1");
 const filterAngularNgCrapAttributes2 = document.querySelector("#chk_angularNgCrapAttributes2");
 const filterAngularNgCrapTags = document.querySelector("#chk_angularNgCrapTags");
-const filterHTMLcomments = document.querySelector("#chk_HTMLcomments");
+// const filterAngularNgCrapClasses = document.querySelector("#chk_angularNgCrapClasses");
+const filterAllHTMLcomments = document.querySelector("#chk_allHTMLcomments");
+const filterEmptyComments = document.querySelector("#chk_emptyHTMLComments");
 const filterCustomAttrs = document.querySelector("#txt_customAttrs");
 const filterotherMiscAttrs = document.querySelector("#txt_otherMiscAttrs");
 const filterAnyHTMLtag = document.querySelector("#txt_anyHTMLtag");
@@ -49,8 +51,11 @@ function generateMarkup() {
     raw = raw.replace(/<ng-(.*?)>/g, "");
     raw = raw.replace(/<\/ng-(.*?)>/g, "");
   }
-  if (filterHTMLcomments.checked) {
+  if (filterAllHTMLcomments.checked) {
     raw = raw.replace(/<!--(.*?)-->/g, "");
+  }
+  if (filterEmptyComments.checked) {
+    raw = raw.replace(/<!--(-*?)-->/g, "");
   }
 
   tempDOMDumpingGround.innerHTML = raw;
@@ -64,7 +69,7 @@ function generateMarkup() {
     emptyEls = tempDOMDumpingGround.querySelectorAll("*:empty");
     emptyElCount = emptyEls.length;
   }
-  
+
   let allElsInTempDom = tempDOMDumpingGround.querySelectorAll("*");
   if (filterAnyHTMLtag.value !== "") {
     let arrAnyHTMLtags = filterAnyHTMLtag.value.split(",");
@@ -90,6 +95,16 @@ function generateMarkup() {
     if (filterOnClickReact.checked) {
       el.removeAttribute("onClick");
     }
+    // if(filterAngularNgCrapClasses.checked) {
+    //   let CSSclasses = el.classList;
+    //   if (CSSclasses && CSSclasses.length > 0) {
+    //     Array.from(CSSclasses).forEach((CSSclass) => {
+    //       if (CSSclass.indexOf("ng-") === 0) {
+    //         el.classList.remove(CSSclass);
+    //       }
+    //     });
+    //   }
+    // }
     Array.from(attrs).forEach((attr) => {
       if (filterDataDash.checked) {
         if (attr.name.indexOf("data-") === 0) {
@@ -127,7 +142,7 @@ function generateMarkup() {
       }
     });
   });
-  indented = tempDOMDumpingGround.innerHTML.split("><").join(">\n<");
+  indented = tempDOMDumpingGround.innerHTML.split("><").join(">\n<").replaceAll(/\<(?<tag>\w+)([^>]*)\>\n\<\/\k<tag>\>/g, "<$1$2></$1>");
   indented = indent.js(indented, { tabString: indentStr });
   indented = indented.split("<").join("&lt;");
   indented = indented.split(">").join("&gt;");
@@ -145,6 +160,9 @@ clear.addEventListener("click", (ev) => {
   removeAll.setAttribute("aria-pressed", "false");
   filterCustomAttrs.value="";
   filterotherMiscAttrs.value="";
+});
+input.addEventListener("blur", (ev) => {
+  generateMarkup();
 });
 const radios = document.querySelectorAll("[name=rad_Indentstyle],[name=rad_Indentdepth]");
 Array.from(radios).forEach((radio) => {
@@ -204,7 +222,8 @@ if (urlEncoded) {
   filterAngularNgCrapAttributes1.click();
   filterAngularNgCrapAttributes2.click();
   filterAngularNgCrapTags.click();
-  filterHTMLcomments.click();
+  filterAllHTMLcomments.click();
+  filterEmptyComments.click();
 }
 
 // removeAllCrap();
