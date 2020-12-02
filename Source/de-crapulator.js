@@ -131,7 +131,7 @@ function generateMarkup() {
       }
     });
   });
-  indented = tempDOMDumpingGround.innerHTML.split("><").join(">\n<");
+  indented = tempDOMDumpingGround.innerHTML.split("><").join(">\n<").replaceAll(/\<(?<tag>\w+)([^>]*)\>\n\<\/\k<tag>\>/g, "<$1$2></$1>");
   indented = indent.js(indented, { tabString: indentStr });
   indented = indented.split("<").join("&lt;");
   indented = indented.split(">").join("&gt;");
@@ -149,6 +149,9 @@ clear.addEventListener("click", (ev) => {
   removeAll.setAttribute("aria-pressed", "false");
   filterCustomAttrs.value="";
   filterotherMiscAttrs.value="";
+});
+input.addEventListener("blur", (ev) => {
+  generateMarkup();
 });
 const radios = document.querySelectorAll("[name=rad_Indentstyle],[name=rad_Indentdepth]");
 Array.from(radios).forEach((radio) => {
