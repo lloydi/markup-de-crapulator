@@ -24,6 +24,7 @@ const filterAllHTMLcomments = document.querySelector("#chk_allHTMLcomments");
 const filterEmptyComments = document.querySelector("#chk_emptyHTMLComments");
 const filterCustomAttrs = document.querySelector("#txt_customAttrs");
 const filterotherMiscAttrs = document.querySelector("#txt_otherMiscAttrs");
+const filterAnyHTMLtag = document.querySelector("#txt_anyHTMLtag");
 const removeAll = document.querySelector("#removeAll");
 const tempDOMDumpingGround = document.querySelector("#tempDOMDumpingGround");
 const log = document.querySelector("#log");
@@ -70,6 +71,16 @@ function generateMarkup() {
   }
 
   let allElsInTempDom = tempDOMDumpingGround.querySelectorAll("*");
+  if (filterAnyHTMLtag.value !== "") {
+    let arrAnyHTMLtags = filterAnyHTMLtag.value.split(",");
+    Array.from(arrAnyHTMLtags).forEach((arrAnyHTMLtag) => {
+      arrAnyHTMLtag = arrAnyHTMLtag.trim();
+      let elsToStrip = tempDOMDumpingGround.querySelectorAll(arrAnyHTMLtag);
+      Array.from(elsToStrip).forEach((elToStrip) => {
+        elToStrip.parentNode.removeChild(elToStrip);
+      });
+    });
+  }
   Array.from(allElsInTempDom).forEach((el) => {
     let attrs = el.attributes;
     if (filterClass.checked) {
@@ -173,6 +184,9 @@ filterCustomAttrs.addEventListener("keyup", (e) => {
   generateMarkup();
 });
 filterotherMiscAttrs.addEventListener("keyup", (e) => {
+  generateMarkup();
+});
+filterAnyHTMLtag.addEventListener("keyup", (e) => {
   generateMarkup();
 });
 
