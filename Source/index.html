@@ -51,6 +51,7 @@
       fieldset fieldset {border:none;padding: 0;}
       legend h2, legend h3 {margin: 0;font-size: 1em;}
       #miscAttribs div {margin: 5px 0;}
+      #indentLevel fieldset, #indentLevel div {margin: 10px 0;}
     </style>
   </head>
 
@@ -70,21 +71,26 @@
               <button type="button" id="clear">Reset everything</button>
               <div>
                 <fieldset id="indentLevel">
-                  <legend><h2>Indenting</h2></legend>
+                  <legend><h2>Formatting of output</h2></legend>
                   <fieldset>
-                    <legend>Style</legend>
+                    <legend>Indent Style</legend>
                     <span><input value=" " id="rad_Indentstyle_1" name="rad_Indentstyle" type="radio" checked /> <label for="rad_Indentstyle_1">Spaces</label></span>
                     <span><input value="	" id="rad_Indentstyle_2" name="rad_Indentstyle" type="radio" /> <label for="rad_Indentstyle_2">Tabs</label></span>
                   </fieldset>
                   <fieldset>
-                    <legend>Depth</legend>
+                    <legend>Indent Depth</legend>
                     <span><input value="0" id="rad_Indentdepth_0" name="rad_Indentdepth" type="radio" /> <label for="rad_Indentdepth_0">0</label></span>
                     <span><input value="1" id="rad_Indentdepth_1" name="rad_Indentdepth" type="radio" checked /> <label for="rad_Indentdepth_1">1</label></span>
                     <span><input value="2" id="rad_Indentdepth_2" name="rad_Indentdepth" type="radio" /> <label for="rad_Indentdepth_2">2</label></span>
                     <span><input value="3" id="rad_Indentdepth_3" name="rad_Indentdepth" type="radio" /> <label for="rad_Indentdepth_3">3</label></span>
                     <span><input value="4" id="rad_Indentdepth_4" name="rad_Indentdepth" type="radio" /> <label for="rad_Indentdepth_4">4</label></span>
                   </fieldset>
-                </fieldset>
+                  <div>
+                    <input id="chk_brailleFriendlyOutput" type="checkbox" aria-describedby="brailleFormatDesc" />
+                    <span><label for="chk_brailleFriendlyOutput">Format for Braille-friendly output</label></span>
+                    <div id="brailleFormatDesc">80 chars max, wrap with each HTML opening or closing tag</div>
+                  </div>
+                    </fieldset>
               </div>
             </div>
             <div id="col2" class="column col-4">
@@ -160,10 +166,6 @@
             <div id="col3" class="column col-4">
               <div><label for="txtConverted">Cleaned-up HTML:</label></div>
               <div><pre><code class="html" id="txtConverted" contenteditable="true"></code></pre></div>
-              <div>
-                <input id="chk_brailleFriendlyOutput" type="checkbox" />
-                <span><label for="chk_brailleFriendlyOutput">Format for Braille-friendly output (80 chars max, wrap with each HTML opening or closing tag)</label></span>
-              </div>
         </div>
           </div>
         </div>
