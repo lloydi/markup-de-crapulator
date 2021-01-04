@@ -19,6 +19,7 @@ const filterDataDash = document.querySelector("#chk_dataDash");
 const filterAngularNgCrapAttributes1 = document.querySelector("#chk_angularNgCrapAttributes1");
 const filterAngularNgCrapAttributes2 = document.querySelector("#chk_angularNgCrapAttributes2");
 const filterAngularNgCrapTags = document.querySelector("#chk_angularNgCrapTags");
+const formatBrailleFriendlyOutput = document.querySelector("#chk_brailleFriendlyOutput");
 // const filterAngularNgCrapClasses = document.querySelector("#chk_angularNgCrapClasses");
 const filterAllHTMLcomments = document.querySelector("#chk_allHTMLcomments");
 const filterEmptyComments = document.querySelector("#chk_emptyHTMLComments");
@@ -142,8 +143,23 @@ function generateMarkup() {
       }
     });
   });
+
   indented = tempDOMDumpingGround.innerHTML.split("><").join(">\n<").replaceAll(/\<(?<tag>\w+)([^>]*)\>\n\<\/\k<tag>\>/g, "<$1$2></$1>");
-  indented = indent.js(indented, { tabString: indentStr });
+  if (formatBrailleFriendlyOutput.checked) {
+    var arrayOfLines = indented.split('\n');
+    for (i=0; i<arrayOfLines.length;i++) {
+      console.log(arrayOfLines[i].length);
+      if (arrayOfLines[i].length>80) {
+        console.log("⚠️ Over " + 80 + " chars");
+        arrayOfLines[i] = arrayOfLines[i].replace(/(.{1,80})/g, '$1\n')
+      }
+      console.log("Line " + (i+1) + ": " + arrayOfLines[i]);
+    }
+    indented = arrayOfLines.join("\n");
+    indented = indented.replace(/\n\n/g, '\n');
+  } else {
+    indented = indent.js(indented, { tabString: indentStr });
+  }
   indented = indented.split("<").join("&lt;");
   indented = indented.split(">").join("&gt;");
   output.innerHTML = indented;
@@ -151,6 +167,11 @@ function generateMarkup() {
   log.innerHTML = "<span class='visually-hidden'>Markup updated. </span>Size before: <span>" + beforeSize + " characters</span>. Size after: <span>" + afterSize + " characters</span>. Cleaned/indented = <span>" + ((afterSize / beforeSize) * 100).toFixed(2) + "%</span> of original markup";
   hljs.highlightBlock(output);
 }
+
+formatBrailleFriendlyOutput.addEventListener("click", (e) => {
+  generateMarkup();
+})
+
 clear.addEventListener("click", (ev) => {
   input.value="";
   input.focus();
