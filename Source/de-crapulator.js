@@ -20,7 +20,6 @@ const filterAngularNgCrapAttributes1 = document.querySelector("#chk_angularNgCra
 const filterAngularNgCrapAttributes2 = document.querySelector("#chk_angularNgCrapAttributes2");
 const filterAngularNgCrapTags = document.querySelector("#chk_angularNgCrapTags");
 const formatBrailleFriendlyOutput = document.querySelector("#chk_brailleFriendlyOutput");
-// const filterAngularNgCrapClasses = document.querySelector("#chk_angularNgCrapClasses");
 const filterAllHTMLcomments = document.querySelector("#chk_allHTMLcomments");
 const filterEmptyComments = document.querySelector("#chk_emptyHTMLComments");
 const filterCustomAttrs = document.querySelector("#txt_customAttrs");
@@ -188,6 +187,13 @@ clear.addEventListener("click", (ev) => {
   removeAll.setAttribute("aria-pressed", "false");
   filterCustomAttrs.value="";
   filterotherMiscAttrs.value="";
+
+  for (var key in localStorage) {
+    if (key.includes("dataStorage-")) {
+    localStorage.removeItem(key);
+    }
+  }
+
 });
 input.addEventListener("blur", (ev) => {
   generateMarkup();
@@ -254,5 +260,46 @@ if (urlEncoded) {
   filterEmptyComments.click();
 }
 
-// removeAllCrap();
-// generateMarkup();
+//==================================================================
+// Save pasted markup sample and any custom attributes entered
+//==================================================================
+
+let userEnteredData_id,userEnteredData_text;
+let userEnteredData_id_count=0;
+const userEnteredTextFields = document.querySelectorAll("[data-user-entered]");
+
+function saveDescriptionDetails(timeout, field, time) {
+    clearTimeout(timeout);
+    timeout = setTimeout(function () {
+        userEnteredData_id = field.getAttribute("id");
+        userEnteredData_text = field.value;
+        localStorage.setItem("dataStorage-" + userEnteredData_id, userEnteredData_text);
+    }, time);
+    return timeout;
+}
+function loadSavedData() {
+    for (var key in localStorage) {
+        if (key.includes("dataStorage-")) {
+          const id = key.replace("dataStorage-", "");
+            if (document.querySelector("#" + id)) {
+            document.querySelector("#" + id).value = localStorage.getItem(key);
+          }
+        }
+    }
+}
+
+Array.from(userEnteredTextFields).forEach((field) => {
+  userEnteredData_id_count++;
+  field.setAttribute("data-user-entered","true");
+  let timeout = null;
+  field.addEventListener("blur", (e) => {
+    timeout = saveDescriptionDetails(timeout, field, 1);
+  })
+  field.addEventListener("keyup", (e) => {
+   timeout = saveDescriptionDetails(timeout, field, 3000);
+  })
+ });
+
+ document.addEventListener("DOMContentLoaded", function(){
+  loadSavedData();
+ });
