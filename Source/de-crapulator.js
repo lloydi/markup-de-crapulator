@@ -46,6 +46,8 @@ function generateMarkup() {
   } else {
     raw = document.querySelector("#txtRaw").value;
   }
+  raw = raw.replace(/\?/g, "QUESTION_MARK");
+
   beforeSize = raw.length;
 
   if (filterAngularNgCrapTags.checked) {
@@ -58,7 +60,7 @@ function generateMarkup() {
   if (filterEmptyComments.checked) {
     raw = raw.replace(/<!--(-*?)-->/g, "");
   }
-
+  
   tempDOMDumpingGround.innerHTML = raw;
 
   let emptyEls = tempDOMDumpingGround.querySelectorAll(":empty:not(area):not(base):not(br):not(col):not(embed):not(hr):not(img):not(input):not(keygen):not(link):not(meta):not(param):not(source):not(track):not(wbr)");
@@ -166,6 +168,7 @@ function generateMarkup() {
   }
   indented = indented.split("<").join("&lt;");
   indented = indented.split(">").join("&gt;");
+  indented = indented.split("QUESTION_MARK").join("?");
   output.innerHTML = indented;
   afterSize = output.textContent.length;
   log.innerHTML = "<span class='visually-hidden'>Markup updated. </span>Size before: <span>" + beforeSize + " characters</span>. Size after: <span>" + afterSize + " characters</span>. Cleaned/indented = <span>" + ((afterSize / beforeSize) * 100).toFixed(2) + "%</span> of original markup";
