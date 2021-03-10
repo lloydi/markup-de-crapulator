@@ -152,12 +152,16 @@
                   <button type="button" class="wide" id="removeAll" aria-pressed="false"><span aria-hidden="true">^ </span>Remove all of the above</button>
                   <div id="miscAttribs">
                     <div>
-                      <span><label for="txt_customAttrs">Custom data attributes</label></span>
-                      <input id="txt_customAttrs" placeholder="e.g. dt-, src-" type="text" aria-describedby="note3" />
+                      <span><label for="txt_customAttrs">All attributes that begin with…</label></span>
+                      <div>
+                        <input id="txt_customAttrs" type="text" aria-describedby="note3" />
+                      </div>
                     </div>
                     <div>
-                      <span><label for="txt_otherMiscAttrs">Other misc attributes</label></span>
-                      <input id="txt_otherMiscAttrs" placeholder="e.g. tabindex, title" type="text" aria-describedby="note4" />
+                      <span><label for="txt_otherMiscAttrs">Other misc attributes</label> <span id="note5">(type in full)</span></span>
+                      <div>
+                        <input id="txt_otherMiscAttrs" type="text" aria-describedby="note5 note4" />
+                      </div>
                     </div>
                   </div>
                 </fieldset>
@@ -177,7 +181,7 @@
     <ul>
       <li id="note1">Any HTML tag (field): you can enter any tag that you want to remove in a comma-separated list. IMPORTANT: if you choose a tag that has child elements, those child elements will be removed along with the parent.</li>
       <li id="note2">Empty tags checkbox: means empty <code>&lt;div&gt;...&lt;/div&gt;</code> rather than empty elements liks <code>&lt;img&gt;</code> etc</li>
-      <li id="note3">Custom data attributes (field): or, in fact, any attribute that is hyphenated can be entered as a comma-separated list. This includes aria attributes</li>
+      <li id="note3">Attributes that begin with (field): type the beginning of any range of attributes that you want to match, so entering `aria` will remove all `aria-*` attributes. Enter in this field as a comma-separated list.</li>
       <li id="note4">Other misc attributes (field): literally any other attribute that you want to remove. Enter in this field as a comma-separated list.</li>
     </ul>
     <hr>

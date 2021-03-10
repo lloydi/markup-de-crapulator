@@ -127,8 +127,12 @@ function generateMarkup() {
         let arrFilterCustomAttrs = filterCustomAttrs.value.split(",");
         Array.from(arrFilterCustomAttrs).forEach((arrFilterCustomAttr) => {
           arrFilterCustomAttr = arrFilterCustomAttr.trim();
-          if (attr.name.indexOf(arrFilterCustomAttr + "-") === 0) {
-            el.removeAttribute(attr.name);
+          if (arrFilterCustomAttr!==""){
+            console.log("arrFilterCustomAttr=*"+arrFilterCustomAttr+"*")
+            if (attr.name.indexOf(arrFilterCustomAttr) === 0) {
+              el.removeAttribute(attr.name);
+            }
+
           }
         });
       }
