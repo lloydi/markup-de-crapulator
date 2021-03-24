@@ -28,6 +28,8 @@ const filterAnyHTMLtag = document.querySelector("#txt_anyHTMLtag");
 const removeAll = document.querySelector("#removeAll");
 const tempDOMDumpingGround = document.querySelector("#tempDOMDumpingGround");
 const log = document.querySelector("#log");
+let addTableMarkupChoiceSet=false;
+let addTableMarkup=false;
 
 function generateMarkup() {
   indentStr = "";
@@ -45,6 +47,39 @@ function generateMarkup() {
   } else {
     raw = document.querySelector("#txtRaw").value;
   }
+
+
+
+  let isTableCell=false;
+  let isTableHeader=false;
+  if ((raw.indexOf("<th")===0)||(raw.indexOf("<td")===0)) {
+    isTableCell=true;
+  }
+  if (raw.indexOf("<thead")===0) {
+    isTableCell=false;
+    isTableHeader=true;
+  }
+  if ((isTableCell)||(isTableHeader)) {
+    if (!addTableMarkupChoiceSet) {
+      addTableMarkupChoiceSet=true;
+      if(confirm("Looks like you've hit upon one of this tool's limitations - if the outermost node is a <thead>, <th>, <td>, it gets removed during processing for reasons too boring to go into.\n\nIf you press 'OK', the tool will add in a simple table around your markup – you'll need to strip it out after manually.")) {
+        addTableMarkup=true;
+      }
+    }
+    if (addTableMarkup) {
+      if (isTableCell) {
+        raw="<table><tr>"+raw+"</tr></table>";  
+        console.log("1");    
+      }
+      if (isTableHeader) {
+        raw="<table>"+raw+"</table>";  
+        console.log("2");   
+      }
+    }
+  }
+
+
+
   raw = raw.replace(/\?/g, "QUESTION_MARK");
 
   beforeSize = raw.length;
