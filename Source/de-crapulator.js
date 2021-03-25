@@ -195,19 +195,35 @@ function generateMarkup() {
     if (isTableCell || isTableHeader || isTableBody || isTableRow) {
       if (!addTableMarkupChoiceSet) {
         addTableMarkupChoiceSet = true;
-        if (confirm("Looks like you've hit upon one of this tool's limitations - if the outermost node is a <thead>, <tbody>, <tr>, <th> or <td>, it gets removed during processing for reasons too boring to go into.\n\nIf you press 'OK', the tool will add in a simple table around your markup – you'll need to strip it out after manually.")) {
-          addTableMarkup = true;
-        }
+        // if (confirm("Looks like you've hit upon one of this tool's limitations - if the outermost node is a <thead>, <tbody>, <tr>, <th> or <td>, it gets removed during processing for reasons too boring to go into.\n\nIf you press 'OK', the tool will add in a simple table around your markup – you'll need to strip it out after manually.")) {
+        //   addTableMarkup = true;
+        // }
       }
-      if (addTableMarkup) {
+      // if (addTableMarkup) {
         if (isTableCell) {
           raw = "<table><tr>" + raw + "</tr></table>";
         }
         if (isTableHeader || isTableBody || isTableRow) {
           raw = "<table>" + raw + "</table>";
         }
-      }
+      // }
     }
+  }
+  function removeAddedTableMarkup() {
+    if (isTableCell) {
+      output.textContent = output.textContent.replace("<table>\n <tbody>\n  <tr>\n", "");
+      output.textContent = output.textContent.replace("  </tr>\n </tbody>\n</table>", "");
+    }
+    if (isTableHeader || isTableBody) {
+      output.textContent = output.textContent.replace("<table>\n", "");
+      output.textContent = output.textContent.replace("</table>", "");
+    }
+    if (isTableRow) {
+      output.textContent = output.textContent.replace("<table>\n <tbody>\n", "");
+      output.textContent = output.textContent.replace("</tbody>\n</table>", "");
+      output.textContent = output.textContent.replace("\n  </tr>", "\n</tr>");
+    }
+    output.textContent = output.textContent.trim();
   }
   function convertTempDomNodeToIndentedOutput() {
     indented = tempDOMDumpingGround.innerHTML.split("><").join(">\n<").replaceAll(/\<(?<tag>\w+)([^>]*)\>\n\<\/\k<tag>\>/g, "<$1$2></$1>");
@@ -299,6 +315,41 @@ function generateMarkup() {
       });
     });
   }
+  function filterEmptyElements() {
+    let emptyEls = tempDOMDumpingGround.querySelectorAll(":empty:not(area):not(base):not(br):not(col):not(embed):not(hr):not(img):not(input):not(keygen):not(link):not(meta):not(param):not(source):not(track):not(wbr)");
+    if (filterEmpty.checked) {
+      let emptyElCount = emptyEls.length;
+      Array.from(emptyEls).forEach((el) => {
+        el.parentNode.removeChild(el);
+      });
+      emptyEls = tempDOMDumpingGround.querySelectorAll("*:empty");
+      emptyElCount = emptyEls.length;
+    }
+  }
+  function filterComments() {
+    if (filterAllHTMLcomments.checked) {
+      raw = raw.replace(/<!--(.*?)-->/g, "");
+    }
+    if (filterEmptyComments.checked) {
+      raw = raw.replace(/<!--(-*?)-->/g, "");
+    }
+  }
+  function filterAngularTags() {
+    if (filterAngularNgCrapTags.checked) {
+      raw = raw.replace(/<ng-(.*?)>/g, "");
+      raw = raw.replace(/<\/ng-(.*?)>/g, "");
+    }
+  }
+  function unencodeURL() {
+    if (urlEncoded) {
+      raw = decodeURI(urlEncoded);
+      raw = raw.replace(/%3D/g, "=");
+      raw = raw.replace(/%2F/g, "/");
+      input.value = raw;
+    } else {
+      raw = document.querySelector("#txtRaw").value;
+    }
+  }
 
   indentStr = "";
   indentStyle = document.querySelector("[name=rad_Indentstyle]:checked").value;
@@ -307,52 +358,26 @@ function generateMarkup() {
     indentStr += indentStyle;
   }
 
-  if (urlEncoded) {
-    raw = decodeURI(urlEncoded);
-    raw = raw.replace(/%3D/g, "=");
-    raw = raw.replace(/%2F/g, "/");
-    input.value = raw;
-  } else {
-    raw = document.querySelector("#txtRaw").value;
-  }
-
+  unencodeURL();
+  beforeSize = raw.length;
   addTableMarkupToOrphanedInnerTableElements();
 
   raw = raw.replace(/\?/g, "QUESTION_MARK");
-
-  beforeSize = raw.length;
-
-  if (filterAngularNgCrapTags.checked) {
-    raw = raw.replace(/<ng-(.*?)>/g, "");
-    raw = raw.replace(/<\/ng-(.*?)>/g, "");
-  }
-  if (filterAllHTMLcomments.checked) {
-    raw = raw.replace(/<!--(.*?)-->/g, "");
-  }
-  if (filterEmptyComments.checked) {
-    raw = raw.replace(/<!--(-*?)-->/g, "");
-  }
-  
   tempDOMDumpingGround.innerHTML = raw;
-
-  let emptyEls = tempDOMDumpingGround.querySelectorAll(":empty:not(area):not(base):not(br):not(col):not(embed):not(hr):not(img):not(input):not(keygen):not(link):not(meta):not(param):not(source):not(track):not(wbr)");
-  if (filterEmpty.checked) {
-    let emptyElCount = emptyEls.length;
-    Array.from(emptyEls).forEach((el) => {
-      el.parentNode.removeChild(el);
-    });
-    emptyEls = tempDOMDumpingGround.querySelectorAll("*:empty");
-    emptyElCount = emptyEls.length;
-  }
-
   let allElsInTempDom = tempDOMDumpingGround.querySelectorAll("*");
+  
+  filterAngularTags();
+  filterComments();
+  filterEmptyElements();
   filterHtmlElements();
   filterAttributes();
-
   convertTempDomNodeToIndentedOutput();
   output.innerHTML = indented;
   afterSize = output.textContent.length;
   log.innerHTML = "<span class='visually-hidden'>Markup updated. </span>Size before: <span>" + beforeSize + " characters</span>. Size after: <span>" + afterSize + " characters</span>. Cleaned/indented = <span>" + ((afterSize / beforeSize) * 100).toFixed(2) + "%</span> of original markup";
+  
+  console.log(output.textContent);
+  removeAddedTableMarkup();
   hljs.highlightBlock(output);
 
 }
