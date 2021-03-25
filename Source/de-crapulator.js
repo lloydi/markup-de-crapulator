@@ -52,28 +52,45 @@ function generateMarkup() {
 
   let isTableCell=false;
   let isTableHeader=false;
+  let isTableBody=false;
+  let isTableRow=false;
   if ((raw.indexOf("<th")===0)||(raw.indexOf("<td")===0)) {
     isTableCell=true;
+    isTableHeader=false;
+    isTableBody=false;
+    isTableRow=false;
+  }
+  if (raw.indexOf("<tr")===0) {
+    isTableCell=false;
+    isTableHeader=false;
+    isTableBody=false;
+    isTableRow=true;
   }
   if (raw.indexOf("<thead")===0) {
     isTableCell=false;
     isTableHeader=true;
+    isTableBody=false;
+    isTableRow=false;
   }
-  if ((isTableCell)||(isTableHeader)) {
+  if (raw.indexOf("<tbody")===0) {
+    isTableCell=false;
+    isTableHeader=false;
+    isTableBody=true;
+    isTableRow=false;
+  }
+  if (isTableCell||isTableHeader||isTableBody||isTableRow) {
     if (!addTableMarkupChoiceSet) {
       addTableMarkupChoiceSet=true;
-      if(confirm("Looks like you've hit upon one of this tool's limitations - if the outermost node is a <thead>, <th>, <td>, it gets removed during processing for reasons too boring to go into.\n\nIf you press 'OK', the tool will add in a simple table around your markup – you'll need to strip it out after manually.")) {
+      if(confirm("Looks like you've hit upon one of this tool's limitations - if the outermost node is a <thead>, <tbody>, <tr>, <th> or <td>, it gets removed during processing for reasons too boring to go into.\n\nIf you press 'OK', the tool will add in a simple table around your markup – you'll need to strip it out after manually.")) {
         addTableMarkup=true;
       }
     }
     if (addTableMarkup) {
       if (isTableCell) {
         raw="<table><tr>"+raw+"</tr></table>";  
-        console.log("1");    
       }
-      if (isTableHeader) {
+      if (isTableHeader||isTableBody||isTableRow) {
         raw="<table>"+raw+"</table>";  
-        console.log("2");   
       }
     }
   }
