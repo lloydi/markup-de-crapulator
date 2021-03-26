@@ -222,8 +222,11 @@ function generateMarkup() {
   indented = indented.split("QUESTION_MARK").join("?");
   output.innerHTML = indented;
   afterSize = output.textContent.length;
-  log.innerHTML = "<span class='visually-hidden'>Markup updated. </span>Size before: <span>" + beforeSize + " characters</span>. Size after: <span>" + afterSize + " characters</span>. Cleaned/indented = <span>" + ((afterSize / beforeSize) * 100).toFixed(2) + "%</span> of original markup";
+  let percentage = ((afterSize / beforeSize) * 100).toFixed(2);
+  log.innerHTML = "<span class='visually-hidden'>Markup updated. </span>Size before: <span>" + beforeSize + " characters</span>. Size after: <span>" + afterSize + " characters</span>. Cleaned/indented = <span>" + percentage + "%</span> of original markup<div aria-hidden=\"true\" id=\"turd\"></div>";
   hljs.highlightBlock(output);
+  const turd = document.querySelector("#turd");
+  turd.style.width=percentage+"%";
 }
 
 formatBrailleFriendlyOutput.addEventListener("click", (e) => {
