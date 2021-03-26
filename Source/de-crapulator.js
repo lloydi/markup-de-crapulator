@@ -211,17 +211,17 @@ function generateMarkup() {
   }
   function removeAddedTableMarkup() {
     if (isTableCell) {
-      output.textContent = output.textContent.replace("<table>\n <tbody>\n  <tr>\n", "");
-      output.textContent = output.textContent.replace("  </tr>\n </tbody>\n</table>", "");
+      output.textContent = output.textContent.replace("<table>\n" + indentStyle + "<tbody>\n" + indentStyle + indentStyle + "<tr>\n", "");
+      output.textContent = output.textContent.replace(indentStyle + indentStyle + "</tr>\n" + indentStyle + "</tbody>\n</table>", "");
     }
     if (isTableHeader || isTableBody) {
       output.textContent = output.textContent.replace("<table>\n", "");
       output.textContent = output.textContent.replace("</table>", "");
     }
     if (isTableRow) {
-      output.textContent = output.textContent.replace("<table>\n <tbody>\n", "");
+      output.textContent = output.textContent.replace("<table>\n <tbody>\n  ", "");
       output.textContent = output.textContent.replace("</tbody>\n</table>", "");
-      output.textContent = output.textContent.replace("\n  </tr>", "\n</tr>");
+      output.textContent = output.textContent.replace("\n" + indentStyle + indentStyle + "</tr>", "\n</tr>");
     }
     output.textContent = output.textContent.trim();
   }
@@ -354,6 +354,11 @@ function generateMarkup() {
   indentStr = "";
   indentStyle = document.querySelector("[name=rad_Indentstyle]:checked").value;
   indentDepth = document.querySelector("[name=rad_Indentdepth]:checked").value;
+  if (indentStyle==="space") {
+    indentStyle=" ";
+  } else {
+    indentStyle=" ";
+  }
   for (i = 0; i < indentDepth; i++) {
     indentStr += indentStyle;
   }
