@@ -39,18 +39,20 @@ let isTableRow = false;
 
 function addAllEventListeners() {
   clear.addEventListener("click", (ev) => {
-    input.value = "";
-    input.focus();
-    document.querySelector("#rad_Indentstyle_1").click();
-    document.querySelector("#rad_Indentdepth_1").click();
-    unsetAllCheckboxes();
-    removeAll.setAttribute("aria-pressed", "false");
-    filterCustomAttrs.value = "";
-    filterotherMiscAttrs.value = "";
-
-    for (var key in localStorage) {
-      if (key.includes("dataStorage-")) {
-        localStorage.removeItem(key);
+    if (confirm("This will also remove any stored/saved values in the attributes to strip. Only press OK if you're, um, OK with that…")){
+      input.value = "";
+      input.focus();
+      document.querySelector("#rad_Indentstyle_1").click();
+      document.querySelector("#rad_Indentdepth_1").click();
+      unsetAllCheckboxes();
+      removeAll.setAttribute("aria-pressed", "false");
+      filterCustomAttrs.value = "";
+      filterotherMiscAttrs.value = "";
+  
+      for (var key in localStorage) {
+        if (key.includes("dataStorage-")) {
+          localStorage.removeItem(key);
+        }
       }
     }
 
