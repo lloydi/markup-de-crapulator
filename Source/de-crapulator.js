@@ -366,17 +366,13 @@ function generateMarkup() {
       raw = document.querySelector("#txtRaw").value;
     }
   }
-
   applyIndenting();
-
   unencodeURL();
   beforeSize = raw.length;
   addTableMarkupToOrphanedInnerTableElements();
-
   raw = raw.replace(/\?/g, "QUESTION_MARK");
   tempDOMDumpingGround.innerHTML = raw;
   let allElsInTempDom = tempDOMDumpingGround.querySelectorAll("*");
-  
   filterAngularTags();
   filterComments();
   filterEmptyElements();
@@ -386,12 +382,9 @@ function generateMarkup() {
   output.innerHTML = indented;
   afterSize = output.textContent.length;
   log.innerHTML = "<span class='visually-hidden'>Markup updated. </span>Size before: <span>" + beforeSize + " characters</span>. Size after: <span>" + afterSize + " characters</span>. Cleaned/indented = <span>" + ((afterSize / beforeSize) * 100).toFixed(2) + "%</span> of original markup";
-  
   console.log(output.textContent);
   removeAddedTableMarkup();
   hljs.highlightBlock(output);
-
-
 }
 addAllEventListeners();
 loadSaveData();
