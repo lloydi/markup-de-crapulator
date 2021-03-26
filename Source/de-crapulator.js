@@ -179,6 +179,7 @@ function loadSaveData(){
 }
 function generateMarkup() {
 
+  //String manipulations (on raw)
   function addTableMarkupToOrphanedInnerTableElements() {
     isTableCell = false;
     isTableHeader = false;
@@ -225,43 +226,21 @@ function generateMarkup() {
       // }
     }
   }
-  function removeAddedTableMarkup() {
-    if (isTableCell) {
-      output.textContent = output.textContent.replace("<table>\n" + indentStyle + "<tbody>\n" + indentStyle + indentStyle + "<tr>\n", "");
-      output.textContent = output.textContent.replace(indentStyle + indentStyle + "</tr>\n" + indentStyle + "</tbody>\n</table>", "");
+  function filterComments() {
+    if (filterAllHTMLcomments.checked) {
+      raw = raw.replace(/<!--(.*?)-->/g, "");
     }
-    if (isTableHeader || isTableBody) {
-      output.textContent = output.textContent.replace("<table>\n", "");
-      output.textContent = output.textContent.replace("</table>", "");
+    if (filterEmptyComments.checked) {
+      raw = raw.replace(/<!--(-*?)-->/g, "");
     }
-    if (isTableRow) {
-      output.textContent = output.textContent.replace("<table>\n <tbody>\n  ", "");
-      output.textContent = output.textContent.replace("</tbody>\n</table>", "");
-      output.textContent = output.textContent.replace("\n" + indentStyle + indentStyle + "</tr>", "\n</tr>");
-    }
-    output.textContent = output.textContent.trim();
   }
-  function convertTempDomNodeToIndentedOutput() {
-    indented = tempDOMDumpingGround.innerHTML.split("><").join(">\n<").replaceAll(/\<(?<tag>\w+)([^>]*)\>\n\<\/\k<tag>\>/g, "<$1$2></$1>");
-    if (formatBrailleFriendlyOutput.checked) {
-      var arrayOfLines = indented.split('\n');
-      for (i = 0; i < arrayOfLines.length; i++) {
-        console.log(arrayOfLines[i].length);
-        if (arrayOfLines[i].length > 80) {
-          console.log("⚠️ Over " + 80 + " chars");
-          arrayOfLines[i] = arrayOfLines[i].replace(/(.{1,80})/g, '$1\n');
-        }
-        console.log("Line " + (i + 1) + ": " + arrayOfLines[i]);
-      }
-      indented = arrayOfLines.join("\n");
-      indented = indented.replace(/\n\n/g, '\n');
-    } else {
-      indented = indent.js(indented, { tabString: indentStr });
+  function filterAngularTags() {
+    if (filterAngularNgCrapTags.checked) {
+      raw = raw.replace(/<ng-(.*?)>/g, "");
+      raw = raw.replace(/<\/ng-(.*?)>/g, "");
     }
-    indented = indented.split("<").join("&lt;");
-    indented = indented.split(">").join("&gt;");
-    indented = indented.split("QUESTION_MARK").join("?");
   }
+  // DOM traversal operations
   function filterHtmlElements() {
     if (filterAnyHTMLtag.value !== "") {
       let arrAnyHTMLtags = filterAnyHTMLtag.value.split(",");
@@ -342,20 +321,45 @@ function generateMarkup() {
       emptyElCount = emptyEls.length;
     }
   }
-  function filterComments() {
-    if (filterAllHTMLcomments.checked) {
-      raw = raw.replace(/<!--(.*?)-->/g, "");
+  // Convert back to indented output
+  function convertTempDomNodeToIndentedOutput() {
+    indented = tempDOMDumpingGround.innerHTML.split("><").join(">\n<").replaceAll(/\<(?<tag>\w+)([^>]*)\>\n\<\/\k<tag>\>/g, "<$1$2></$1>");
+    if (formatBrailleFriendlyOutput.checked) {
+      var arrayOfLines = indented.split('\n');
+      for (i = 0; i < arrayOfLines.length; i++) {
+        console.log(arrayOfLines[i].length);
+        if (arrayOfLines[i].length > 80) {
+          console.log("⚠️ Over " + 80 + " chars");
+          arrayOfLines[i] = arrayOfLines[i].replace(/(.{1,80})/g, '$1\n');
+        }
+        console.log("Line " + (i + 1) + ": " + arrayOfLines[i]);
+      }
+      indented = arrayOfLines.join("\n");
+      indented = indented.replace(/\n\n/g, '\n');
+    } else {
+      indented = indent.js(indented, { tabString: indentStr });
     }
-    if (filterEmptyComments.checked) {
-      raw = raw.replace(/<!--(-*?)-->/g, "");
-    }
+    indented = indented.split("<").join("&lt;");
+    indented = indented.split(">").join("&gt;");
+    indented = indented.split("QUESTION_MARK").join("?");
   }
-  function filterAngularTags() {
-    if (filterAngularNgCrapTags.checked) {
-      raw = raw.replace(/<ng-(.*?)>/g, "");
-      raw = raw.replace(/<\/ng-(.*?)>/g, "");
+  function removeAddedTableMarkup() {
+    if (isTableCell) {
+      output.textContent = output.textContent.replace("<table>\n" + indentStyle + "<tbody>\n" + indentStyle + indentStyle + "<tr>\n", "");
+      output.textContent = output.textContent.replace(indentStyle + indentStyle + "</tr>\n" + indentStyle + "</tbody>\n</table>", "");
     }
+    if (isTableHeader || isTableBody) {
+      output.textContent = output.textContent.replace("<table>\n", "");
+      output.textContent = output.textContent.replace("</table>", "");
+    }
+    if (isTableRow) {
+      output.textContent = output.textContent.replace("<table>\n <tbody>\n  ", "");
+      output.textContent = output.textContent.replace("</tbody>\n</table>", "");
+      output.textContent = output.textContent.replace("\n" + indentStyle + indentStyle + "</tr>", "\n</tr>");
+    }
+    output.textContent = output.textContent.trim();
   }
+  // Other stuff
   function unencodeURL() {
     if (urlEncoded) {
       raw = decodeURI(urlEncoded);
@@ -370,11 +374,11 @@ function generateMarkup() {
   unencodeURL();
   beforeSize = raw.length;
   addTableMarkupToOrphanedInnerTableElements();
+  filterAngularTags();
+  filterComments();
   raw = raw.replace(/\?/g, "QUESTION_MARK");
   tempDOMDumpingGround.innerHTML = raw;
   let allElsInTempDom = tempDOMDumpingGround.querySelectorAll("*");
-  filterAngularTags();
-  filterComments();
   filterEmptyElements();
   filterHtmlElements();
   filterAttributes();
