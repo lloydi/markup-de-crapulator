@@ -48,7 +48,6 @@ function addAllEventListeners() {
       removeAll.setAttribute("aria-pressed", "false");
       filterCustomAttrs.value = "";
       filterotherMiscAttrs.value = "";
-  
       for (var key in localStorage) {
         if (key.includes("dataStorage-")) {
           localStorage.removeItem(key);
@@ -122,6 +121,19 @@ function unsetAllCheckboxes() {
   });
   generateMarkup();
 }
+function applyIndenting() {
+  indentStr = "";
+  indentStyle = document.querySelector("[name=rad_Indentstyle]:checked").value;
+  indentDepth = document.querySelector("[name=rad_Indentdepth]:checked").value;
+  if (indentStyle === "space") {
+    indentStyle = " "; //space character
+  } else {
+    indentStyle = " "; //tab character
+  }
+  for (i = 0; i < indentDepth; i++) {
+    indentStr += indentStyle;
+  }
+}
 function loadSaveData(){
   let userEnteredData_id,userEnteredData_text;
   let userEnteredData_id_count=0;
@@ -141,7 +153,9 @@ function loadSaveData(){
           if (key.includes("dataStorage-")) {
             const id = key.replace("dataStorage-", "");
               if (document.querySelector("#" + id)) {
-              document.querySelector("#" + id).value = localStorage.getItem(key);
+                if (localStorage.getItem(key)) {
+                  document.querySelector("#" + id).value = localStorage.getItem(key);
+                }
             }
           }
       }
@@ -353,17 +367,7 @@ function generateMarkup() {
     }
   }
 
-  indentStr = "";
-  indentStyle = document.querySelector("[name=rad_Indentstyle]:checked").value;
-  indentDepth = document.querySelector("[name=rad_Indentdepth]:checked").value;
-  if (indentStyle==="space") {
-    indentStyle=" ";
-  } else {
-    indentStyle=" ";
-  }
-  for (i = 0; i < indentDepth; i++) {
-    indentStr += indentStyle;
-  }
+  applyIndenting();
 
   unencodeURL();
   beforeSize = raw.length;
@@ -386,6 +390,7 @@ function generateMarkup() {
   console.log(output.textContent);
   removeAddedTableMarkup();
   hljs.highlightBlock(output);
+
 
 }
 addAllEventListeners();
