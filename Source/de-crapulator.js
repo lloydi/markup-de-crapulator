@@ -381,10 +381,12 @@ function generateMarkup() {
   convertTempDomNodeToIndentedOutput();
   output.innerHTML = indented;
   afterSize = output.textContent.length;
-  log.innerHTML = "<span class='visually-hidden'>Markup updated. </span>Size before: <span>" + beforeSize + " characters</span>. Size after: <span>" + afterSize + " characters</span>. Cleaned/indented = <span>" + ((afterSize / beforeSize) * 100).toFixed(2) + "%</span> of original markup";
-  console.log(output.textContent);
+  let percentage = ((afterSize / beforeSize) * 100).toFixed(2);
+  log.innerHTML = "<span class='visually-hidden'>Markup updated. </span>Size before: <span>" + beforeSize + " characters</span>. Size after: <span>" + afterSize + " characters</span>. Cleaned/indented = <span>" + percentage + "%</span> of original markup<div aria-hidden=\"true\" id=\"turd\"></div>";
   removeAddedTableMarkup();
   hljs.highlightBlock(output);
+  const turd = document.querySelector("#turd");
+  turd.style.width=percentage+"%";
 }
 addAllEventListeners();
 loadSaveData();
