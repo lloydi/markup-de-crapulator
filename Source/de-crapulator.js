@@ -30,7 +30,6 @@ const outputMarkupContainerTypeRads = document.querySelectorAll("[name='outputMa
 const whenShouldTheMarkupUpdateRads = document.querySelectorAll("[name='whenShouldTheMarkupUpdate']");
 const btnDecrapulate = document.querySelector("#btnDecrapulate");
 const btnCopyToClipboard = document.querySelector("#btnCopyToClipboard");
-const morePreferences = document.querySelector("#morePreferences");
 const btnMorePreferences = document.querySelector("#btnMorePreferences");
 let raw = "";
 let indented = "";
@@ -39,10 +38,8 @@ let indentDepth;
 let indentStr = "";
 let beforeSize = 0;
 let afterSize = 0;
-let reduction = 0;
 let urlEncoded = location.href.split("?markup=")[1];
 let addTableMarkupChoiceSet=false;
-let addTableMarkup=false;
 let isTableCell = false;
 let isTableHeader = false;
 let isTableBody = false;
@@ -126,7 +123,7 @@ function addAllEventListeners() {
       convertedPlainTextWrapper.setAttribute("hidden","hidden");
       wasInPlaintextMode=true;
     }
-    txtConvertedRichText.focus();
+    outputRichText.focus();
     document.execCommand('copy');
     if (wasInPlaintextMode) {
       convertedRichTextWrapper.setAttribute("hidden","hidden");
@@ -209,13 +206,12 @@ function applyIndenting() {
   } else {
     indentStyle = " "; //tab character
   }
-  for (i = 0; i < indentDepth; i++) {
+  for (let i = 0; i < indentDepth; i++) {
     indentStr += indentStyle;
   }
 }
 function loadAndSaveData(){
   let userEnteredData_id,userEnteredData_text;
-  let userEnteredData_id_count=0;
   const userEnteredTextFields = document.querySelectorAll("[data-user-entered]");
   
   function savePreferredAttributesAndTagsToStrip(timeout, field, time) {
@@ -241,13 +237,12 @@ function loadAndSaveData(){
       }
 
   Array.from(userEnteredTextFields).forEach((field) => {
-    userEnteredData_id_count++;
     field.setAttribute("data-user-entered","true");
     let timeout = null;
-    field.addEventListener("blur", (e) => {
+    field.addEventListener("blur", () => {
       timeout = savePreferredAttributesAndTagsToStrip(timeout, field, 1);
     })
-    field.addEventListener("keyup", (e) => {
+    field.addEventListener("keyup", () => {
      timeout = savePreferredAttributesAndTagsToStrip(timeout, field, 3000);
     })
   });
@@ -325,18 +320,13 @@ function generateMarkup() {
     if (isTableCell || isTableHeader || isTableBody || isTableRow) {
       if (!addTableMarkupChoiceSet) {
         addTableMarkupChoiceSet = true;
-        // if (confirm("Looks like you've hit upon one of this tool's limitations - if the outermost node is a <thead>, <tbody>, <tr>, <th> or <td>, it gets removed during processing for reasons too boring to go into.\n\nIf you press 'OK', the tool will add in a simple table around your markup – you'll need to strip it out after manually.")) {
-        //   addTableMarkup = true;
-        // }
       }
-      // if (addTableMarkup) {
-        if (isTableCell) {
-          raw = "<table><tr>" + raw + "</tr></table>";
-        }
-        if (isTableHeader || isTableBody || isTableRow) {
-          raw = "<table>" + raw + "</table>";
-        }
-      // }
+      if (isTableCell) {
+        raw = "<table><tr>" + raw + "</tr></table>";
+      }
+      if (isTableHeader || isTableBody || isTableRow) {
+        raw = "<table>" + raw + "</table>";
+      }
     }
   }
   function filterComments() {
@@ -425,12 +415,10 @@ function generateMarkup() {
   function filterEmptyElements() {
     let emptyEls = tempDOMDumpingGround.querySelectorAll(":empty:not(area):not(base):not(br):not(col):not(embed):not(hr):not(img):not(input):not(keygen):not(link):not(meta):not(param):not(source):not(track):not(wbr)");
     if (filterEmpty.checked) {
-      let emptyElCount = emptyEls.length;
       Array.from(emptyEls).forEach((el) => {
         el.parentNode.removeChild(el);
       });
       emptyEls = tempDOMDumpingGround.querySelectorAll("*:empty");
-      emptyElCount = emptyEls.length;
     }
   }
   // Convert back to indented outputRichText
@@ -438,7 +426,7 @@ function generateMarkup() {
     indented = tempDOMDumpingGround.innerHTML.split("><").join(">\n<").replaceAll(/\<(?<tag>\w+)([^>]*)\>\n\<\/\k<tag>\>/g, "<$1$2></$1>");
     if (formatBrailleFriendlyOutput.checked) {
       var arrayOfLines = indented.split('\n');
-      for (i = 0; i < arrayOfLines.length; i++) {
+      for (let i = 0; i < arrayOfLines.length; i++) {
         if (arrayOfLines[i].length > 80) {
           arrayOfLines[i] = arrayOfLines[i].replace(/(.{1,80})/g, '$1\n');
         }
