@@ -1,5 +1,8 @@
 const input = document.querySelector("#txtRaw");
-const output = document.querySelector("#txtConverted");
+const outputRichText = document.querySelector("#txtConvertedRichText");
+const outputPlainText = document.querySelector("#txtConvertedPlainText");
+const convertedRichTextWrapper = document.querySelector("#convertedRichTextWrapper");
+const convertedPlainTextWrapper = document.querySelector("#convertedPlainTextWrapper");
 const clear = document.querySelector("#clear");
 const filterEmpty = document.querySelector("#chk_emptyTags");
 const filterClass = document.querySelector("#chk_class");
@@ -9,6 +12,7 @@ const filterOnClickReact = document.querySelector("#chk_onClickReact");
 const filterDataDash = document.querySelector("#chk_dataDash");
 const filterAngularNgCrapAttributes1 = document.querySelector("#chk_angularNgCrapAttributes1");
 const filterAngularNgCrapAttributes2 = document.querySelector("#chk_angularNgCrapAttributes2");
+const fartBigReductions = document.querySelector("#fartBigReductions");
 const filterAngularNgCrapTags = document.querySelector("#chk_angularNgCrapTags");
 const formatBrailleFriendlyOutput = document.querySelector("#chk_brailleFriendlyOutput");
 const filterAllHTMLcomments = document.querySelector("#chk_allHTMLcomments");
@@ -19,8 +23,15 @@ const filterAnyHTMLtag = document.querySelector("#txt_anyHTMLtag");
 const removeAll = document.querySelector("#removeAll");
 const tempDOMDumpingGround = document.querySelector("#tempDOMDumpingGround");
 const log = document.querySelector("#log");
-const radios = document.querySelectorAll("[name=rad_Indentstyle],[name=rad_Indentdepth]");
+const indentRadios = document.querySelectorAll("[name=rad_Indentstyle],[name=rad_Indentdepth]");
+const allPrefInputs = document.querySelectorAll("#allPreferences input");
 const otherFilterCheckboxes = document.querySelectorAll("#otherFilters [type=checkbox]");
+const outputMarkupContainerTypeRads = document.querySelectorAll("[name='outputMarkupContainerType']");
+const whenShouldTheMarkupUpdateRads = document.querySelectorAll("[name='whenShouldTheMarkupUpdate']");
+const btnDecrapulate = document.querySelector("#btnDecrapulate");
+const btnCopyToClipboard = document.querySelector("#btnCopyToClipboard");
+const morePreferences = document.querySelector("#morePreferences");
+const btnMorePreferences = document.querySelector("#btnMorePreferences");
 let raw = "";
 let indented = "";
 let indentStyle;
@@ -36,10 +47,11 @@ let isTableCell = false;
 let isTableHeader = false;
 let isTableBody = false;
 let isTableRow = false;
+let updateMarkupWithEachChange=true;
 
 function addAllEventListeners() {
-  clear.addEventListener("click", (ev) => {
-    if (confirm("This will also remove any stored/saved values in the attributes to strip. Only press OK if you're, um, OK with that…")){
+  clear.addEventListener("click", () => {
+    if (confirm("This will also remove any stored/saved values in the attributes to strip as well as preferences. Only press OK if you're, um, OK with that…")){
       input.value = "";
       input.focus();
       document.querySelector("#rad_Indentstyle_1").click();
@@ -56,34 +68,99 @@ function addAllEventListeners() {
     }
 
   });
-  input.addEventListener("blur", (ev) => {
-    generateMarkup();
-  });
-  Array.from(radios).forEach((radio) => {
-    radio.addEventListener("change", (e) => {
+  input.addEventListener("blur", () => {
+    if (updateMarkupWithEachChange) {
       generateMarkup();
+    }
+  });
+  Array.from(indentRadios).forEach((radio) => {
+    radio.addEventListener("change", () => {
+      if (updateMarkupWithEachChange) {
+        generateMarkup();
+      }
+    });
+  });
+  Array.from(allPrefInputs).forEach((input) => {
+    input.addEventListener("change", () => {
+      saveOtherPrefs();
     });
   });
   Array.from(otherFilterCheckboxes).forEach((otherFilterCheckboxes) => {
-    otherFilterCheckboxes.addEventListener("click", (e) => {
-      generateMarkup();
+    otherFilterCheckboxes.addEventListener("click", () => {
+      console.log("updateMarkupWithEachChange = ",updateMarkupWithEachChange);
+      if (updateMarkupWithEachChange) {
+        generateMarkup();
+      }
     });
   });
-  removeAll.addEventListener("click", (e) => {
+  removeAll.addEventListener("click", () => {
     removeAllCrap();
   });
-  filterCustomAttrs.addEventListener("keyup", (e) => {
-    generateMarkup();
+  filterCustomAttrs.addEventListener("keyup", () => {
+    if (updateMarkupWithEachChange) {
+      generateMarkup();
+    }
   });
-  filterotherMiscAttrs.addEventListener("keyup", (e) => {
-    generateMarkup();
+  filterotherMiscAttrs.addEventListener("keyup", () => {
+    if (updateMarkupWithEachChange) {
+      generateMarkup();
+    }
   });
-  filterAnyHTMLtag.addEventListener("keyup", (e) => {
-    generateMarkup();
+  filterAnyHTMLtag.addEventListener("keyup", () => {
+    if (updateMarkupWithEachChange) {
+      generateMarkup();
+    }
   });
-  formatBrailleFriendlyOutput.addEventListener("click", (e) => {
-    generateMarkup();
+  formatBrailleFriendlyOutput.addEventListener("click", () => {
+    if (updateMarkupWithEachChange) {
+      generateMarkup();
+    }
   })
+  btnDecrapulate.addEventListener("click", () => {
+    generateMarkup();
+  });
+  btnCopyToClipboard.addEventListener("click", () => {
+    let wasInPlaintextMode = false;
+    if (convertedRichTextWrapper.getAttribute("hidden")) {
+      convertedRichTextWrapper.removeAttribute("hidden");
+      convertedPlainTextWrapper.setAttribute("hidden","hidden");
+      wasInPlaintextMode=true;
+    }
+    txtConvertedRichText.focus();
+    document.execCommand('copy');
+    if (wasInPlaintextMode) {
+      convertedRichTextWrapper.setAttribute("hidden","hidden");
+      convertedPlainTextWrapper.removeAttribute("hidden");
+    }
+    btnCopyToClipboard.focus();
+  });
+  btnMorePreferences.addEventListener("click", () => {
+    if (btnMorePreferences.getAttribute("aria-expanded")==="false") {
+        btnMorePreferences.setAttribute("aria-expanded","true");
+    } else {
+        btnMorePreferences.setAttribute("aria-expanded","false");
+    }
+  });
+  Array.from(outputMarkupContainerTypeRads).forEach((radio) => {
+    radio.addEventListener("change", () => {
+      if (radio.value === "plaintext") {
+        convertedRichTextWrapper.setAttribute("hidden", "hidden");
+        convertedPlainTextWrapper.removeAttribute("hidden");
+      } else {
+        convertedRichTextWrapper.removeAttribute("hidden");
+        convertedPlainTextWrapper.setAttribute("hidden", "hidden");
+      }
+    });
+  });
+  Array.from(whenShouldTheMarkupUpdateRads).forEach((radio) => {
+    radio.addEventListener("change", () => {
+      if (radio.value === "allChanges") {
+        updateMarkupWithEachChange = true;
+      } else {
+        updateMarkupWithEachChange = false;
+      }
+    });
+  });
   triggerClicksForUrlEncodedData();
 }
 function triggerClicksForUrlEncodedData() {
@@ -109,17 +186,19 @@ function removeAllCrap() {
 }
 function setAllCheckboxes() {
   Array.from(otherFilterCheckboxes).forEach((otherFilterCheckbox) => {
-    // otherFilterCheckbox.setAttribute('checked','checked');
     otherFilterCheckbox.checked = true;
   });
-  generateMarkup();
+  if (updateMarkupWithEachChange) {
+    generateMarkup();
+  }
 }
 function unsetAllCheckboxes() {
   Array.from(otherFilterCheckboxes).forEach((otherFilterCheckbox) => {
-    // otherFilterCheckbox.removeAttribute('checked');
     otherFilterCheckbox.checked = false;
   });
-  generateMarkup();
+  if (updateMarkupWithEachChange) {
+    generateMarkup();
+  }
 }
 function applyIndenting() {
   indentStr = "";
@@ -134,7 +213,7 @@ function applyIndenting() {
     indentStr += indentStyle;
   }
 }
-function loadSaveData(){
+function loadAndSaveData(){
   let userEnteredData_id,userEnteredData_text;
   let userEnteredData_id_count=0;
   const userEnteredTextFields = document.querySelectorAll("[data-user-entered]");
@@ -145,22 +224,22 @@ function loadSaveData(){
           userEnteredData_id = field.getAttribute("id");
           userEnteredData_text = field.value;
           localStorage.setItem("dataStorage-" + userEnteredData_id, userEnteredData_text);
-      }, time);
-      return timeout;
-  }
-  function loadPreferredAttributesAndTagsToStrip() {
-      for (var key in localStorage) {
+        }, time);
+        return timeout;
+      }
+      function loadPreferredAttributesAndTagsToStrip() {
+        for (var key in localStorage) {
           if (key.includes("dataStorage-")) {
             const id = key.replace("dataStorage-", "");
-              if (document.querySelector("#" + id)) {
-                if (localStorage.getItem(key)) {
-                  document.querySelector("#" + id).value = localStorage.getItem(key);
-                }
+            if (document.querySelector("#" + id)) {
+              if (localStorage.getItem(key)) {
+                document.querySelector("#" + id).value = localStorage.getItem(key);
+              }
             }
           }
+        }
       }
-  }
-  
+
   Array.from(userEnteredTextFields).forEach((field) => {
     userEnteredData_id_count++;
     field.setAttribute("data-user-entered","true");
@@ -176,6 +255,40 @@ function loadSaveData(){
   document.addEventListener("DOMContentLoaded", function(){
   loadPreferredAttributesAndTagsToStrip();
   });
+}
+function saveOtherPrefs() {
+  localStorage.setItem("dataStorage-indentStyle", document.querySelector("[name='rad_Indentstyle']:checked").value);
+  localStorage.setItem("dataStorage-indentDepth", document.querySelector("[name='rad_Indentdepth']:checked").value);
+  localStorage.setItem("dataStorage-outputMarkupContainerType", document.querySelector("[name='outputMarkupContainerType']:checked").value);
+  localStorage.setItem("dataStorage-whenShouldTheMarkupUpdate", document.querySelector("[name='whenShouldTheMarkupUpdate']:checked").value);
+  if (document.querySelector("#fartBigReductions").checked) {
+    localStorage.setItem("dataStorage-fartBigReductions", "true");
+  } else {
+    localStorage.setItem("dataStorage-fartBigReductions", "false");
+
+  }
+  if (document.querySelector("#chk_brailleFriendlyOutput").checked) {
+    localStorage.setItem("dataStorage-brailleFriendlyOutput", "true");
+  } else {
+    localStorage.setItem("dataStorage-brailleFriendlyOutput", "false");
+
+  }
+}
+function loadOtherPrefs() {
+  document.querySelector("[name='rad_Indentstyle'][value='" + localStorage.getItem("dataStorage-indentStyle") + "']").checked=true;
+  document.querySelector("[name='rad_Indentdepth'][value='" + localStorage.getItem("dataStorage-indentDepth") + "']").checked=true;
+  if (localStorage.getItem("dataStorage-brailleFriendlyOutput")==="true") {
+    document.querySelector("#chk_brailleFriendlyOutput").checked=true;
+  }
+  if (localStorage.getItem("dataStorage-outputMarkupContainerType")==="plaintext") {
+    document.querySelector("#outputMarkupContainerType_plaintext").checked=true;
+  }
+  if (localStorage.getItem("dataStorage-whenShouldTheMarkupUpdate")==="OnlyWithSubmit") {
+    document.querySelector("#whenShouldTheMarkupUpdate_OnlyWithSubmit").checked=true;
+  }
+  if (localStorage.getItem("dataStorage-fartBigReductions")==="true") {
+    document.querySelector("#fartBigReductions").checked=true;
+  }
 }
 function generateMarkup() {
 
@@ -290,7 +403,6 @@ function generateMarkup() {
           Array.from(arrFilterCustomAttrs).forEach((arrFilterCustomAttr) => {
             arrFilterCustomAttr = arrFilterCustomAttr.trim();
             if (arrFilterCustomAttr !== "") {
-              console.log("arrFilterCustomAttr=*" + arrFilterCustomAttr + "*");
               if (attr.name.indexOf(arrFilterCustomAttr) === 0) {
                 el.removeAttribute(attr.name);
               }
@@ -321,18 +433,15 @@ function generateMarkup() {
       emptyElCount = emptyEls.length;
     }
   }
-  // Convert back to indented output
-  function convertTempDomNodeToIndentedOutput() {
+  // Convert back to indented outputRichText
+  function convertTempDomNodeToIndentedOutputRichText() {
     indented = tempDOMDumpingGround.innerHTML.split("><").join(">\n<").replaceAll(/\<(?<tag>\w+)([^>]*)\>\n\<\/\k<tag>\>/g, "<$1$2></$1>");
     if (formatBrailleFriendlyOutput.checked) {
       var arrayOfLines = indented.split('\n');
       for (i = 0; i < arrayOfLines.length; i++) {
-        console.log(arrayOfLines[i].length);
         if (arrayOfLines[i].length > 80) {
-          console.log("⚠️ Over " + 80 + " chars");
           arrayOfLines[i] = arrayOfLines[i].replace(/(.{1,80})/g, '$1\n');
         }
-        console.log("Line " + (i + 1) + ": " + arrayOfLines[i]);
       }
       indented = arrayOfLines.join("\n");
       indented = indented.replace(/\n\n/g, '\n');
@@ -345,19 +454,25 @@ function generateMarkup() {
   }
   function removeAddedTableMarkup() {
     if (isTableCell) {
-      output.textContent = output.textContent.replace("<table>\n" + indentStyle + "<tbody>\n" + indentStyle + indentStyle + "<tr>\n", "");
-      output.textContent = output.textContent.replace(indentStyle + indentStyle + "</tr>\n" + indentStyle + "</tbody>\n</table>", "");
+      outputRichText.textContent = outputRichText.textContent.replace("<table>\n" + indentStyle + "<tbody>\n" + indentStyle + indentStyle + "<tr>\n", "");
+      outputRichText.textContent = outputRichText.textContent.replace(indentStyle + indentStyle + "</tr>\n" + indentStyle + "</tbody>\n</table>", "");
     }
     if (isTableHeader || isTableBody) {
-      output.textContent = output.textContent.replace("<table>\n", "");
-      output.textContent = output.textContent.replace("</table>", "");
+      outputRichText.textContent = outputRichText.textContent.replace("<table>\n", "");
+      outputRichText.textContent = outputRichText.textContent.replace("</table>", "");
     }
     if (isTableRow) {
-      output.textContent = output.textContent.replace("<table>\n <tbody>\n  ", "");
-      output.textContent = output.textContent.replace("</tbody>\n</table>", "");
-      output.textContent = output.textContent.replace("\n" + indentStyle + indentStyle + "</tr>", "\n</tr>");
+      outputRichText.textContent = outputRichText.textContent.replace("<table>\n <tbody>\n  ", "");
+      outputRichText.textContent = outputRichText.textContent.replace("</tbody>\n</table>", "");
+      outputRichText.textContent = outputRichText.textContent.replace("\n" + indentStyle + indentStyle + "</tr>", "\n</tr>");
     }
-    output.textContent = output.textContent.trim();
+    outputRichText.textContent = outputRichText.textContent.trim();
+    outputPlainText.textContent = outputRichText.textContent.trim();
+    if (outputRichText.textContent.length>0) {
+      btnCopyToClipboard.removeAttribute("disabled");
+    } else {
+      btnCopyToClipboard.setAttribute("disabled","disabled");
+    }
   }
   // Other stuff
   function unencodeURL() {
@@ -368,6 +483,14 @@ function generateMarkup() {
       input.value = raw;
     } else {
       raw = document.querySelector("#txtRaw").value;
+    }
+  }
+  function celebrateBigReductionsWithANiceLongFart() {
+    if (fartBigReductions.checked) {
+      if (percentage < 15) {
+        var audio = new Audio('longfart.mp3');
+        audio.play();
+      }
     }
   }
   applyIndenting();
@@ -382,15 +505,17 @@ function generateMarkup() {
   filterEmptyElements();
   filterHtmlElements();
   filterAttributes();
-  convertTempDomNodeToIndentedOutput();
-  output.innerHTML = indented;
-  afterSize = output.textContent.length;
+  convertTempDomNodeToIndentedOutputRichText();
+  outputRichText.innerHTML = indented;
+  afterSize = outputRichText.textContent.length;
   let percentage = ((afterSize / beforeSize) * 100).toFixed(2);
   log.innerHTML = "<span class='visually-hidden'>Markup updated. </span>Size before: <span>" + beforeSize + " characters</span>. Size after: <span>" + afterSize + " characters</span>. Cleaned/indented = <span>" + percentage + "%</span> of original markup<div aria-hidden=\"true\" id=\"turd\"></div>";
+  celebrateBigReductionsWithANiceLongFart();
   removeAddedTableMarkup();
-  hljs.highlightBlock(output);
+  hljs.highlightBlock(outputRichText);
   const turd = document.querySelector("#turd");
   turd.style.width=percentage+"%";
 }
 addAllEventListeners();
-loadSaveData();
+loadAndSaveData();
+loadOtherPrefs();
