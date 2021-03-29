@@ -119,15 +119,13 @@ function addAllEventListeners() {
   btnCopyToClipboard.addEventListener("click", () => {
     let wasInPlaintextMode = false;
     if (convertedRichTextWrapper.getAttribute("hidden")) {
-      convertedRichTextWrapper.removeAttribute("hidden");
-      convertedPlainTextWrapper.setAttribute("hidden","hidden");
+      showPlainTextOutput();
       wasInPlaintextMode=true;
     }
     outputRichText.focus();
     document.execCommand('copy');
     if (wasInPlaintextMode) {
-      convertedRichTextWrapper.setAttribute("hidden","hidden");
-      convertedPlainTextWrapper.removeAttribute("hidden");
+      showRichTextOutput();
     }
     btnCopyToClipboard.focus();
   });
@@ -141,11 +139,9 @@ function addAllEventListeners() {
   Array.from(outputMarkupContainerTypeRads).forEach((radio) => {
     radio.addEventListener("change", () => {
       if (radio.value === "plaintext") {
-        convertedRichTextWrapper.setAttribute("hidden", "hidden");
-        convertedPlainTextWrapper.removeAttribute("hidden");
+        showPlainTextOutput();
       } else {
-        convertedRichTextWrapper.removeAttribute("hidden");
-        convertedPlainTextWrapper.setAttribute("hidden", "hidden");
+        showRichTextOutput();
       }
     });
   });
@@ -160,6 +156,15 @@ function addAllEventListeners() {
   });
   triggerClicksForUrlEncodedData();
 }
+function showRichTextOutput() {
+  convertedRichTextWrapper.removeAttribute("hidden");
+  convertedPlainTextWrapper.setAttribute("hidden", "hidden");
+}
+function showPlainTextOutput() {
+  convertedRichTextWrapper.setAttribute("hidden", "hidden");
+  convertedPlainTextWrapper.removeAttribute("hidden");
+}
+
 function triggerClicksForUrlEncodedData() {
   if (urlEncoded) {
     unsetAllCheckboxes();
@@ -277,9 +282,11 @@ function loadOtherPrefs() {
   }
   if (localStorage.getItem("dataStorage-outputMarkupContainerType")==="plaintext") {
     document.querySelector("#outputMarkupContainerType_plaintext").checked=true;
+    showPlainTextOutput();
   }
   if (localStorage.getItem("dataStorage-whenShouldTheMarkupUpdate")==="OnlyWithSubmit") {
     document.querySelector("#whenShouldTheMarkupUpdate_OnlyWithSubmit").checked=true;
+    updateMarkupWithEachChange=false;
   }
   if (localStorage.getItem("dataStorage-fartBigReductions")==="true") {
     document.querySelector("#fartBigReductions").checked=true;
