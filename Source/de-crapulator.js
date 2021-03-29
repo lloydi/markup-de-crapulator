@@ -423,7 +423,7 @@ function generateMarkup() {
   }
   // Convert back to indented outputRichText
   function convertTempDomNodeToIndentedOutputRichText() {
-    indented = tempDOMDumpingGround.innerHTML.split("><").join(">\n<").replaceAll(/\<(?<tag>\w+)([^>]*)\>\n\<\/\k<tag>\>/g, "<$1$2></$1>");
+    indented = tempDOMDumpingGround.innerHTML.split("><").join(">\n<").replaceAll(/<(?<tag>\w+)([^>]*)>\n<\/\k<tag>>/g, "<$1$2></$1>");
     if (formatBrailleFriendlyOutput.checked) {
       var arrayOfLines = indented.split('\n');
       for (let i = 0; i < arrayOfLines.length; i++) {
