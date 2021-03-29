@@ -79,7 +79,10 @@
       #log span {font-weight: bold;}
       input {border:1px solid rgb(102, 70, 70);}
       fieldset {border:2px solid rgb(102, 70, 70);margin: 0;}
-      fieldset fieldset {border:none;padding: 0;}
+      fieldset fieldset {border:none;padding: 5px;background: rgba(255,255,255, 0.4);border-radius: 5px;transition-duration: 0.3s;}
+      fieldset fieldset:hover, 
+      fieldset fieldset:focus-within 
+      {background: rgba(255,255,255, 0.8);}
       legend h2, legend h3 {margin: 0;font-size: 1em;}
       #miscAttribs div {margin: 5px 0;}
       #indentLevel fieldset, #indentLevel div {margin: 10px 0;}
@@ -139,25 +142,46 @@
                   <fieldset id="morePreferences">
                     <legend>More Preferences</legend>
                     <div class="row">
-                      <input id="chk_brailleFriendlyOutput" type="checkbox" aria-describedby="brailleFormatDesc" />
-                      <span><label for="chk_brailleFriendlyOutput">Format for Braille-friendly output</label></span>
+                      <label for="chk_brailleFriendlyOutput">
+                        <input id="chk_brailleFriendlyOutput" type="checkbox" aria-describedby="brailleFormatDesc" />
+                        Format for Braille-friendly output</label>
                       <div id="brailleFormatDesc">80 chars max, wrap with each HTML opening or closing tag</div>
                     </div>
                     <div class="row">
                      <fieldset>
-                      <legend>Output markup container type</legend>
-                      <div><input value="richtext" id="outputMarkupContainerType_richtext" name="outputMarkupContainerType" type="radio" checked> <label for="outputMarkupContainerType_richtext">Rich text <code>&lt;div&gt;</code> (color-coded markup)</label></div>
-                      <div><input value="plaintext" id="outputMarkupContainerType_plaintext" name="outputMarkupContainerType" type="radio"> <label for="outputMarkupContainerType_plaintext">Plain old <code>&lt;textarea&gt;</code></label></div>
+                      <legend>Output markup container type:</legend>
+                      <div>
+                        <label for="outputMarkupContainerType_richtext">
+                          <input value="richtext" id="outputMarkupContainerType_richtext" name="outputMarkupContainerType" type="radio" checked> 
+                          Rich text <code>&lt;div&gt;</code> (color-coded markup)</label>
+                        </div>
+                      <div>
+                        <label for="outputMarkupContainerType_plaintext">
+                          <input value="plaintext" id="outputMarkupContainerType_plaintext" name="outputMarkupContainerType" type="radio"> 
+                          Plain old <code>&lt;textarea&gt;</code></label>
+                        </div>
                      </fieldset>
                     </div>
                     <div class="row">
                      <fieldset>
                       <legend>When should the markup update?</legend>
-                      <div><input value="allChanges" id="whenShouldTheMarkupUpdate_allChanges" name="whenShouldTheMarkupUpdate" type="radio" checked> <label for="whenShouldTheMarkupUpdate_allChanges">Any time I change any option</label></div>
-                      <div><input value="OnlyWithSubmit" id="whenShouldTheMarkupUpdate_OnlyWithSubmit" name="whenShouldTheMarkupUpdate" type="radio"> <label for="whenShouldTheMarkupUpdate_OnlyWithSubmit">Only when I press the 'De-crapulate' button</label></div>
+                      <div>
+                        <label for="whenShouldTheMarkupUpdate_allChanges">
+                          <input value="allChanges" id="whenShouldTheMarkupUpdate_allChanges" name="whenShouldTheMarkupUpdate" type="radio" checked> 
+                          Any time I change any option</label>
+                      </div>
+                      <div>
+                        <label for="whenShouldTheMarkupUpdate_OnlyWithSubmit">
+                          <input value="OnlyWithSubmit" id="whenShouldTheMarkupUpdate_OnlyWithSubmit" name="whenShouldTheMarkupUpdate" type="radio"> 
+                          Only when I press the 'De-crapulate' button</label>
+                      </div>
                      </fieldset>
                     </div>
-                    <div><input type="checkbox" id="fartBigReductions"> <label for="fartBigReductions" aria-describedby="note6">Celebrate big reductions with 'gusto'</label></div>
+                    <div>
+                      <label for="fartBigReductions" aria-describedby="note6">
+                        <input type="checkbox" id="fartBigReductions"> 
+                        Celebrate big reductions with 'gusto'</label>
+                    </div>
                   </fieldset>
                 </fieldset>
               </div>
@@ -186,17 +210,17 @@
                     <div>
                       <label for="chk_angularNgCrapTags">
                         <input id="chk_angularNgCrapTags" type="checkbox" />
-                        &lt;ng-*&gt; Angular tags</label>
+                        Angular tags &lt;ng-*&gt;</label>
                     </div>
                       <div>
                         <label for="chk_emptyHTMLComments">
                         <input id="chk_emptyHTMLComments" type="checkbox" />
-                        Empty HTML comments: &lt;!----&gt;</label>
+                        Empty HTML comments</label>
                     </div>
                     <div>
                       <label for="chk_allHTMLcomments">
                         <input id="chk_allHTMLcomments" type="checkbox" />
-                        All &lt;--&nbspHTML&nbspcomments&nbsp--&gt;</label>
+                        All HTML comments</label>
                     </div>
                   </div> 
                   <div>
