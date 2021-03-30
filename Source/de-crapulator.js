@@ -497,9 +497,9 @@ function generateMarkup() {
   raw = raw.replace(/\?/g, "QUESTION_MARK");
   tempDOMDumpingGround.innerHTML = raw;
   let allElsInTempDom = tempDOMDumpingGround.querySelectorAll("*");
-  filterEmptyElements();
   filterHtmlElements();
   filterAttributes();
+  filterEmptyElements();
   convertTempDomNodeToIndentedOutputRichText();
   outputRichText.innerHTML = indented;
   afterSize = outputRichText.textContent.length;
