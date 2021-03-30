@@ -47,18 +47,19 @@
         margin-right: 10px;
       }
       #wut {margin-left: 2em;transform: translateY(-0.4em);z-index: 1;}
-     .chkOrRads label {
+      label {
         display: inline-block;
-        margin: 3px 3px 3px 0;
+        margin: 1px 3px 3px 0;
         border-radius: 10px;
-        padding: 3px 6px;
+        padding: 1px 6px;
         transition-duration: 0.3s;
       }
-      .chkOrRads label:hover,
-      .chkOrRads label:focus-within {
+       label:hover,
+       label:focus-within {
         background: rgb(102, 70, 70,0.2);
         box-shadow: 0px 0px 2px 2px rgb(102 70 70);
       }
+      label.wide {width:100%;padding:5px;}
       textarea {
         background: rgb(102, 70, 70);
         color:#fff;
@@ -178,7 +179,7 @@
                      </fieldset>
                     </div>
                     <div>
-                      <label for="fartBigReductions" aria-describedby="note6">
+                      <label for="fartBigReductions" aria-describedby="note5">
                         <input type="checkbox" id="fartBigReductions"> 
                         Celebrate big reductions with 'gusto'</label>
                     </div>
@@ -224,8 +225,9 @@
                     </div>
                   </div> 
                   <div>
-                    <span><label for="txt_anyHTMLtag">Any HTML tag</label></span>
-                    <div><input id="txt_anyHTMLtag" placeholder="e.g. svg, g, span" type="text" aria-describedby="note1" data-user-entered="false" /></div>
+                    <label class="wide" for="txt_anyHTMLtag">Any HTML tag
+                      <div><input id="txt_anyHTMLtag" placeholder="e.g. svg, g, span" type="text" aria-describedby="note1" data-user-entered="false" /></div>
+                    </label>
                   </div>
                 </fieldset>
                 <fieldset>
@@ -271,16 +273,14 @@
                   <button type="button" class="wide" id="removeAll" aria-pressed="false"><span aria-hidden="true">^ </span>Remove all of the above</button>
                   <div id="miscAttribs">
                     <div>
-                      <span><label for="txt_customAttrs">All attributes that begin with…</label></span>
-                      <div>
-                        <input id="txt_customAttrs" type="text" aria-describedby="note3" data-user-entered="false" />
-                      </div>
+                        <label class="wide" for="txt_customAttrs">All attributes that begin with…
+                          <div><input id="txt_customAttrs" type="text" aria-describedby="note3" data-user-entered="false" /></div>
+                        </label>
                     </div>
                     <div>
-                      <span><label for="txt_otherMiscAttrs">Other misc attributes</label> <span id="note5">(type in full)</span></span>
-                      <div>
-                        <input id="txt_otherMiscAttrs" type="text" aria-describedby="note5 note4" data-user-entered="false" />
-                      </div>
+                        <label class="wide" for="txt_otherMiscAttrs">Other misc attributes
+                          <div><input id="txt_otherMiscAttrs" type="text" aria-describedby="note4" data-user-entered="false" /></div>
+                        </label> 
                     </div>
                   </div>
                 </fieldset>
@@ -320,8 +320,8 @@
         <li id="note1">Any HTML tag (field): you can enter any tag that you want to remove in a comma-separated list. IMPORTANT: if you choose a tag that has child elements, those child elements will be removed along with the parent.</li>
         <li id="note2">Empty tags checkbox: means empty <code>&lt;div&gt;...&lt;/div&gt;</code> rather than empty elements liks <code>&lt;img&gt;</code> etc</li>
         <li id="note3">Attributes that begin with (field): type the beginning of any range of attributes that you want to match, so entering `aria` will remove all `aria-*` attributes. Enter in this field as a comma-separated list.</li>
-        <li id="note4">Other misc attributes (field): literally any other attribute that you want to remove. Enter in this field as a comma-separated list.</li>
-        <li id="note6">Celebrate big reductions with 'gusto': basically, it farts. A big, long old raspy fart (but only if you manage to achieve a HTML de-crapulation level of 15% of original markup size).</li>
+        <li id="note4">Other misc attributes (field): literally any other attribute that you want to remove. Enter in this field as a comma-separated list (type attributes in full).</li>
+        <li id="note5">Celebrate big reductions with 'gusto': basically, it farts. A big, long old raspy fart (but only if you manage to achieve an HTML de-crapulation level of 15% of original markup size).</li>
       </ul>
     </div>
     <hr>
