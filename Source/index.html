@@ -306,7 +306,8 @@
                 <label for="txtConvertedPlainText">Cleaned-up HTML (plain text):</label>
                 <div><textarea id="txtConvertedPlainText" cols="30" rows="10"></textarea></div>
               </div>
-              <button type="button" id="btnCopyToClipboard" disabled class="wide">Copy to clipboard</button>
+              <div><button type="button" id="btnCopyToClipboard" disabled class="wide">Copy to clipboard</button></div>
+              <div><button type="button" id="btnDoAnotherPass" disabled class="wide">Do another pass</button></div>
             </div>
           </div>
         </div>
@@ -322,6 +323,7 @@
         <li id="note3">Attributes that begin with (field): type the beginning of any range of attributes that you want to match, so entering `aria` will remove all `aria-*` attributes. Enter in this field as a comma-separated list.</li>
         <li id="note4">Other misc attributes (field): literally any other attribute that you want to remove. Enter in this field as a comma-separated list (type attributes in full).</li>
         <li id="note5">Celebrate big reductions with 'gusto': basically, it farts. A big, long old raspy fart (but only if you manage to achieve an HTML de-crapulation level of 15% of original markup size).</li>
+        <li id="note6">Remove pointless nested elements button: If you end up with markup with heaps of nested <code>&lt;div&gt;</code>, try this button. It'll strip them out, but will retain any that have an attribute present.</li>
       </ul>
     </div>
     <hr>

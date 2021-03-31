@@ -1,3 +1,5 @@
+//TODO
+// https://stackoverflow.com/questions/66868708/identifying-an-html-element-that-has-no-attributes-of-any-kind-with-javascript/66869588#66869588
 const input = document.querySelector("#txtRaw");
 const outputRichText = document.querySelector("#txtConvertedRichText");
 const outputPlainText = document.querySelector("#txtConvertedPlainText");
@@ -30,6 +32,8 @@ const outputMarkupContainerTypeRads = document.querySelectorAll("[name='outputMa
 const whenShouldTheMarkupUpdateRads = document.querySelectorAll("[name='whenShouldTheMarkupUpdate']");
 const btnDecrapulate = document.querySelector("#btnDecrapulate");
 const btnCopyToClipboard = document.querySelector("#btnCopyToClipboard");
+const btnDoAnotherPass = document.querySelector("#btnDoAnotherPass");
+const btnRemovePointlessNestedElements = document.querySelector("#btnRemovePointlessNestedElements");
 const btnMorePreferences = document.querySelector("#btnMorePreferences");
 let raw = "";
 let indented = "";
@@ -125,9 +129,24 @@ function addAllEventListeners() {
     outputRichText.focus();
     document.execCommand('copy');
     if (wasInPlaintextMode) {
-      showRichTextOutput();
+      showPlainTextOutput();
     }
     btnCopyToClipboard.focus();
+  });
+  btnDoAnotherPass.addEventListener("click", () => {
+    input.value = outputPlainText.textContent;
+    input.value = input.value.split("> </").join("></");
+    input.value = input.value.split("<div></div>").join("");
+    input.value = input.value.split("<span></span>").join("");
+    
+    let arrInput=input.value.split("\n");
+    let trimmed="";
+    for (let i=0;i<arrInput.length;i++) {
+      trimmed+=arrInput[i].trim();
+    }
+    input.value=trimmed;
+    
+    btnDecrapulate.click();
   });
   btnMorePreferences.addEventListener("click", () => {
     if (btnMorePreferences.getAttribute("aria-expanded")==="false") {
@@ -465,8 +484,12 @@ function generateMarkup() {
     outputPlainText.textContent = outputRichText.textContent.trim();
     if (outputRichText.textContent.length>0) {
       btnCopyToClipboard.removeAttribute("disabled");
+      btnDoAnotherPass.removeAttribute("disabled");
+      btnRemovePointlessNestedElements.removeAttribute("disabled");
     } else {
       btnCopyToClipboard.setAttribute("disabled","disabled");
+      btnDoAnotherPass.setAttribute("disabled","disabled");
+      btnRemovePointlessNestedElements.setAttribute("disabled","disabled");
     }
   }
   // Other stuff
