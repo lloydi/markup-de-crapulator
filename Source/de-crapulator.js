@@ -22,6 +22,7 @@ const filterotherMiscAttrs = document.querySelector("#txt_otherMiscAttrs");
 const filterAnyHTMLtag = document.querySelector("#txt_anyHTMLtag");
 const removeAll = document.querySelector("#removeAll");
 const tempDOMDumpingGround = document.querySelector("#tempDOMDumpingGround");
+const testDivForPointlessElements = document.querySelector("#testDivForPointlessElements");
 const log = document.querySelector("#log");
 const indentRadios = document.querySelectorAll("[name=rad_Indentstyle],[name=rad_Indentdepth]");
 const allPrefInputs = document.querySelectorAll("#allPreferences input");
@@ -30,25 +31,41 @@ const outputMarkupContainerTypeRads = document.querySelectorAll("[name='outputMa
 const whenShouldTheMarkupUpdateRads = document.querySelectorAll("[name='whenShouldTheMarkupUpdate']");
 const btnDecrapulate = document.querySelector("#btnDecrapulate");
 const btnCopyToClipboard = document.querySelector("#btnCopyToClipboard");
+const btnDoAnotherPass = document.querySelector("#btnDoAnotherPass");
+const btnRemovePointlessNestedElements = document.querySelector("#btnRemovePointlessNestedElements");
 const btnMorePreferences = document.querySelector("#btnMorePreferences");
 let raw = "";
 let indented = "";
 let indentStyle;
 let indentDepth;
 let indentStr = "";
-let beforeSize = 0;
-let afterSize = 0;
 let urlEncoded = location.href.split("?markup=")[1];
-let addTableMarkupChoiceSet=false;
-let isTableCell = false;
-let isTableHeader = false;
-let isTableBody = false;
-let isTableRow = false;
-let updateMarkupWithEachChange=true;
+let beforeSize;
+let afterSize;
+let addTableMarkupChoiceSet;
+let isTableCell ;
+let isTableHeader;
+let isTableBody;
+let isTableRow;
+let updateMarkupWithEachChange;
+let isFirstPass;
 
+function initVals() {
+  beforeSize = 0;
+  afterSize = 0;
+  addTableMarkupChoiceSet=false;
+  isTableCell = false;
+  isTableHeader = false;
+  isTableBody = false;
+  isTableRow = false;
+  updateMarkupWithEachChange=true;
+  isFirstPass=true;
+}
+initVals();
 function addAllEventListeners() {
   clear.addEventListener("click", () => {
     if (confirm("This will also remove any stored/saved values in the attributes to strip as well as preferences. Only press OK if you're, um, OK with that…")){
+      initVals();
       input.value = "";
       input.focus();
       document.querySelector("#rad_Indentstyle_1").click();
@@ -125,11 +142,25 @@ function addAllEventListeners() {
     outputRichText.focus();
     document.execCommand('copy');
     if (wasInPlaintextMode) {
-      showRichTextOutput();
+      showPlainTextOutput();
     }
     btnCopyToClipboard.focus();
   });
-  btnMorePreferences.addEventListener("click", () => {
+  btnDoAnotherPass.addEventListener("click", () => {
+    isFirstPass=false;
+    input.value = outputPlainText.textContent;
+    input.value = input.value.split("> </").join("></");
+    input.value = input.value.split("<div></div>").join("");
+    input.value = input.value.split("<span></span>").join("");
+    removeIndentsInInputText();
+    btnDecrapulate.click();
+  });
+  btnRemovePointlessNestedElements.addEventListener("click", () => {
+    if (confirm("This will remove *all* DIV or SPAN elements that have no attributes applied, flattening down the structure (and may no longer represent the reality of the markup you started with, nor any CSS that may have been wrtten based on that structure).\n\nIf that's what you want, hit the old 'OK' button…")) {
+      stripPointlessSpanOrDivElements(testDivForPointlessElements,['span','div']);
+    }
+  });
+    btnMorePreferences.addEventListener("click", () => {
     if (btnMorePreferences.getAttribute("aria-expanded")==="false") {
         btnMorePreferences.setAttribute("aria-expanded","true");
     } else {
@@ -156,6 +187,14 @@ function addAllEventListeners() {
   });
   triggerClicksForUrlEncodedData();
 }
+function removeIndentsInInputText() {
+  let arrInput = input.value.split("\n");
+  let trimmed = "";
+  for (let i = 0; i < arrInput.length; i++) {
+    trimmed += arrInput[i].trim();
+  }
+  input.value = trimmed;
+}
 function showRichTextOutput() {
   convertedRichTextWrapper.removeAttribute("hidden");
   convertedPlainTextWrapper.setAttribute("hidden", "hidden");
@@ -164,7 +203,6 @@ function showPlainTextOutput() {
   convertedRichTextWrapper.setAttribute("hidden", "hidden");
   convertedPlainTextWrapper.removeAttribute("hidden");
 }
-
 function triggerClicksForUrlEncodedData() {
   if (urlEncoded) {
     unsetAllCheckboxes();
@@ -291,6 +329,20 @@ function loadOtherPrefs() {
   if (localStorage.getItem("dataStorage-fartBigReductions")==="true") {
     document.querySelector("#fartBigReductions").checked=true;
   }
+}
+function stripPointlessSpanOrDivElements(startElement, toStrip) {
+  testDivForPointlessElements.innerHTML=outputPlainText.value;
+  const test = document.createElement("div");
+  test.innerHTML = startElement.innerHTML;
+  [...test.querySelectorAll('*')].forEach(elem => {
+    if (!elem.attributes.length && toStrip.includes(elem.tagName.toLowerCase())) {
+      if (elem.children.length) elem.replaceWith(...elem.children);
+      else elem.replaceWith(elem.innerText);
+    }
+  });
+  input.value = test.innerHTML;
+  removeIndentsInInputText();
+  btnDecrapulate.click();
 }
 function generateMarkup() {
 
@@ -465,8 +517,12 @@ function generateMarkup() {
     outputPlainText.textContent = outputRichText.textContent.trim();
     if (outputRichText.textContent.length>0) {
       btnCopyToClipboard.removeAttribute("disabled");
+      btnDoAnotherPass.removeAttribute("disabled");
+      btnRemovePointlessNestedElements.removeAttribute("disabled");
     } else {
       btnCopyToClipboard.setAttribute("disabled","disabled");
+      btnDoAnotherPass.setAttribute("disabled","disabled");
+      btnRemovePointlessNestedElements.setAttribute("disabled","disabled");
     }
   }
   // Other stuff
@@ -490,7 +546,9 @@ function generateMarkup() {
   }
   applyIndenting();
   unencodeURL();
-  beforeSize = raw.length;
+  if (isFirstPass) {
+    beforeSize = raw.length;
+  }
   addTableMarkupToOrphanedInnerTableElements();
   filterAngularTags();
   filterComments();
