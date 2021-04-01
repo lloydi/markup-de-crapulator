@@ -24,6 +24,7 @@ const filterotherMiscAttrs = document.querySelector("#txt_otherMiscAttrs");
 const filterAnyHTMLtag = document.querySelector("#txt_anyHTMLtag");
 const removeAll = document.querySelector("#removeAll");
 const tempDOMDumpingGround = document.querySelector("#tempDOMDumpingGround");
+const testDivForPointlessElements = document.querySelector("#testDivForPointlessElements");
 const log = document.querySelector("#log");
 const indentRadios = document.querySelectorAll("[name=rad_Indentstyle],[name=rad_Indentdepth]");
 const allPrefInputs = document.querySelectorAll("#allPreferences input");
@@ -155,14 +156,7 @@ function addAllEventListeners() {
     input.value = input.value.split("> </").join("></");
     input.value = input.value.split("<div></div>").join("");
     input.value = input.value.split("<span></span>").join("");
-    
-    let arrInput=input.value.split("\n");
-    let trimmed="";
-    for (let i=0;i<arrInput.length;i++) {
-      trimmed+=arrInput[i].trim();
-    }
-    input.value=trimmed;
-    
+    removeIndentsInInputText();
     btnDecrapulate.click();
   });
   btnMorePreferences.addEventListener("click", () => {
@@ -192,6 +186,15 @@ function addAllEventListeners() {
   });
   triggerClicksForUrlEncodedData();
 }
+function removeIndentsInInputText() {
+  let arrInput = input.value.split("\n");
+  let trimmed = "";
+  for (let i = 0; i < arrInput.length; i++) {
+    trimmed += arrInput[i].trim();
+  }
+  input.value = trimmed;
+}
+
 function showRichTextOutput() {
   convertedRichTextWrapper.removeAttribute("hidden");
   convertedPlainTextWrapper.setAttribute("hidden", "hidden");
@@ -200,7 +203,6 @@ function showPlainTextOutput() {
   convertedRichTextWrapper.setAttribute("hidden", "hidden");
   convertedPlainTextWrapper.removeAttribute("hidden");
 }
-
 function triggerClicksForUrlEncodedData() {
   if (urlEncoded) {
     unsetAllCheckboxes();
@@ -328,6 +330,29 @@ function loadOtherPrefs() {
     document.querySelector("#fartBigReductions").checked=true;
   }
 }
+
+function stripPointlessSpanOrDivElements(startElement, toStrip) {
+  testDivForPointlessElements.innerHTML=outputPlainText.value;
+  const test = document.createElement("div");
+  test.innerHTML = startElement.innerHTML;
+  [...test.querySelectorAll('*')].forEach(elem => {
+    if (!elem.attributes.length && toStrip.includes(elem.tagName.toLowerCase())) {
+      if (elem.children.length) elem.replaceWith(...elem.children);
+      else elem.replaceWith(elem.innerText);
+    }
+  });
+  input.value = test.innerHTML;
+  removeIndentsInInputText();
+  btnDecrapulate.click();
+}
+
+btnRemovePointlessNestedElements.addEventListener("click", () => {
+  if (confirm("This will remove *all* DIV or SPAN elements that have no attributes applied, flattening down the structure (and may no longer represent the reality of the markup you started with, nor any CSS that may have been wrtten based on that structure).\n\nIf that's what you want, hit the old 'OK' button…")) {
+    stripPointlessSpanOrDivElements(testDivForPointlessElements,['span','div']);
+  }
+});
+
+
 function generateMarkup() {
 
   //String manipulations (on raw)
