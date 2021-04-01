@@ -1,5 +1,3 @@
-//TODO
-// https://stackoverflow.com/questions/66868708/identifying-an-html-element-that-has-no-attributes-of-any-kind-with-javascript/66869588#66869588
 const input = document.querySelector("#txtRaw");
 const outputRichText = document.querySelector("#txtConvertedRichText");
 const outputPlainText = document.querySelector("#txtConvertedPlainText");
@@ -63,9 +61,7 @@ function initVals() {
   updateMarkupWithEachChange=true;
   isFirstPass=true;
 }
-
 initVals();
-
 function addAllEventListeners() {
   clear.addEventListener("click", () => {
     if (confirm("This will also remove any stored/saved values in the attributes to strip as well as preferences. Only press OK if you're, um, OK with that…")){
@@ -159,7 +155,12 @@ function addAllEventListeners() {
     removeIndentsInInputText();
     btnDecrapulate.click();
   });
-  btnMorePreferences.addEventListener("click", () => {
+  btnRemovePointlessNestedElements.addEventListener("click", () => {
+    if (confirm("This will remove *all* DIV or SPAN elements that have no attributes applied, flattening down the structure (and may no longer represent the reality of the markup you started with, nor any CSS that may have been wrtten based on that structure).\n\nIf that's what you want, hit the old 'OK' button…")) {
+      stripPointlessSpanOrDivElements(testDivForPointlessElements,['span','div']);
+    }
+  });
+    btnMorePreferences.addEventListener("click", () => {
     if (btnMorePreferences.getAttribute("aria-expanded")==="false") {
         btnMorePreferences.setAttribute("aria-expanded","true");
     } else {
@@ -194,7 +195,6 @@ function removeIndentsInInputText() {
   }
   input.value = trimmed;
 }
-
 function showRichTextOutput() {
   convertedRichTextWrapper.removeAttribute("hidden");
   convertedPlainTextWrapper.setAttribute("hidden", "hidden");
@@ -330,7 +330,6 @@ function loadOtherPrefs() {
     document.querySelector("#fartBigReductions").checked=true;
   }
 }
-
 function stripPointlessSpanOrDivElements(startElement, toStrip) {
   testDivForPointlessElements.innerHTML=outputPlainText.value;
   const test = document.createElement("div");
@@ -345,14 +344,6 @@ function stripPointlessSpanOrDivElements(startElement, toStrip) {
   removeIndentsInInputText();
   btnDecrapulate.click();
 }
-
-btnRemovePointlessNestedElements.addEventListener("click", () => {
-  if (confirm("This will remove *all* DIV or SPAN elements that have no attributes applied, flattening down the structure (and may no longer represent the reality of the markup you started with, nor any CSS that may have been wrtten based on that structure).\n\nIf that's what you want, hit the old 'OK' button…")) {
-    stripPointlessSpanOrDivElements(testDivForPointlessElements,['span','div']);
-  }
-});
-
-
 function generateMarkup() {
 
   //String manipulations (on raw)
