@@ -13,9 +13,8 @@
         background: rgb(102, 70, 70,0.1);
         font-size: 1.2em;
       }
-      [disabled]{
-        cursor: not-allowed;
-        opacity: 0.7;
+      button[disabled]{
+        display: none;
       }
       [aria-pressed="true"] {
         background: rgb(102, 70, 70);
@@ -94,7 +93,7 @@
       button {color:rgb(102, 70, 70);background: rgba(102, 70, 70, 0.1);border:2px solid rgb(56, 38, 38)}
       input[type=text] {width: 100%;}
       #btnDecrapulate {font-size: 2em;width: 100%;}
-      #btnDecrapulate img {display: inline-block;height: 1em;margin-right: 5px;transform: translateY(5px);        
+      #btnDecrapulate img {display: inline-block;height: 1em;margin-right: 5px;transform: translateY(5px);
       }
     </style>
   </head>
@@ -308,6 +307,7 @@
               </div>
               <div><button type="button" id="btnCopyToClipboard" disabled class="wide">Copy to clipboard</button></div>
               <div><button type="button" id="btnDoAnotherPass" disabled class="wide">Do another pass</button></div>
+              <div><button type="button" id="btnRemovePointlessNestedElements" disabled class="wide">Remove pointless nested elements</button></div>
             </div>
           </div>
         </div>

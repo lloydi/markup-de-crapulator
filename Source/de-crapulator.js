@@ -40,19 +40,35 @@ let indented = "";
 let indentStyle;
 let indentDepth;
 let indentStr = "";
-let beforeSize = 0;
-let afterSize = 0;
 let urlEncoded = location.href.split("?markup=")[1];
-let addTableMarkupChoiceSet=false;
-let isTableCell = false;
-let isTableHeader = false;
-let isTableBody = false;
-let isTableRow = false;
-let updateMarkupWithEachChange=true;
+let beforeSize;
+let afterSize;
+let addTableMarkupChoiceSet;
+let isTableCell ;
+let isTableHeader;
+let isTableBody;
+let isTableRow;
+let updateMarkupWithEachChange;
+let isFirstPass;
+
+function initVals() {
+  beforeSize = 0;
+  afterSize = 0;
+  addTableMarkupChoiceSet=false;
+  isTableCell = false;
+  isTableHeader = false;
+  isTableBody = false;
+  isTableRow = false;
+  updateMarkupWithEachChange=true;
+  isFirstPass=true;
+}
+
+initVals();
 
 function addAllEventListeners() {
   clear.addEventListener("click", () => {
     if (confirm("This will also remove any stored/saved values in the attributes to strip as well as preferences. Only press OK if you're, um, OK with that…")){
+      initVals();
       input.value = "";
       input.focus();
       document.querySelector("#rad_Indentstyle_1").click();
@@ -134,6 +150,7 @@ function addAllEventListeners() {
     btnCopyToClipboard.focus();
   });
   btnDoAnotherPass.addEventListener("click", () => {
+    isFirstPass=false;
     input.value = outputPlainText.textContent;
     input.value = input.value.split("> </").join("></");
     input.value = input.value.split("<div></div>").join("");
@@ -513,7 +530,9 @@ function generateMarkup() {
   }
   applyIndenting();
   unencodeURL();
-  beforeSize = raw.length;
+  if (isFirstPass) {
+    beforeSize = raw.length;
+  }
   addTableMarkupToOrphanedInnerTableElements();
   filterAngularTags();
   filterComments();
