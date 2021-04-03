@@ -3,7 +3,6 @@ const outputRichText = document.querySelector("#txtConvertedRichText");
 const outputPlainText = document.querySelector("#txtConvertedPlainText");
 const convertedRichTextWrapper = document.querySelector("#convertedRichTextWrapper");
 const convertedPlainTextWrapper = document.querySelector("#convertedPlainTextWrapper");
-const clear = document.querySelector("#clear");
 const filterEmpty = document.querySelector("#chk_emptyTags");
 const filterClass = document.querySelector("#chk_class");
 const filterStyle = document.querySelector("#chk_style");
@@ -34,6 +33,7 @@ const btnCopyToClipboard = document.querySelector("#btnCopyToClipboard");
 const btnDoAnotherPass = document.querySelector("#btnDoAnotherPass");
 const btnRemovePointlessNestedElements = document.querySelector("#btnRemovePointlessNestedElements");
 const btnMorePreferences = document.querySelector("#btnMorePreferences");
+const btnResetEverything = document.querySelector("#btnResetEverything");
 let raw = "";
 let indented = "";
 let indentStyle;
@@ -63,7 +63,7 @@ function initVals() {
 }
 initVals();
 function addAllEventListeners() {
-  clear.addEventListener("click", () => {
+  btnResetEverything.addEventListener("click", () => {
     if (confirm("This will also remove any stored/saved values in the attributes to strip as well as preferences. Only press OK if you're, um, OK with that…")){
       initVals();
       input.value = "";
@@ -519,10 +519,12 @@ function generateMarkup() {
       btnCopyToClipboard.removeAttribute("disabled");
       btnDoAnotherPass.removeAttribute("disabled");
       btnRemovePointlessNestedElements.removeAttribute("disabled");
+      btnResetEverything.removeAttribute("disabled");
     } else {
       btnCopyToClipboard.setAttribute("disabled","disabled");
       btnDoAnotherPass.setAttribute("disabled","disabled");
       btnRemovePointlessNestedElements.setAttribute("disabled","disabled");
+      btnResetEverything.setAttribute("disabled","disabled");
     }
   }
   // Other stuff
