@@ -48,8 +48,9 @@
       #wut {margin-left: 2em;transform: translateY(-0.4em);z-index: 1;}
       label {
         display: inline-block;
-        margin: 1px 3px 3px 0;
-        border-radius: 10px;
+        /* margin: 1px 3px 3px 0; */
+        margin: 1px;
+        border-radius: 5px;
         padding: 1px 6px;
         transition-duration: 0.3s;
       }
@@ -70,20 +71,21 @@
         height: 23em;
       }
       pre {white-space: pre-wrap;margin:0;}
-      #txtConvertedRichText,#txtConvertedPlainText {height: 38em;display: block;overflow: scroll;border:1px solid rgb(102, 70, 70);padding: 5px;margin-top: 10px;}
+      #txtConvertedRichText,#txtConvertedPlainText {height: 25em;display: block;overflow: scroll;border:1px solid rgb(102, 70, 70);padding: 5px;margin-top: 10px;}
       input {color:rgb(102, 70, 70);}
       input[type="text"] {padding: 10px;}
-      #otherFilters h3 {margin: 10px 0 0 0;font-size: 1em;}
+      /* #otherFilters h3 {margin: 10px 0 0 0;font-size: 1em;} */
       #log {text-align: center;min-height: 6em;background:#fff;padding: 0.5em;border-radius: 5px;}
       #log:empty {background: transparent;}
       #log span {font-weight: bold;}
       input {border:1px solid rgb(102, 70, 70);}
       fieldset {border:2px solid rgb(102, 70, 70);margin: 0;}
-      fieldset fieldset {border:none;padding: 5px;background: rgba(255,255,255, 0.4);border-radius: 5px;transition-duration: 0.3s;}
+      fieldset fieldset {border:1px dotted rgb(61, 42, 42);padding: 5px;background: rgba(255,255,255, 0.4);border-radius: 5px;transition-duration: 0.3s;}
       fieldset fieldset:hover, 
       fieldset fieldset:focus-within 
       {background: rgba(255,255,255, 0.8);}
       legend h2, legend h3 {margin: 0;font-size: 1em;}
+      legend {margin: 0;outline:1px dotted rgb(61, 42, 42);background: white;display: inline-block;padding: 2px 10px;border-radius: 5px;}
       #miscAttribs div {margin: 5px 0;}
       #indentLevel fieldset, #indentLevel div {margin: 10px 0;}
       #turd {background: rgb(102, 70, 70);border-radius: 15px;height: 30px;width: 100%;margin: 1em 0;transition-duration:.4s;position: static;text-align: left;}
@@ -93,7 +95,20 @@
       button {color:rgb(102, 70, 70);background: rgba(102, 70, 70, 0.1);border:2px solid rgb(56, 38, 38)}
       input[type=text] {width: 100%;}
       #btnDecrapulate {font-size: 2em;width: 100%;}
-      #btnDecrapulate img {display: inline-block;height: 1em;margin-right: 5px;transform: translateY(5px);
+      #btnDecrapulate img {display: inline-block;height: 1em;margin-right: 5px;transform: translateY(5px);}
+      #otherFilters .column {width:100%;margin:0;;}
+      #otherFilters .column fieldset+fieldset {margin-top: 1em;}
+      @media (min-width:1500px) {
+      #otherFilters .column {width:calc(50% - 10px);margin:0;}
+      #otherFilters .column+.column {margin-left: 20px;}
+      }
+      /* #indentControls span {display: block;} */
+      /* #indentControls span label {display: block;} */
+      #indentControls span label {padding: 1px;}
+      @media (min-width:1500px) {
+      #indentControls span label {padding: 1px 6px;}
+      /* #indentControls span {display: inline-block;} */
+      /* #indentControls span label {display: inline-block;} */
       }
     </style>
   </head>
@@ -115,7 +130,7 @@
 
 
 
-            <div id="col1" class="column col-4">
+            <div id="col1" class="column col-3">
               <div role="region" aria-label="Input">
                 <div><label for="txtRaw">Paste Raw HTML:</label></div>
                 <div>
@@ -130,7 +145,7 @@
                     <span><label for="rad_Indentstyle_1"><input value="space" id="rad_Indentstyle_1" name="rad_Indentstyle" type="radio" checked /> Spaces</label></span>
                     <span><label for="rad_Indentstyle_2"><input value="tab" id="rad_Indentstyle_2" name="rad_Indentstyle" type="radio" /> Tabs</label></span>
                   </fieldset>
-                  <fieldset>
+                  <fieldset id="indentControls">
                     <legend>Indent Depth</legend>
                     <span><label for="rad_Indentdepth_0"><input value="0" id="rad_Indentdepth_0" name="rad_Indentdepth" type="radio" /> 0</label></span>
                     <span><label for="rad_Indentdepth_1"><input value="1" id="rad_Indentdepth_1" name="rad_Indentdepth" type="radio" checked /> 1</label></span>
@@ -138,7 +153,7 @@
                     <span><label for="rad_Indentdepth_3"><input value="3" id="rad_Indentdepth_3" name="rad_Indentdepth" type="radio" /> 3</label></span>
                     <span><label for="rad_Indentdepth_4"><input value="4" id="rad_Indentdepth_4" name="rad_Indentdepth" type="radio" /> 4</label></span>
                   </fieldset>
-                  <button type="button" aria-expanded="false" id="btnMorePreferences">More preferences</button>
+                  <button type="button" aria-expanded="false" id="btnMorePreferences">More preferences …</button>
                   <fieldset id="morePreferences">
                     <legend>More Preferences</legend>
                     <div class="row">
@@ -195,94 +210,120 @@
 
 
 
-            <div id="col2" class="column col-4" role="region" aria-label="Filter options">
+            <div id="col2" class="column col-6" role="region" aria-label="Filter options">
               <fieldset id="otherFilters">
-                <legend><h2>Strip out the following:</h2></legend>
-                <fieldset>
-                	<legend><h3>Tags/Other:</h3></legend>
-                  <div class="chkOrRads">
+                <legend><h2>Options for amending the markup</h2></legend>
 
-                    <div class="row">
-                      <label for="chk_emptyTags">
-                        <input id="chk_emptyTags" type="checkbox" aria-describedby="note2" />
-                        empty tags</label>
-                    </div>
-                    <div>
-                      <label for="chk_angularNgCrapTags">
-                        <input id="chk_angularNgCrapTags" type="checkbox" />
-                        Angular tags &lt;ng-*&gt;</label>
-                    </div>
+                <div class="column" id="stripTagsCol">
+                  <fieldset class="strip">
+                    <legend><h3>Strip these tags:</h3></legend>
+                    <div class="chkOrRads">
+  
+                      <div class="row">
+                        <label for="chk_emptyTags">
+                          <input id="chk_emptyTags" type="checkbox" aria-describedby="note2" />
+                          empty tags</label>
+                      </div>
                       <div>
-                        <label for="chk_emptyHTMLComments">
-                        <input id="chk_emptyHTMLComments" type="checkbox" />
-                        Empty HTML comments</label>
-                    </div>
+                        <label for="chk_angularNgCrapTags">
+                          <input id="chk_angularNgCrapTags" type="checkbox" />
+                          Angular tags &lt;ng-*&gt;</label>
+                      </div>
+                        <div>
+                          <label for="chk_emptyHTMLComments">
+                          <input id="chk_emptyHTMLComments" type="checkbox" />
+                          Empty HTML comments</label>
+                      </div>
+                      <div>
+                        <label for="chk_allHTMLcomments">
+                          <input id="chk_allHTMLcomments" type="checkbox" />
+                          All HTML comments</label>
+                      </div>
+                    </div> 
                     <div>
-                      <label for="chk_allHTMLcomments">
-                        <input id="chk_allHTMLcomments" type="checkbox" />
-                        All HTML comments</label>
+                      <label class="wide" for="txt_anyHTMLtag">Any HTML tag
+                        <div><input id="txt_anyHTMLtag" placeholder="e.g. svg, g, span" type="text" aria-describedby="note1" data-user-entered="false" /></div>
+                      </label>
                     </div>
-                  </div> 
-                  <div>
-                    <label class="wide" for="txt_anyHTMLtag">Any HTML tag
-                      <div><input id="txt_anyHTMLtag" placeholder="e.g. svg, g, span" type="text" aria-describedby="note1" data-user-entered="false" /></div>
-                    </label>
-                  </div>
-                </fieldset>
-                <fieldset>
-                	<legend><h3>Attributes:</h3></legend>
-                  <div class="chkOrRads">
-
-                    <div>
-                      <label for="chk_class">
-                        <input id="chk_class" type="checkbox" aria-label="class attributes" />
-                        class</label>
+                  </fieldset>
+                  <fieldset class="abbrev"> 
+                    <legend>Abbreviate these attributes:</legend>
+                    <div class="row">
+                      <label for="chkAbbreviateSrcs">
+                       <input id="chkAbbreviateSrcs" type="checkbox">
+                       src</label>
                     </div>
-                    <div>
-                      <label for="chk_style">
-                        <input id="chk_style" type="checkbox" aria-label="style attributes" />
-                        style</label>
+                    <div class="row">
+                      <label for="chkAbbreviateHrefs">
+                       <input id="chkAbbreviateHrefs" type="checkbox">
+                       href</label>
                     </div>
-                    <div>
-                      <label for="chk_dataDash">
-                        <input id="chk_dataDash" type="checkbox" aria-label="data- hyphenated attributes" />
-                        data-</label>
+                    <div class="row">
+                      <label for="chkAbbreviateTitles">
+                       <input id="chkAbbreviateTitles" type="checkbox">
+                       title</label>
                     </div>
-                    <div>
-                      <label for="chk_onclick">
-                        <input id="chk_onclick" type="checkbox" aria-label="onclick attributes (all lowercase)" />
-                        onclick</label>
+                  </fieldset>
+                </div>
+                <div class="column" id="stripAttributesCol">
+                  <fieldset class="strip">
+                    <legend><h3>Strip these attributes:</h3></legend>
+                    <div class="chkOrRads">
+  
+                      <div>
+                        <label for="chk_class">
+                          <input id="chk_class" type="checkbox" aria-label="class attributes" />
+                          class</label>
+                      </div>
+                      <div>
+                        <label for="chk_style">
+                          <input id="chk_style" type="checkbox" aria-label="style attributes" />
+                          style</label>
+                      </div>
+                      <div>
+                        <label for="chk_dataDash">
+                          <input id="chk_dataDash" type="checkbox" aria-label="data- hyphenated attributes" />
+                          data-</label>
+                      </div>
+                      <div>
+                        <label for="chk_onclick">
+                          <input id="chk_onclick" type="checkbox" aria-label="onclick attributes (all lowercase)" />
+                          onclick</label>
+                      </div>
+                      <div>
+                        <label for="chk_onClickReact">
+                          <input id="chk_onClickReact" type="checkbox" aria-label="onClick (React) attributes (with capitalized C)" />
+                          onClick (React)</label>
+                      </div>
+                      <div>
+                        <label for="chk_angularNgCrapAttributes1">
+                          <input id="chk_angularNgCrapAttributes1" type="checkbox" aria-label="ng- (Angular) n g hyphenated attributes" />
+                          ng- (Angular)</label>
+                      </div>
+                      <div>
+                        <label for="chk_angularNgCrapAttributes2">
+                          <input id="chk_angularNgCrapAttributes2" type="checkbox" aria-label="_ng (Angular) underscore n g attributes" />
+                          _ng (Angular)</label>
+                      </div>
                     </div>
-                    <div>
-                      <label for="chk_onClickReact">
-                        <input id="chk_onClickReact" type="checkbox" aria-label="onClick (React) attributes (with capitalized C)" />
-                        onClick (React)</label>
-                    </div>
-                    <div>
-                      <label for="chk_angularNgCrapAttributes1">
-                        <input id="chk_angularNgCrapAttributes1" type="checkbox" aria-label="ng- (Angular) n g hyphenated attributes" />
-                        ng- (Angular)</label>
-                    </div>
-                    <div>
-                      <label for="chk_angularNgCrapAttributes2">
-                        <input id="chk_angularNgCrapAttributes2" type="checkbox" aria-label="_ng (Angular) underscore n g attributes" />
-                        _ng (Angular)</label>
-                    </div>
-                  </div>
-                  <button type="button" class="wide" id="removeAll" aria-pressed="false"><span aria-hidden="true">^ </span>Remove all of the above</button>
-                  <div id="miscAttribs">
-                    <div>
+                    <div id="miscAttribs">
+                      <div>
                         <label class="wide" for="txt_customAttrs">All attributes that begin with…
                           <div><input id="txt_customAttrs" type="text" aria-describedby="note3" data-user-entered="false" /></div>
                         </label>
-                    </div>
-                    <div>
+                      </div>
+                      <div>
                         <label class="wide" for="txt_otherMiscAttrs">Other misc attributes
                           <div><input id="txt_otherMiscAttrs" type="text" aria-describedby="note4" data-user-entered="false" /></div>
                         </label> 
+                      </div>
                     </div>
-                  </div>
-                </fieldset>
+                  </fieldset>
+                </div>
+                <button type="button" class="wide" id="removeAll" aria-pressed="false"><span aria-hidden="true">^ </span>Check all of the above</button>
+
+
+                
               </fieldset>
               <button type="button" id="btnDecrapulate"><img src="poop.png" alt="">De-crapulate</button>
             </div>
@@ -295,7 +336,7 @@
 
 
 
-            <div id="col3" class="column col-4" role="region" aria-label="Output">
+            <div id="col3" class="column col-3" role="region" aria-label="Output">
               <div id="convertedRichTextWrapper">
                 <label for="txtConvertedRichText">Cleaned-up HTML (rich text with syntax coloring):</label>
                 <div><pre><code class="html" id="txtConvertedRichText" contenteditable="true"></code></pre></div>

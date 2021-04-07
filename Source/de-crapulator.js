@@ -34,6 +34,9 @@ const btnDoAnotherPass = document.querySelector("#btnDoAnotherPass");
 const btnRemovePointlessNestedElements = document.querySelector("#btnRemovePointlessNestedElements");
 const btnMorePreferences = document.querySelector("#btnMorePreferences");
 const btnResetEverything = document.querySelector("#btnResetEverything");
+const chkAbbreviateSrcs = document.querySelector("#chkAbbreviateSrcs");
+const chkAbbreviateHrefs = document.querySelector("#chkAbbreviateHrefs");
+const chkAbbreviateTitles = document.querySelector("#chkAbbreviateTitles");
 let raw = "";
 let indented = "";
 let indentStyle;
@@ -101,11 +104,25 @@ function addAllEventListeners() {
   });
   Array.from(otherFilterCheckboxes).forEach((otherFilterCheckboxes) => {
     otherFilterCheckboxes.addEventListener("click", () => {
-      console.log("updateMarkupWithEachChange = ",updateMarkupWithEachChange);
       if (updateMarkupWithEachChange) {
         generateMarkup();
       }
     });
+  });
+  chkAbbreviateSrcs.addEventListener("click", () => {
+    if (updateMarkupWithEachChange) {
+      generateMarkup();
+    }
+  });
+  chkAbbreviateHrefs.addEventListener("click", () => {
+    if (updateMarkupWithEachChange) {
+      generateMarkup();
+    }
+  });
+  chkAbbreviateTitles.addEventListener("click", () => {
+    if (updateMarkupWithEachChange) {
+      generateMarkup();
+    }
   });
   removeAll.addEventListener("click", () => {
     removeAllCrap();
@@ -415,6 +432,7 @@ function generateMarkup() {
       });
     }
   }
+
   function filterAttributes() {
     Array.from(allElsInTempDom).forEach((el) => {
       let attrs = el.attributes;
@@ -480,6 +498,31 @@ function generateMarkup() {
       emptyEls = tempDOMDumpingGround.querySelectorAll("*:empty");
     }
   }
+  function abbreviateSrcs(){
+    const allElsWithSrc = tempDOMDumpingGround.querySelectorAll("[src]");
+    if (chkAbbreviateSrcs.checked) {
+      Array.from(allElsWithSrc).forEach((el) => {
+        el.setAttribute("src","…");
+      });
+    } 
+  }
+  function abbreviateHrefs(){
+    const allHElsWithref = tempDOMDumpingGround.querySelectorAll("[href]");
+    if (chkAbbreviateHrefs.checked) {
+      Array.from(allHElsWithref).forEach((el) => {
+        el.setAttribute("href","…");
+      });
+    }
+  }
+  function abbreviateTitles(){
+    const allTElsWittitle = tempDOMDumpingGround.querySelectorAll("[title]");
+    if (chkAbbreviateTitles.checked) {
+      Array.from(allTElsWittitle).forEach((el) => {
+        el.setAttribute("title","…");
+      });
+    } 
+  }
+
   // Convert back to indented outputRichText
   function convertTempDomNodeToIndentedOutputRichText() {
     indented = tempDOMDumpingGround.innerHTML.split("><").join(">\n<").replaceAll(/<(?<tag>\w+)([^>]*)>\n<\/\k<tag>>/g, "<$1$2></$1>");
@@ -560,6 +603,9 @@ function generateMarkup() {
   filterHtmlElements();
   filterAttributes();
   filterEmptyElements();
+  abbreviateSrcs();
+  abbreviateHrefs();
+  abbreviateTitles();
   convertTempDomNodeToIndentedOutputRichText();
   outputRichText.innerHTML = indented;
   afterSize = outputRichText.textContent.length;
