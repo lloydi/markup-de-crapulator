@@ -48,7 +48,6 @@
       #wut {margin-left: 2em;transform: translateY(-0.4em);z-index: 1;}
       label {
         display: inline-block;
-        /* margin: 1px 3px 3px 0; */
         margin: 1px;
         border-radius: 5px;
         padding: 1px 6px;
@@ -74,12 +73,11 @@
       #txtConvertedRichText,#txtConvertedPlainText {height: 25em;display: block;overflow: scroll;border:1px solid rgb(102, 70, 70);padding: 5px;margin-top: 10px;}
       input {color:rgb(102, 70, 70);}
       input[type="text"] {padding: 10px;}
-      /* #otherFilters h3 {margin: 10px 0 0 0;font-size: 1em;} */
       #log {text-align: center;min-height: 6em;background:#fff;padding: 0.5em;border-radius: 5px;}
       #log:empty {background: transparent;}
       #log span {font-weight: bold;}
       input {border:1px solid rgb(102, 70, 70);}
-      fieldset {border:2px solid rgb(102, 70, 70);margin: 0;}
+      fieldset {border:2px solid rgb(102, 70, 70);margin: 0 0 1em 0;}
       fieldset fieldset {border:1px dotted rgb(61, 42, 42);padding: 5px;background: rgba(255,255,255, 0.4);border-radius: 5px;transition-duration: 0.3s;}
       fieldset fieldset:hover, 
       fieldset fieldset:focus-within 
@@ -97,18 +95,14 @@
       #btnDecrapulate {font-size: 2em;width: 100%;}
       #btnDecrapulate img {display: inline-block;height: 1em;margin-right: 5px;transform: translateY(5px);}
       #otherFilters .column {width:100%;margin:0;;}
-      #otherFilters .column fieldset+fieldset {margin-top: 1em;}
+      /* fieldset+fieldset {margin-top: 1em;} */
       @media (min-width:1500px) {
       #otherFilters .column {width:calc(50% - 10px);margin:0;}
       #otherFilters .column+.column {margin-left: 20px;}
       }
-      /* #indentControls span {display: block;} */
-      /* #indentControls span label {display: block;} */
       #indentControls span label {padding: 1px;}
       @media (min-width:1500px) {
       #indentControls span label {padding: 1px 6px;}
-      /* #indentControls span {display: inline-block;} */
-      /* #indentControls span label {display: inline-block;} */
       }
     </style>
   </head>
