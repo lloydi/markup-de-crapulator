@@ -562,12 +562,10 @@ function generateMarkup() {
       btnCopyToClipboard.removeAttribute("disabled");
       btnDoAnotherPass.removeAttribute("disabled");
       btnRemovePointlessNestedElements.removeAttribute("disabled");
-      btnResetEverything.removeAttribute("disabled");
     } else {
       btnCopyToClipboard.setAttribute("disabled","disabled");
       btnDoAnotherPass.setAttribute("disabled","disabled");
       btnRemovePointlessNestedElements.setAttribute("disabled","disabled");
-      btnResetEverything.setAttribute("disabled","disabled");
     }
   }
   // Other stuff
