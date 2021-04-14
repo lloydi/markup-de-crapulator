@@ -35,6 +35,7 @@ const btnRemovePointlessNestedElements = document.querySelector("#btnRemovePoint
 const btnMorePreferences = document.querySelector("#btnMorePreferences");
 const btnResetEverything = document.querySelector("#btnResetEverything");
 const chkAbbreviateSrcs = document.querySelector("#chkAbbreviateSrcs");
+const chkAbbreviateSrcSets = document.querySelector("#chkAbbreviateSrcSets");
 const chkAbbreviateHrefs = document.querySelector("#chkAbbreviateHrefs");
 const chkAbbreviateTitles = document.querySelector("#chkAbbreviateTitles");
 let raw = "";
@@ -110,6 +111,11 @@ function addAllEventListeners() {
     });
   });
   chkAbbreviateSrcs.addEventListener("click", () => {
+    if (updateMarkupWithEachChange) {
+      generateMarkup();
+    }
+  });
+  chkAbbreviateSrcSets.addEventListener("click", () => {
     if (updateMarkupWithEachChange) {
       generateMarkup();
     }
@@ -506,6 +512,14 @@ function generateMarkup() {
       });
     } 
   }
+  function abbreviateSrcSets(){
+    const allElsWithSrcSet = tempDOMDumpingGround.querySelectorAll("[srcset]");
+    if (chkAbbreviateSrcSets.checked) {
+      Array.from(allElsWithSrcSet).forEach((el) => {
+        el.setAttribute("srcset","…");
+      });
+    } 
+  }
   function abbreviateHrefs(){
     const allHElsWithref = tempDOMDumpingGround.querySelectorAll("[href]");
     if (chkAbbreviateHrefs.checked) {
@@ -602,6 +616,7 @@ function generateMarkup() {
   filterAttributes();
   filterEmptyElements();
   abbreviateSrcs();
+  abbreviateSrcSets();
   abbreviateHrefs();
   abbreviateTitles();
   convertTempDomNodeToIndentedOutputRichText();
