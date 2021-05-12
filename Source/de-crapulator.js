@@ -67,7 +67,7 @@ function initVals() {
 }
 initVals();
 function addAllEventListeners() {
-  btnResetEverything.addEventListener("click", () => {
+  btnResetEverything.addEventListener("click", (e) => {
     if (confirm("This will also remove any stored/saved values in the attributes to strip as well as preferences. Only press OK if you're, um, OK with that…")){
       initVals();
       input.value = "";
@@ -86,77 +86,78 @@ function addAllEventListeners() {
     }
 
   });
-  input.addEventListener("blur", () => {
-    if (updateMarkupWithEachChange) {
-      generateMarkup();
-    }
-  });
   Array.from(indentRadios).forEach((radio) => {
-    radio.addEventListener("change", () => {
+    radio.addEventListener("change", (e) => {
       if (updateMarkupWithEachChange) {
         generateMarkup();
       }
     });
   });
   Array.from(allPrefInputs).forEach((input) => {
-    input.addEventListener("change", () => {
+    input.addEventListener("change", (e) => {
       saveOtherPrefs();
     });
   });
   Array.from(otherFilterCheckboxes).forEach((otherFilterCheckboxes) => {
-    otherFilterCheckboxes.addEventListener("click", () => {
+    otherFilterCheckboxes.addEventListener("click", (e) => {
       if (updateMarkupWithEachChange) {
         generateMarkup();
       }
     });
   });
-  chkAbbreviateSrcs.addEventListener("click", () => {
+  chkAbbreviateSrcs.addEventListener("click", (e) => {
     if (updateMarkupWithEachChange) {
       generateMarkup();
     }
   });
-  chkAbbreviateSrcSets.addEventListener("click", () => {
+  chkAbbreviateSrcSets.addEventListener("click", (e) => {
     if (updateMarkupWithEachChange) {
       generateMarkup();
     }
   });
-  chkAbbreviateHrefs.addEventListener("click", () => {
+  chkAbbreviateHrefs.addEventListener("click", (e) => {
     if (updateMarkupWithEachChange) {
       generateMarkup();
     }
   });
-  chkAbbreviateTitles.addEventListener("click", () => {
+  chkAbbreviateTitles.addEventListener("click", (e) => {
     if (updateMarkupWithEachChange) {
       generateMarkup();
     }
   });
-  removeAll.addEventListener("click", () => {
+  removeAll.addEventListener("click", (e) => {
     removeAllCrap();
   });
-  filterCustomAttrs.addEventListener("keyup", () => {
+  filterCustomAttrs.addEventListener("keyup", (e) => {
     if (updateMarkupWithEachChange) {
-      generateMarkup();
+      if (e.keyCode!==9) {
+        generateMarkup();
+      }
     }
   });
-  filterotherMiscAttrs.addEventListener("keyup", () => {
+  filterotherMiscAttrs.addEventListener("keyup", (e) => {
     if (updateMarkupWithEachChange) {
-      generateMarkup();
+      if (e.keyCode!==9) {
+        generateMarkup();
+      }
     }
   });
-  filterAnyHTMLtag.addEventListener("keyup", () => {
+  filterAnyHTMLtag.addEventListener("keyup", (e) => {
     if (updateMarkupWithEachChange) {
-      generateMarkup();
+      if (e.keyCode!==9) {
+        generateMarkup();
+      }
     }
   });
-  formatBrailleFriendlyOutput.addEventListener("click", () => {
+  formatBrailleFriendlyOutput.addEventListener("click", (e) => {
     if (updateMarkupWithEachChange) {
       generateMarkup();
     }
   })
-  btnDecrapulate.addEventListener("click", () => {
+  btnDecrapulate.addEventListener("click", (e) => {
     generateMarkup();
   });
-  btnCopyToClipboard.addEventListener("click", () => {
+  btnCopyToClipboard.addEventListener("click", (e) => {
     let wasInPlaintextMode = false;
     if (convertedRichTextWrapper.getAttribute("hidden")) {
       showPlainTextOutput();
@@ -169,7 +170,7 @@ function addAllEventListeners() {
     }
     btnCopyToClipboard.focus();
   });
-  btnDoAnotherPass.addEventListener("click", () => {
+  btnDoAnotherPass.addEventListener("click", (e) => {
     isFirstPass=false;
     input.value = outputPlainText.textContent;
     input.value = input.value.split("> </").join("></");
@@ -178,12 +179,12 @@ function addAllEventListeners() {
     removeIndentsInInputText();
     btnDecrapulate.click();
   });
-  btnRemovePointlessNestedElements.addEventListener("click", () => {
+  btnRemovePointlessNestedElements.addEventListener("click", (e) => {
     if (confirm("This will remove *all* DIV or SPAN elements that have no attributes applied, flattening down the structure (and may no longer represent the reality of the markup you started with, nor any CSS that may have been wrtten based on that structure).\n\nIf that's what you want, hit the old 'OK' button…")) {
       stripPointlessSpanOrDivElements(testDivForPointlessElements,['span','div']);
     }
   });
-    btnMorePreferences.addEventListener("click", () => {
+    btnMorePreferences.addEventListener("click", (e) => {
     if (btnMorePreferences.getAttribute("aria-expanded")==="false") {
         btnMorePreferences.setAttribute("aria-expanded","true");
     } else {
@@ -191,7 +192,7 @@ function addAllEventListeners() {
     }
   });
   Array.from(outputMarkupContainerTypeRads).forEach((radio) => {
-    radio.addEventListener("change", () => {
+    radio.addEventListener("change", (e) => {
       if (radio.value === "plaintext") {
         showPlainTextOutput();
       } else {
@@ -200,7 +201,7 @@ function addAllEventListeners() {
     });
   });
   Array.from(whenShouldTheMarkupUpdateRads).forEach((radio) => {
-    radio.addEventListener("change", () => {
+    radio.addEventListener("change", (e) => {
       if (radio.value === "allChanges") {
         updateMarkupWithEachChange = true;
       } else {
@@ -305,10 +306,10 @@ function loadAndSaveData(){
   Array.from(userEnteredTextFields).forEach((field) => {
     field.setAttribute("data-user-entered","true");
     let timeout = null;
-    field.addEventListener("blur", () => {
+    field.addEventListener("blur", (e) => {
       timeout = savePreferredAttributesAndTagsToStrip(timeout, field, 1);
     })
-    field.addEventListener("keyup", () => {
+    field.addEventListener("keyup", (e) => {
      timeout = savePreferredAttributesAndTagsToStrip(timeout, field, 3000);
     })
   });
