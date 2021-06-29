@@ -39,6 +39,7 @@ const chkAbbreviateSrcs = document.querySelector("#chkAbbreviateSrcs");
 const chkAbbreviateSrcSets = document.querySelector("#chkAbbreviateSrcSets");
 const chkAbbreviateHrefs = document.querySelector("#chkAbbreviateHrefs");
 const chkAbbreviateTitles = document.querySelector("#chkAbbreviateTitles");
+const pickFromListButtons = document.querySelectorAll(".pickFromList");
 let raw = "";
 let indented = "";
 let indentStyle;
@@ -176,6 +177,18 @@ function addAllEventListeners() {
     }
     btnCopyToClipboard.focus();
   });
+
+
+
+  //  Array.from(pickFromListButtons).forEach(pickFromListButton => {
+  //   pickFromListButton.addEventListener('click', e => {
+  //     alert("show dialog");
+  //   });
+  //  });
+   
+
+
+
   btnDoAnotherPass.addEventListener("click", (e) => {
     isFirstPass=false;
     input.value = outputPlainText.textContent;
