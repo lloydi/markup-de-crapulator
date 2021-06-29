@@ -34,6 +34,7 @@ const btnDoAnotherPass = document.querySelector("#btnDoAnotherPass");
 const btnRemovePointlessNestedElements = document.querySelector("#btnRemovePointlessNestedElements");
 const btnMorePreferences = document.querySelector("#btnMorePreferences");
 const btnResetEverything = document.querySelector("#btnResetEverything");
+const chkAbbreviateClasses = document.querySelector("#chkAbbreviateClasses");
 const chkAbbreviateSrcs = document.querySelector("#chkAbbreviateSrcs");
 const chkAbbreviateSrcSets = document.querySelector("#chkAbbreviateSrcSets");
 const chkAbbreviateHrefs = document.querySelector("#chkAbbreviateHrefs");
@@ -104,6 +105,11 @@ function addAllEventListeners() {
         generateMarkup();
       }
     });
+  });
+  chkAbbreviateClasses.addEventListener("click", (e) => {
+    if (updateMarkupWithEachChange) {
+      generateMarkup();
+    }
   });
   chkAbbreviateSrcs.addEventListener("click", (e) => {
     if (updateMarkupWithEachChange) {
@@ -505,6 +511,14 @@ function generateMarkup() {
       emptyEls = tempDOMDumpingGround.querySelectorAll("*:empty");
     }
   }
+  function abbreviateClasses(){
+    const allElsWithClass = tempDOMDumpingGround.querySelectorAll("[class]");
+    if (chkAbbreviateClasses.checked) {
+      Array.from(allElsWithClass).forEach((el) => {
+        el.setAttribute("class","…");
+      });
+    } 
+  }
   function abbreviateSrcs(){
     const allElsWithSrc = tempDOMDumpingGround.querySelectorAll("[src]");
     if (chkAbbreviateSrcs.checked) {
@@ -616,6 +630,7 @@ function generateMarkup() {
   filterHtmlElements();
   filterAttributes();
   filterEmptyElements();
+  abbreviateClasses();
   abbreviateSrcs();
   abbreviateSrcSets();
   abbreviateHrefs();
