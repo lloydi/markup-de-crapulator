@@ -10,15 +10,15 @@ supportsInert = 'inert' in testEl;
 var allFocusableElsOutsideModal = nonModalContent.querySelectorAll('input:not([disabled]),textarea:not([disabled]),select:not([disabled]),button:not([disabled]),a[href],iframe,object,embed,*[tabindex]:not([tabindex="-1"]),*[contenteditable=true]');
 var firstFocusable;
 var lastFocusable;
-var trapModalFocus = false;
+var trapModalFocus = true;
 
 document.addEventListener('keydown', function (e) {
-  if (e.keyCode === 27) {
+  if (e.key === "Escape") {
     closeModal();
   }
 
   if (trapModalFocus) {
-    if (e.keyCode === 9) {
+    if (e.key === "Tab") {
       if (document.activeElement === firstFocusable && e.shiftKey) {
         lastFocusable.focus();
         e.preventDefault();
@@ -75,6 +75,7 @@ function showModal(modalTrigger, e) {
 
   modal.setAttribute('tabindex', '-1');
   modal.focus();
+  firstFocusable.focus();
   modal.removeAttribute('tabindex'); //set up this modal's close button behaviour
 
   e.preventDefault();
