@@ -12,6 +12,9 @@ var firstFocusable;
 var lastFocusable;
 var trapModalFocus = true;
 
+modalCurtain.addEventListener('click', function (e) {
+  closeModal();
+});
 document.addEventListener('keydown', function (e) {
   if (e.key === "Escape") {
     closeModal();
@@ -42,6 +45,7 @@ function showModal(modalTrigger, e) {
     modal = document.querySelector(modalTrigger.getAttribute('data-target'));
   } // is modal set to completely trap focus within dialog?
 
+  body.classList.add('no-scroll');
 
   trapModalFocus = modal.getAttribute('data-trap-focus') === 'true';
 
@@ -88,6 +92,7 @@ function showModal(modalTrigger, e) {
 }
 
 function closeModal() {
+  body.classList.remove('no-scroll');
   if (supportsInert) {
     nonModalContent.removeAttribute('inert');
   } else {
