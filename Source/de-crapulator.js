@@ -563,7 +563,7 @@ function generateMarkup() {
     } 
   }
 
-  function checkActionsInModal() {
+  function checkActionsAppliedInModal() {
     if (modal) {//modal has been opened and something has (possibly) been set
       const radioButtonsSetInModal = modal.querySelectorAll('input[type=radio]:checked');
       Array.from(radioButtonsSetInModal).forEach((radio) => {
@@ -581,8 +581,6 @@ function generateMarkup() {
       });
     }
   }
-
-
 
   // Convert back to indented outputRichText
   function convertTempDomNodeToIndentedOutputRichText() {
@@ -667,7 +665,7 @@ function generateMarkup() {
   abbreviateSrcSets();
   abbreviateHrefs();
   abbreviateTitles();
-  checkActionsInModal();
+  checkActionsAppliedInModal();
   convertTempDomNodeToIndentedOutputRichText();
   outputRichText.innerHTML = indented;
   afterSize = outputRichText.textContent.length;
