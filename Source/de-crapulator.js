@@ -51,7 +51,7 @@ let urlEncoded = location.href.split("?markup=")[1];
 let beforeSize;
 let afterSize;
 let addTableMarkupChoiceSet;
-let isTableCell ;
+let isTableCell;
 let isTableHeader;
 let isTableBody;
 let isTableRow;
@@ -61,38 +61,32 @@ let isFirstPass;
 function initVals() {
   beforeSize = 0;
   afterSize = 0;
-  addTableMarkupChoiceSet=false;
+  addTableMarkupChoiceSet = false;
   isTableCell = false;
   isTableHeader = false;
   isTableBody = false;
   isTableRow = false;
-  updateMarkupWithEachChange=true;
-  isFirstPass=true;
+  updateMarkupWithEachChange = true;
+  isFirstPass = true;
 }
 initVals();
 
-//----------------------------------------------------------
-//----------------------------------------------------------
-//----------------------------------------------------------
-function abbreviateAttribute(attr){
-  const allElsToBeAbbreviated = tempDOMDumpingGround.querySelectorAll("[" + attr +"]");
+function abbreviateAttribute(attr) {
+  const allElsToBeAbbreviated = tempDOMDumpingGround.querySelectorAll("[" + attr + "]");
   Array.from(allElsToBeAbbreviated).forEach((el) => {
-    el.setAttribute(attr,"…");
+    el.setAttribute(attr, "…");
   });
 }
-function stripAttribute(attr){
-  const allElsToBeStripped = tempDOMDumpingGround.querySelectorAll("[" + attr +"]");
+function stripAttribute(attr) {
+  const allElsToBeStripped = tempDOMDumpingGround.querySelectorAll("[" + attr + "]");
   Array.from(allElsToBeStripped).forEach((el) => {
     el.removeAttribute(attr);
   });
 }
-//----------------------------------------------------------
-//----------------------------------------------------------
-//----------------------------------------------------------
 
 function addAllEventListeners() {
   btnResetEverything.addEventListener("click", (e) => {
-    if (confirm("This will also remove any stored/saved values in the attributes to strip as well as preferences. Only press OK if you're, um, OK with that…")){
+    if (confirm("This will also remove any stored/saved values in the attributes to strip as well as preferences. Only press OK if you're, um, OK with that…")) {
       initVals();
       input.value = "";
       input.focus();
@@ -108,7 +102,6 @@ function addAllEventListeners() {
         }
       }
     }
-
   });
   Array.from(indentRadios).forEach((radio) => {
     radio.addEventListener("change", (e) => {
@@ -131,8 +124,8 @@ function addAllEventListeners() {
   });
   chk_abbreviateClasses.addEventListener("click", (e) => {
     if (chk_stripClassAttributes.checked) {
-      chk_stripClassAttributes.checked=false;
-      chk_abbreviateClasses.checked=true;
+      chk_stripClassAttributes.checked = false;
+      chk_abbreviateClasses.checked = true;
     }
     if (updateMarkupWithEachChange) {
       generateMarkup();
@@ -140,8 +133,8 @@ function addAllEventListeners() {
   });
   chk_abbreviateStyles.addEventListener("click", (e) => {
     if (chk_stripStyleAttributes.checked) {
-      chk_stripStyleAttributes.checked=false;
-      chk_abbreviateStyles.checked=true;
+      chk_stripStyleAttributes.checked = false;
+      chk_abbreviateStyles.checked = true;
     }
     if (updateMarkupWithEachChange) {
       generateMarkup();
@@ -172,21 +165,21 @@ function addAllEventListeners() {
   });
   filterCustomAttrs.addEventListener("keyup", (e) => {
     if (updateMarkupWithEachChange) {
-      if (e.keyCode!==9) {
+      if (e.keyCode !== 9) {
         generateMarkup();
       }
     }
   });
   filterotherMiscAttrs.addEventListener("keyup", (e) => {
     if (updateMarkupWithEachChange) {
-      if (e.keyCode!==9) {
+      if (e.keyCode !== 9) {
         generateMarkup();
       }
     }
   });
   filterAnyHTMLtag.addEventListener("keyup", (e) => {
     if (updateMarkupWithEachChange) {
-      if (e.keyCode!==9) {
+      if (e.keyCode !== 9) {
         generateMarkup();
       }
     }
@@ -195,7 +188,7 @@ function addAllEventListeners() {
     if (updateMarkupWithEachChange) {
       generateMarkup();
     }
-  })
+  });
   btnDecrapulate.addEventListener("click", (e) => {
     generateMarkup();
   });
@@ -203,21 +196,21 @@ function addAllEventListeners() {
     let wasInPlaintextMode = false;
     if (convertedRichTextWrapper.getAttribute("hidden")) {
       showPlainTextOutput();
-      wasInPlaintextMode=true;
+      wasInPlaintextMode = true;
     }
     outputRichText.focus();
-    document.execCommand('copy');
+    document.execCommand("copy");
     if (wasInPlaintextMode) {
       showPlainTextOutput();
     }
     btnCopyToClipboard.focus();
   });
-  btnApplyAttributeSettings.addEventListener('click', e => {
+  btnApplyAttributeSettings.addEventListener("click", (e) => {
     closeModal();
     generateMarkup();
   });
   btnDoAnotherPass.addEventListener("click", (e) => {
-    isFirstPass=false;
+    isFirstPass = false;
     input.value = outputPlainText.textContent;
     input.value = input.value.split("> </").join("></");
     input.value = input.value.split("<div></div>").join("");
@@ -227,14 +220,14 @@ function addAllEventListeners() {
   });
   btnRemovePointlessNestedElements.addEventListener("click", (e) => {
     if (confirm("This will remove *all* DIV or SPAN elements that have no attributes applied, flattening down the structure (and may no longer represent the reality of the markup you started with, nor any CSS that may have been wrtten based on that structure).\n\nIf that's what you want, hit the old 'OK' button…")) {
-      stripPointlessSpanOrDivElements(testDivForPointlessElements,['span','div']);
+      stripPointlessSpanOrDivElements(testDivForPointlessElements, ["span", "div"]);
     }
   });
-    btnMorePreferences.addEventListener("click", (e) => {
-    if (btnMorePreferences.getAttribute("aria-expanded")==="false") {
-        btnMorePreferences.setAttribute("aria-expanded","true");
+  btnMorePreferences.addEventListener("click", (e) => {
+    if (btnMorePreferences.getAttribute("aria-expanded") === "false") {
+      btnMorePreferences.setAttribute("aria-expanded", "true");
     } else {
-        btnMorePreferences.setAttribute("aria-expanded","false");
+      btnMorePreferences.setAttribute("aria-expanded", "false");
     }
   });
   Array.from(outputMarkupContainerTypeRads).forEach((radio) => {
@@ -323,45 +316,45 @@ function applyIndenting() {
     indentStr += indentStyle;
   }
 }
-function loadAndSaveData(){
-  let userEnteredData_id,userEnteredData_text;
+function loadAndSaveData() {
+  let userEnteredData_id, userEnteredData_text;
   const userEnteredTextFields = document.querySelectorAll("[data-user-entered]");
-  
+
   function savePreferredAttributesAndTagsToStrip(timeout, field, time) {
-      clearTimeout(timeout);
-      timeout = setTimeout(function () {
-          userEnteredData_id = field.getAttribute("id");
-          userEnteredData_text = field.value;
-          localStorage.setItem("dataStorage-" + userEnteredData_id, userEnteredData_text);
-        }, time);
-        return timeout;
-      }
-      function loadPreferredAttributesAndTagsToStrip() {
-        for (var key in localStorage) {
-          if (key.includes("dataStorage-")) {
-            const id = key.replace("dataStorage-", "");
-            if (document.querySelector("#" + id)) {
-              if (localStorage.getItem(key)) {
-                document.querySelector("#" + id).value = localStorage.getItem(key);
-              }
-            }
+    clearTimeout(timeout);
+    timeout = setTimeout(function () {
+      userEnteredData_id = field.getAttribute("id");
+      userEnteredData_text = field.value;
+      localStorage.setItem("dataStorage-" + userEnteredData_id, userEnteredData_text);
+    }, time);
+    return timeout;
+  }
+  function loadPreferredAttributesAndTagsToStrip() {
+    for (var key in localStorage) {
+      if (key.includes("dataStorage-")) {
+        const id = key.replace("dataStorage-", "");
+        if (document.querySelector("#" + id)) {
+          if (localStorage.getItem(key)) {
+            document.querySelector("#" + id).value = localStorage.getItem(key);
           }
         }
       }
+    }
+  }
 
   Array.from(userEnteredTextFields).forEach((field) => {
-    field.setAttribute("data-user-entered","true");
+    field.setAttribute("data-user-entered", "true");
     let timeout = null;
     field.addEventListener("blur", (e) => {
       timeout = savePreferredAttributesAndTagsToStrip(timeout, field, 1);
-    })
+    });
     field.addEventListener("keyup", (e) => {
-     timeout = savePreferredAttributesAndTagsToStrip(timeout, field, 3000);
-    })
+      timeout = savePreferredAttributesAndTagsToStrip(timeout, field, 3000);
+    });
   });
-  
-  document.addEventListener("DOMContentLoaded", function(){
-  loadPreferredAttributesAndTagsToStrip();
+
+  document.addEventListener("DOMContentLoaded", function () {
+    loadPreferredAttributesAndTagsToStrip();
   });
 }
 function saveOtherPrefs() {
@@ -373,38 +366,36 @@ function saveOtherPrefs() {
     localStorage.setItem("dataStorage-fartBigReductions", "true");
   } else {
     localStorage.setItem("dataStorage-fartBigReductions", "false");
-
   }
   if (document.querySelector("#chk_brailleFriendlyOutput").checked) {
     localStorage.setItem("dataStorage-brailleFriendlyOutput", "true");
   } else {
     localStorage.setItem("dataStorage-brailleFriendlyOutput", "false");
-
   }
 }
 function loadOtherPrefs() {
-  document.querySelector("[name='rad_Indentstyle'][value='" + localStorage.getItem("dataStorage-indentStyle") + "']").checked=true;
-  document.querySelector("[name='rad_Indentdepth'][value='" + localStorage.getItem("dataStorage-indentDepth") + "']").checked=true;
-  if (localStorage.getItem("dataStorage-brailleFriendlyOutput")==="true") {
-    document.querySelector("#chk_brailleFriendlyOutput").checked=true;
+  document.querySelector("[name='rad_Indentstyle'][value='" + localStorage.getItem("dataStorage-indentStyle") + "']").checked = true;
+  document.querySelector("[name='rad_Indentdepth'][value='" + localStorage.getItem("dataStorage-indentDepth") + "']").checked = true;
+  if (localStorage.getItem("dataStorage-brailleFriendlyOutput") === "true") {
+    document.querySelector("#chk_brailleFriendlyOutput").checked = true;
   }
-  if (localStorage.getItem("dataStorage-outputMarkupContainerType")==="plaintext") {
-    document.querySelector("#outputMarkupContainerType_plaintext").checked=true;
+  if (localStorage.getItem("dataStorage-outputMarkupContainerType") === "plaintext") {
+    document.querySelector("#outputMarkupContainerType_plaintext").checked = true;
     showPlainTextOutput();
   }
-  if (localStorage.getItem("dataStorage-whenShouldTheMarkupUpdate")==="OnlyWithSubmit") {
-    document.querySelector("#whenShouldTheMarkupUpdate_OnlyWithSubmit").checked=true;
-    updateMarkupWithEachChange=false;
+  if (localStorage.getItem("dataStorage-whenShouldTheMarkupUpdate") === "OnlyWithSubmit") {
+    document.querySelector("#whenShouldTheMarkupUpdate_OnlyWithSubmit").checked = true;
+    updateMarkupWithEachChange = false;
   }
-  if (localStorage.getItem("dataStorage-fartBigReductions")==="true") {
-    document.querySelector("#fartBigReductions").checked=true;
+  if (localStorage.getItem("dataStorage-fartBigReductions") === "true") {
+    document.querySelector("#fartBigReductions").checked = true;
   }
 }
 function stripPointlessSpanOrDivElements(startElement, toStrip) {
-  testDivForPointlessElements.innerHTML=outputPlainText.value;
+  testDivForPointlessElements.innerHTML = outputPlainText.value;
   const test = document.createElement("div");
   test.innerHTML = startElement.innerHTML;
-  [...test.querySelectorAll('*')].forEach(elem => {
+  [...test.querySelectorAll("*")].forEach((elem) => {
     if (!elem.attributes.length && toStrip.includes(elem.tagName.toLowerCase())) {
       if (elem.children.length) elem.replaceWith(...elem.children);
       else elem.replaceWith(elem.innerText);
@@ -415,14 +406,13 @@ function stripPointlessSpanOrDivElements(startElement, toStrip) {
   btnDecrapulate.click();
 }
 function generateMarkup() {
-
   //String manipulations (on raw)
   function addTableMarkupToOrphanedInnerTableElements() {
     isTableCell = false;
     isTableHeader = false;
     isTableBody = false;
     isTableRow = false;
-    if ((raw.indexOf("<th") === 0) || (raw.indexOf("<td") === 0)) {
+    if (raw.indexOf("<th") === 0 || raw.indexOf("<td") === 0) {
       isTableCell = true;
       isTableHeader = false;
       isTableBody = false;
@@ -488,22 +478,22 @@ function generateMarkup() {
 
   function filterAttributes() {
     if (filterClass.checked) {
-      stripAttribute('class');
+      stripAttribute("class");
       if (chk_abbreviateClasses.checked) {
-        chk_abbreviateClasses.checked=false;
+        chk_abbreviateClasses.checked = false;
       }
     }
     if (filterStyle.checked) {
-      stripAttribute('style');
+      stripAttribute("style");
       if (chk_abbreviateStyles.checked) {
-        chk_abbreviateStyles.checked=false;
+        chk_abbreviateStyles.checked = false;
       }
     }
     if (filterOnclick.checked) {
-      stripAttribute('onclick');
+      stripAttribute("onclick");
     }
     if (filterOnClickReact.checked) {
-      stripAttribute('onClick');
+      stripAttribute("onClick");
     }
     Array.from(allElsInTempDom).forEach((el) => {
       let attrs = el.attributes;
@@ -557,50 +547,51 @@ function generateMarkup() {
     }
   }
 
-  function abbreviateClasses(){
+  function abbreviateClasses() {
     if (chk_abbreviateClasses.checked) {
       abbreviateAttribute("class");
-    } 
+    }
   }
-  function abbreviateStyles(){
+  function abbreviateStyles() {
     if (chk_abbreviateStyles.checked) {
       abbreviateAttribute("style");
-    } 
+    }
   }
-  function abbreviateSrcs(){
+  function abbreviateSrcs() {
     if (chk_abbreviateSrcs.checked) {
       abbreviateAttribute("src");
-    } 
+    }
   }
-  function abbreviateSrcSets(){
+  function abbreviateSrcSets() {
     if (chk_abbreviateSrcSets.checked) {
       abbreviateAttribute("srcset");
-    } 
+    }
   }
-  function abbreviateHrefs(){
+  function abbreviateHrefs() {
     if (chk_abbreviateHrefs.checked) {
       abbreviateAttribute("href");
     }
   }
-  function abbreviateTitles(){
+  function abbreviateTitles() {
     if (chk_abbreviateTitles.checked) {
       abbreviateAttribute("title");
-    } 
+    }
   }
 
   function checkActionsAppliedInModal() {
-    if (modal) {//modal has been opened and something has (possibly) been set
-      const radioButtonsSetInModal = modal.querySelectorAll('input[type=radio]:checked');
+    if (modal) {
+      //modal has been opened and something has (possibly) been set
+      const radioButtonsSetInModal = modal.querySelectorAll("input[type=radio]:checked");
       Array.from(radioButtonsSetInModal).forEach((radio) => {
-        const action = radio.getAttribute('id').split('_')[1];
-        const attribute = radio.getAttribute('data-attribute');
-        if (action==='abbrev') {
+        const action = radio.getAttribute("id").split("_")[1];
+        const attribute = radio.getAttribute("data-attribute");
+        if (action === "abbrev") {
           abbreviateAttribute(attribute);
         }
-        if (action==='strip') {
+        if (action === "strip") {
           stripAttribute(attribute);
         }
-        if (action==='leave') {
+        if (action === "leave") {
           // do bugger all
         }
       });
@@ -609,16 +600,19 @@ function generateMarkup() {
 
   // Convert back to indented outputRichText
   function convertTempDomNodeToIndentedOutputRichText() {
-    indented = tempDOMDumpingGround.innerHTML.split("><").join(">\n<").replaceAll(/<(?<tag>\w+)([^>]*)>\n<\/\k<tag>>/g, "<$1$2></$1>");
+    indented = tempDOMDumpingGround.innerHTML
+      .split("><")
+      .join(">\n<")
+      .replaceAll(/<(?<tag>\w+)([^>]*)>\n<\/\k<tag>>/g, "<$1$2></$1>");
     if (formatBrailleFriendlyOutput.checked) {
-      var arrayOfLines = indented.split('\n');
+      var arrayOfLines = indented.split("\n");
       for (let i = 0; i < arrayOfLines.length; i++) {
         if (arrayOfLines[i].length > 80) {
-          arrayOfLines[i] = arrayOfLines[i].replace(/(.{1,80})/g, '$1\n');
+          arrayOfLines[i] = arrayOfLines[i].replace(/(.{1,80})/g, "$1\n");
         }
       }
       indented = arrayOfLines.join("\n");
-      indented = indented.replace(/\n\n/g, '\n');
+      indented = indented.replace(/\n\n/g, "\n");
     } else {
       indented = indent.js(indented, { tabString: indentStr });
     }
@@ -642,14 +636,14 @@ function generateMarkup() {
     }
     outputRichText.textContent = outputRichText.textContent.trim();
     outputPlainText.textContent = outputRichText.textContent.trim();
-    if (outputRichText.textContent.length>0) {
+    if (outputRichText.textContent.length > 0) {
       btnCopyToClipboard.removeAttribute("disabled");
       btnDoAnotherPass.removeAttribute("disabled");
       btnRemovePointlessNestedElements.removeAttribute("disabled");
     } else {
-      btnCopyToClipboard.setAttribute("disabled","disabled");
-      btnDoAnotherPass.setAttribute("disabled","disabled");
-      btnRemovePointlessNestedElements.setAttribute("disabled","disabled");
+      btnCopyToClipboard.setAttribute("disabled", "disabled");
+      btnDoAnotherPass.setAttribute("disabled", "disabled");
+      btnRemovePointlessNestedElements.setAttribute("disabled", "disabled");
     }
   }
   // Other stuff
@@ -666,7 +660,7 @@ function generateMarkup() {
   function celebrateBigReductionsWithANiceLongFart() {
     if (fartBigReductions.checked) {
       if (percentage < 15) {
-        var audio = new Audio('longfart.mp3');
+        var audio = new Audio("longfart.mp3");
         audio.play();
       }
     }
@@ -696,12 +690,12 @@ function generateMarkup() {
   outputRichText.innerHTML = indented;
   afterSize = outputRichText.textContent.length;
   let percentage = ((afterSize / beforeSize) * 100).toFixed(2);
-  log.innerHTML = "<span class='visually-hidden'>Markup updated. </span>Size before: <span>" + beforeSize + " characters</span>. Size after: <span>" + afterSize + " characters</span>. Cleaned/indented = <span>" + percentage + "%</span> of original markup<div aria-hidden=\"true\" id=\"turd\"></div>";
+  log.innerHTML = "<span class='visually-hidden'>Markup updated. </span>Size before: <span>" + beforeSize + " characters</span>. Size after: <span>" + afterSize + " characters</span>. Cleaned/indented = <span>" + percentage + '%</span> of original markup<div aria-hidden="true" id="turd"></div>';
   celebrateBigReductionsWithANiceLongFart();
   removeAddedTableMarkup();
   hljs.highlightBlock(outputRichText);
   const turd = document.querySelector("#turd");
-  turd.style.width=percentage+"%";
+  turd.style.width = percentage + "%";
 }
 addAllEventListeners();
 loadAndSaveData();
