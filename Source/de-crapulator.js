@@ -4,15 +4,15 @@ const outputPlainText = document.querySelector("#txtConvertedPlainText");
 const convertedRichTextWrapper = document.querySelector("#convertedRichTextWrapper");
 const convertedPlainTextWrapper = document.querySelector("#convertedPlainTextWrapper");
 const filterEmpty = document.querySelector("#chk_emptyTags");
-const filterClass = document.querySelector("#chk_class");
-const filterStyle = document.querySelector("#chk_style");
+const filterClass = document.querySelector("#chk_stripClassAttributes");
+const filterStyle = document.querySelector("#chk_stripStyleAttributes");
 const filterOnclick = document.querySelector("#chk_onclick");
-const filterOnClickReact = document.querySelector("#chk_onClickReact");
-const filterDataDash = document.querySelector("#chk_dataDash");
-const filterAngularNgCrapAttributes1 = document.querySelector("#chk_angularNgCrapAttributes1");
-const filterAngularNgCrapAttributes2 = document.querySelector("#chk_angularNgCrapAttributes2");
+const filterOnClickReact = document.querySelector("#chk_stripOnClickReactAttributes");
+const filterDataDash = document.querySelector("#chk_stripDataDashAttributes");
+const filterAngularNgCrapAttributes1 = document.querySelector("#chk_stripAngularCrapAttributes1");
+const filterAngularNgCrapAttributes2 = document.querySelector("#chk_stripAngularCrapAttributes2");
 const fartBigReductions = document.querySelector("#fartBigReductions");
-const filterAngularNgCrapTags = document.querySelector("#chk_angularNgCrapTags");
+const filterAngularNgCrapTags = document.querySelector("#chk_stripAngularCrapTags");
 const formatBrailleFriendlyOutput = document.querySelector("#chk_brailleFriendlyOutput");
 const filterAllHTMLcomments = document.querySelector("#chk_allHTMLcomments");
 const filterEmptyComments = document.querySelector("#chk_emptyHTMLComments");
@@ -34,13 +34,13 @@ const btnDoAnotherPass = document.querySelector("#btnDoAnotherPass");
 const btnRemovePointlessNestedElements = document.querySelector("#btnRemovePointlessNestedElements");
 const btnMorePreferences = document.querySelector("#btnMorePreferences");
 const btnResetEverything = document.querySelector("#btnResetEverything");
-const chkAbbreviateClasses = document.querySelector("#chkAbbreviateClasses");
-const chkAbbreviateStyles = document.querySelector("#chkAbbreviateStyles");
-const chkAbbreviateHrefs = document.querySelector("#chkAbbreviateHrefs");
-const chkAbbreviateSrcs = document.querySelector("#chkAbbreviateSrcs");
-const chkAbbreviateSrcSets = document.querySelector("#chkAbbreviateSrcSets");
-const chkAbbreviateTitles = document.querySelector("#chkAbbreviateTitles");
-const pickFromListButtons = document.querySelectorAll(".pickFromList");
+const chk_abbreviateClasses = document.querySelector("#chk_abbreviateClasses");
+const chk_abbreviateStyles = document.querySelector("#chk_abbreviateStyles");
+const chk_abbreviateHrefs = document.querySelector("#chk_abbreviateHrefs");
+const chk_abbreviateSrcs = document.querySelector("#chk_abbreviateSrcs");
+const chk_abbreviateSrcSets = document.querySelector("#chk_abbreviateSrcSets");
+const chk_abbreviateTitles = document.querySelector("#chk_abbreviateTitles");
+const moreElAndAttributeOptionsButtons = document.querySelectorAll(".moreElAndAttributeOptions");
 const btnApplyAttributeSettings = document.querySelector("#btnApplyAttributeSettings");
 let raw = "";
 let indented = "";
@@ -129,40 +129,40 @@ function addAllEventListeners() {
       }
     });
   });
-  chkAbbreviateClasses.addEventListener("click", (e) => {
-    if (chk_class.checked) {
-      chk_class.checked=false;
-      chkAbbreviateClasses.checked=true;
+  chk_abbreviateClasses.addEventListener("click", (e) => {
+    if (chk_stripClassAttributes.checked) {
+      chk_stripClassAttributes.checked=false;
+      chk_abbreviateClasses.checked=true;
     }
     if (updateMarkupWithEachChange) {
       generateMarkup();
     }
   });
-  chkAbbreviateStyles.addEventListener("click", (e) => {
-    if (chk_style.checked) {
-      chk_style.checked=false;
-      chkAbbreviateStyles.checked=true;
+  chk_abbreviateStyles.addEventListener("click", (e) => {
+    if (chk_stripStyleAttributes.checked) {
+      chk_stripStyleAttributes.checked=false;
+      chk_abbreviateStyles.checked=true;
     }
     if (updateMarkupWithEachChange) {
       generateMarkup();
     }
   });
-  chkAbbreviateSrcs.addEventListener("click", (e) => {
+  chk_abbreviateSrcs.addEventListener("click", (e) => {
     if (updateMarkupWithEachChange) {
       generateMarkup();
     }
   });
-  chkAbbreviateSrcSets.addEventListener("click", (e) => {
+  chk_abbreviateSrcSets.addEventListener("click", (e) => {
     if (updateMarkupWithEachChange) {
       generateMarkup();
     }
   });
-  chkAbbreviateHrefs.addEventListener("click", (e) => {
+  chk_abbreviateHrefs.addEventListener("click", (e) => {
     if (updateMarkupWithEachChange) {
       generateMarkup();
     }
   });
-  chkAbbreviateTitles.addEventListener("click", (e) => {
+  chk_abbreviateTitles.addEventListener("click", (e) => {
     if (updateMarkupWithEachChange) {
       generateMarkup();
     }
@@ -489,14 +489,14 @@ function generateMarkup() {
   function filterAttributes() {
     if (filterClass.checked) {
       stripAttribute('class');
-      if (chkAbbreviateClasses.checked) {
-        chkAbbreviateClasses.checked=false;
+      if (chk_abbreviateClasses.checked) {
+        chk_abbreviateClasses.checked=false;
       }
     }
     if (filterStyle.checked) {
       stripAttribute('style');
-      if (chkAbbreviateStyles.checked) {
-        chkAbbreviateStyles.checked=false;
+      if (chk_abbreviateStyles.checked) {
+        chk_abbreviateStyles.checked=false;
       }
     }
     if (filterOnclick.checked) {
@@ -558,32 +558,32 @@ function generateMarkup() {
   }
 
   function abbreviateClasses(){
-    if (chkAbbreviateClasses.checked) {
+    if (chk_abbreviateClasses.checked) {
       abbreviateAttribute("class");
     } 
   }
   function abbreviateStyles(){
-    if (chkAbbreviateStyles.checked) {
+    if (chk_abbreviateStyles.checked) {
       abbreviateAttribute("style");
     } 
   }
   function abbreviateSrcs(){
-    if (chkAbbreviateSrcs.checked) {
+    if (chk_abbreviateSrcs.checked) {
       abbreviateAttribute("src");
     } 
   }
   function abbreviateSrcSets(){
-    if (chkAbbreviateSrcSets.checked) {
+    if (chk_abbreviateSrcSets.checked) {
       abbreviateAttribute("srcset");
     } 
   }
   function abbreviateHrefs(){
-    if (chkAbbreviateHrefs.checked) {
+    if (chk_abbreviateHrefs.checked) {
       abbreviateAttribute("href");
     }
   }
   function abbreviateTitles(){
-    if (chkAbbreviateTitles.checked) {
+    if (chk_abbreviateTitles.checked) {
       abbreviateAttribute("title");
     } 
   }
