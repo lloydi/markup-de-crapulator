@@ -35,9 +35,10 @@ const btnRemovePointlessNestedElements = document.querySelector("#btnRemovePoint
 const btnMorePreferences = document.querySelector("#btnMorePreferences");
 const btnResetEverything = document.querySelector("#btnResetEverything");
 const chkAbbreviateClasses = document.querySelector("#chkAbbreviateClasses");
+const chkAbbreviateStyles = document.querySelector("#chkAbbreviateStyles");
+const chkAbbreviateHrefs = document.querySelector("#chkAbbreviateHrefs");
 const chkAbbreviateSrcs = document.querySelector("#chkAbbreviateSrcs");
 const chkAbbreviateSrcSets = document.querySelector("#chkAbbreviateSrcSets");
-const chkAbbreviateHrefs = document.querySelector("#chkAbbreviateHrefs");
 const chkAbbreviateTitles = document.querySelector("#chkAbbreviateTitles");
 const pickFromListButtons = document.querySelectorAll(".pickFromList");
 const btnApplyAttributeSettings = document.querySelector("#btnApplyAttributeSettings");
@@ -129,6 +130,19 @@ function addAllEventListeners() {
     });
   });
   chkAbbreviateClasses.addEventListener("click", (e) => {
+    if (chk_class.checked) {
+      chk_class.checked=false;
+      chkAbbreviateClasses.checked=true;
+    }
+    if (updateMarkupWithEachChange) {
+      generateMarkup();
+    }
+  });
+  chkAbbreviateStyles.addEventListener("click", (e) => {
+    if (chk_style.checked) {
+      chk_style.checked=false;
+      chkAbbreviateStyles.checked=true;
+    }
     if (updateMarkupWithEachChange) {
       generateMarkup();
     }
@@ -475,9 +489,15 @@ function generateMarkup() {
   function filterAttributes() {
     if (filterClass.checked) {
       stripAttribute('class');
+      if (chkAbbreviateClasses.checked) {
+        chkAbbreviateClasses.checked=false;
+      }
     }
     if (filterStyle.checked) {
       stripAttribute('style');
+      if (chkAbbreviateStyles.checked) {
+        chkAbbreviateStyles.checked=false;
+      }
     }
     if (filterOnclick.checked) {
       stripAttribute('onclick');
@@ -540,6 +560,11 @@ function generateMarkup() {
   function abbreviateClasses(){
     if (chkAbbreviateClasses.checked) {
       abbreviateAttribute("class");
+    } 
+  }
+  function abbreviateStyles(){
+    if (chkAbbreviateStyles.checked) {
+      abbreviateAttribute("style");
     } 
   }
   function abbreviateSrcs(){
@@ -661,9 +686,10 @@ function generateMarkup() {
   filterAttributes();
   filterEmptyElements();
   abbreviateClasses();
+  abbreviateStyles();
+  abbreviateHrefs();
   abbreviateSrcs();
   abbreviateSrcSets();
-  abbreviateHrefs();
   abbreviateTitles();
   checkActionsAppliedInModal();
   convertTempDomNodeToIndentedOutputRichText();
