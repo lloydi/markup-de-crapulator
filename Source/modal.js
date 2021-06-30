@@ -1,16 +1,14 @@
-var supportsInert, modal, triggerEl;
-var body = document.querySelector('body');
-var nonModalContent = document.querySelector('#allPageContent');
-var modalCurtain = document.querySelector('.modal-curtain');
-var modalTriggers = document.querySelectorAll('.modal-trigger'); //test to see if browser supports `inert` attribute. If it does, we 
-//can run less JS to put items outside of modal out of play
-
-var testEl = document.createElement('div');
+const body = document.querySelector('body');
+const nonModalContent = document.querySelector('#allPageContent');
+const modalCurtain = document.querySelector('.modal-curtain');
+let supportsInert, modal, triggerEl;
+let modalTriggers = document.querySelectorAll('.modal-trigger'); //test to see if browser supports `inert` attribute. If it does, we 
+let testEl = document.createElement('div');
 supportsInert = 'inert' in testEl;
-var allFocusableElsOutsideModal = nonModalContent.querySelectorAll('input:not([disabled]),textarea:not([disabled]),select:not([disabled]),button:not([disabled]),a[href],iframe,object,embed,*[tabindex]:not([tabindex="-1"]),*[contenteditable=true]');
-var firstFocusable;
-var lastFocusable;
-var trapModalFocus = true;
+let allFocusableElsOutsideModal = nonModalContent.querySelectorAll('input:not([disabled]),textarea:not([disabled]),select:not([disabled]),button:not([disabled]),a[href],iframe,object,embed,*[tabindex]:not([tabindex="-1"]),*[contenteditable=true]');
+let firstFocusable;
+let lastFocusable;
+let trapModalFocus = true;
 
 modalCurtain.addEventListener('click', function (e) {
   closeModal();
@@ -51,7 +49,7 @@ function showModal(modalTrigger, e) {
 
   if (trapModalFocus) {
     //find focusable elements in case option to trap focus is set
-    var focusableEls = modal.querySelectorAll('input:not([disabled]),textarea:not([disabled]),select:not([disabled]),button:not([disabled]),a[href],iframe,object,embed,*[tabindex]:not([tabindex="-1"]),*[contenteditable=true]');
+    let focusableEls = modal.querySelectorAll('input:not([disabled]),textarea:not([disabled]),select:not([disabled]),button:not([disabled]),a[href],iframe,object,embed,*[tabindex]:not([tabindex="-1"]),*[contenteditable=true]');
     firstFocusable = focusableEls[0];
     lastFocusable = focusableEls[focusableEls.length - 1];
   } //hide content outside of modal to AT and make focusable elements temporarily unfocusable
@@ -83,7 +81,7 @@ function showModal(modalTrigger, e) {
   modal.removeAttribute('tabindex'); //set up this modal's close button behaviour
 
   e.preventDefault();
-  var mCloseButtons = modal.querySelectorAll('button.close, button.cancel');
+  let mCloseButtons = modal.querySelectorAll('button.close, button.cancel');
   Array.from(mCloseButtons).forEach(mCloseButton => {
     mCloseButton.addEventListener('click', function (e) {
       closeModal();
@@ -97,7 +95,7 @@ function closeModal() {
     nonModalContent.removeAttribute('inert');
   } else {
     nonModalContent.removeAttribute('aria-hidden');
-    var temporarilyNonFocusableEls = document.querySelectorAll('.temporarilyNonFocusable');
+    let temporarilyNonFocusableEls = document.querySelectorAll('.temporarilyNonFocusable');
     Array.from(temporarilyNonFocusableEls).forEach(function (temporarilyNonFocusableEl) {
       if (temporarilyNonFocusableEl.getAttribute('data-original-tabindex')) {
         temporarilyNonFocusableEl.setAttribute('tabindex', temporarilyNonFocusableEl.getAttribute('data-original-tabindex'));

@@ -40,6 +40,7 @@ const chkAbbreviateSrcSets = document.querySelector("#chkAbbreviateSrcSets");
 const chkAbbreviateHrefs = document.querySelector("#chkAbbreviateHrefs");
 const chkAbbreviateTitles = document.querySelector("#chkAbbreviateTitles");
 const pickFromListButtons = document.querySelectorAll(".pickFromList");
+const btnApplyAttributeSettings = document.querySelector("#btnApplyAttributeSettings");
 let raw = "";
 let indented = "";
 let indentStyle;
@@ -68,6 +69,26 @@ function initVals() {
   isFirstPass=true;
 }
 initVals();
+
+//----------------------------------------------------------
+//----------------------------------------------------------
+//----------------------------------------------------------
+function abbreviateAttribute(attr){
+  const allElsToBeAbbreviated = tempDOMDumpingGround.querySelectorAll("[" + attr +"]");
+  Array.from(allElsToBeAbbreviated).forEach((el) => {
+    el.setAttribute(attr,"…");
+  });
+}
+function stripAttribute(attr){
+  const allElsToBeStripped = tempDOMDumpingGround.querySelectorAll("[" + attr +"]");
+  Array.from(allElsToBeStripped).forEach((el) => {
+    el.removeAttribute(attr);
+  });
+}
+//----------------------------------------------------------
+//----------------------------------------------------------
+//----------------------------------------------------------
+
 function addAllEventListeners() {
   btnResetEverything.addEventListener("click", (e) => {
     if (confirm("This will also remove any stored/saved values in the attributes to strip as well as preferences. Only press OK if you're, um, OK with that…")){
@@ -177,18 +198,10 @@ function addAllEventListeners() {
     }
     btnCopyToClipboard.focus();
   });
-
-
-
-  //  Array.from(pickFromListButtons).forEach(pickFromListButton => {
-  //   pickFromListButton.addEventListener('click', e => {
-  //     alert("show dialog");
-  //   });
-  //  });
-   
-
-
-
+  btnApplyAttributeSettings.addEventListener('click', e => {
+    closeModal();
+    generateMarkup();
+  });
   btnDoAnotherPass.addEventListener("click", (e) => {
     isFirstPass=false;
     input.value = outputPlainText.textContent;
@@ -460,34 +473,34 @@ function generateMarkup() {
   }
 
   function filterAttributes() {
+    if (filterClass.checked) {
+      stripAttribute('class');
+    }
+    if (filterStyle.checked) {
+      stripAttribute('style');
+    }
+    if (filterOnclick.checked) {
+      stripAttribute('onclick');
+    }
+    if (filterOnClickReact.checked) {
+      stripAttribute('onClick');
+    }
     Array.from(allElsInTempDom).forEach((el) => {
       let attrs = el.attributes;
-      if (filterClass.checked) {
-        el.removeAttribute("class");
-      }
-      if (filterStyle.checked) {
-        el.removeAttribute("style");
-      }
-      if (filterOnclick.checked) {
-        el.removeAttribute("onclick");
-      }
-      if (filterOnClickReact.checked) {
-        el.removeAttribute("onClick");
-      }
       Array.from(attrs).forEach((attr) => {
         if (filterDataDash.checked) {
           if (attr.name.indexOf("data-") === 0) {
-            el.removeAttribute(attr.name);
+            stripAttribute(attr.name);
           }
         }
         if (filterAngularNgCrapAttributes1.checked) {
           if (attr.name.indexOf("ng-") === 0) {
-            el.removeAttribute(attr.name);
+            stripAttribute(attr.name);
           }
         }
         if (filterAngularNgCrapAttributes2.checked) {
           if (attr.name.indexOf("_ng") === 0) {
-            el.removeAttribute(attr.name);
+            stripAttribute(attr.name);
           }
         }
 
@@ -497,9 +510,8 @@ function generateMarkup() {
             arrFilterCustomAttr = arrFilterCustomAttr.trim();
             if (arrFilterCustomAttr !== "") {
               if (attr.name.indexOf(arrFilterCustomAttr) === 0) {
-                el.removeAttribute(attr.name);
+                stripAttribute(attr.name);
               }
-
             }
           });
         }
@@ -508,7 +520,7 @@ function generateMarkup() {
           Array.from(arrOtherMiscAttrs).forEach((arrOtherMiscAttr) => {
             arrOtherMiscAttr = arrOtherMiscAttr.trim();
             if (attr.name.toLowerCase() === arrOtherMiscAttr.toLowerCase()) {
-              el.removeAttribute(attr.name);
+              stripAttribute(attr.name);
             }
           });
         }
@@ -524,46 +536,53 @@ function generateMarkup() {
       emptyEls = tempDOMDumpingGround.querySelectorAll("*:empty");
     }
   }
+
   function abbreviateClasses(){
-    const allElsWithClass = tempDOMDumpingGround.querySelectorAll("[class]");
     if (chkAbbreviateClasses.checked) {
-      Array.from(allElsWithClass).forEach((el) => {
-        el.setAttribute("class","…");
-      });
+      abbreviateAttribute("class");
     } 
   }
   function abbreviateSrcs(){
-    const allElsWithSrc = tempDOMDumpingGround.querySelectorAll("[src]");
     if (chkAbbreviateSrcs.checked) {
-      Array.from(allElsWithSrc).forEach((el) => {
-        el.setAttribute("src","…");
-      });
+      abbreviateAttribute("src");
     } 
   }
   function abbreviateSrcSets(){
-    const allElsWithSrcSet = tempDOMDumpingGround.querySelectorAll("[srcset]");
     if (chkAbbreviateSrcSets.checked) {
-      Array.from(allElsWithSrcSet).forEach((el) => {
-        el.setAttribute("srcset","…");
-      });
+      abbreviateAttribute("srcset");
     } 
   }
   function abbreviateHrefs(){
-    const allHElsWithref = tempDOMDumpingGround.querySelectorAll("[href]");
     if (chkAbbreviateHrefs.checked) {
-      Array.from(allHElsWithref).forEach((el) => {
-        el.setAttribute("href","…");
-      });
+      abbreviateAttribute("href");
     }
   }
   function abbreviateTitles(){
-    const allTElsWittitle = tempDOMDumpingGround.querySelectorAll("[title]");
     if (chkAbbreviateTitles.checked) {
-      Array.from(allTElsWittitle).forEach((el) => {
-        el.setAttribute("title","…");
-      });
+      abbreviateAttribute("title");
     } 
   }
+
+  function checkActionsInModal() {
+    if (modal) {//modal has been opened and something has (possibly) been set
+      const radioButtonsSetInModal = modal.querySelectorAll('input[type=radio]:checked');
+      Array.from(radioButtonsSetInModal).forEach((radio) => {
+        const action = radio.getAttribute('id').split('_')[1];
+        const attribute = radio.getAttribute('data-attribute');
+        if (action==='abbrev') {
+          abbreviateAttribute(attribute);
+        }
+        if (action==='strip') {
+          stripAttribute(attribute);
+        }
+        if (action==='leave') {
+          // do bugger all
+        }
+      });
+    }
+  }
+
+
 
   // Convert back to indented outputRichText
   function convertTempDomNodeToIndentedOutputRichText() {
@@ -648,6 +667,7 @@ function generateMarkup() {
   abbreviateSrcSets();
   abbreviateHrefs();
   abbreviateTitles();
+  checkActionsInModal();
   convertTempDomNodeToIndentedOutputRichText();
   outputRichText.innerHTML = indented;
   afterSize = outputRichText.textContent.length;
