@@ -2031,7 +2031,7 @@ Also in this version:
 - [Vasily Polovnyov][vp] has sent a GitHub-like style and has implemented
   support for CSS @-rules and Ruby symbols.
 - Yura Zaripov has sent two styles: Brown Paper and School Book.
-- Oleg Volchkov has sent a definition for [Parser 3][p3].
+- Oleg Volchk_ov has sent a definition for [Parser 3][p3].
 
 [1]: http://softwaremaniacs.org/forum/highlightjs/6612/
 [p3]: http://www.parser.ru/

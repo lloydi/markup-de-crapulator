@@ -4,15 +4,15 @@ const outputPlainText = document.querySelector("#txtConvertedPlainText");
 const convertedRichTextWrapper = document.querySelector("#convertedRichTextWrapper");
 const convertedPlainTextWrapper = document.querySelector("#convertedPlainTextWrapper");
 const filterEmpty = document.querySelector("#chk_emptyTags");
-const filterClass = document.querySelector("#chk_class");
-const filterStyle = document.querySelector("#chk_style");
+const filterClass = document.querySelector("#chk_stripClassAttributes");
+const filterStyle = document.querySelector("#chk_stripStyleAttributes");
 const filterOnclick = document.querySelector("#chk_onclick");
-const filterOnClickReact = document.querySelector("#chk_onClickReact");
-const filterDataDash = document.querySelector("#chk_dataDash");
-const filterAngularNgCrapAttributes1 = document.querySelector("#chk_angularNgCrapAttributes1");
-const filterAngularNgCrapAttributes2 = document.querySelector("#chk_angularNgCrapAttributes2");
+const filterOnClickReact = document.querySelector("#chk_stripOnClickReactAttributes");
+const filterDataDash = document.querySelector("#chk_stripDataDashAttributes");
+const filterAngularNgCrapAttributes1 = document.querySelector("#chk_stripAngularCrapAttributes1");
+const filterAngularNgCrapAttributes2 = document.querySelector("#chk_stripAngularCrapAttributes2");
 const fartBigReductions = document.querySelector("#fartBigReductions");
-const filterAngularNgCrapTags = document.querySelector("#chk_angularNgCrapTags");
+const filterAngularNgCrapTags = document.querySelector("#chk_stripAngularCrapTags");
 const formatBrailleFriendlyOutput = document.querySelector("#chk_brailleFriendlyOutput");
 const filterAllHTMLcomments = document.querySelector("#chk_allHTMLcomments");
 const filterEmptyComments = document.querySelector("#chk_emptyHTMLComments");
@@ -34,10 +34,14 @@ const btnDoAnotherPass = document.querySelector("#btnDoAnotherPass");
 const btnRemovePointlessNestedElements = document.querySelector("#btnRemovePointlessNestedElements");
 const btnMorePreferences = document.querySelector("#btnMorePreferences");
 const btnResetEverything = document.querySelector("#btnResetEverything");
-const chkAbbreviateSrcs = document.querySelector("#chkAbbreviateSrcs");
-const chkAbbreviateSrcSets = document.querySelector("#chkAbbreviateSrcSets");
-const chkAbbreviateHrefs = document.querySelector("#chkAbbreviateHrefs");
-const chkAbbreviateTitles = document.querySelector("#chkAbbreviateTitles");
+const chk_abbreviateClasses = document.querySelector("#chk_abbreviateClasses");
+const chk_abbreviateStyles = document.querySelector("#chk_abbreviateStyles");
+const chk_abbreviateHrefs = document.querySelector("#chk_abbreviateHrefs");
+const chk_abbreviateSrcs = document.querySelector("#chk_abbreviateSrcs");
+const chk_abbreviateSrcSets = document.querySelector("#chk_abbreviateSrcSets");
+const chk_abbreviateTitles = document.querySelector("#chk_abbreviateTitles");
+const moreElAndAttributeOptionsButtons = document.querySelectorAll(".moreElAndAttributeOptions");
+const btnApplyAttributeSettings = document.querySelector("#btnApplyAttributeSettings");
 let raw = "";
 let indented = "";
 let indentStyle;
@@ -47,7 +51,7 @@ let urlEncoded = location.href.split("?markup=")[1];
 let beforeSize;
 let afterSize;
 let addTableMarkupChoiceSet;
-let isTableCell ;
+let isTableCell;
 let isTableHeader;
 let isTableBody;
 let isTableRow;
@@ -57,18 +61,33 @@ let isFirstPass;
 function initVals() {
   beforeSize = 0;
   afterSize = 0;
-  addTableMarkupChoiceSet=false;
+  addTableMarkupChoiceSet = false;
   isTableCell = false;
   isTableHeader = false;
   isTableBody = false;
   isTableRow = false;
-  updateMarkupWithEachChange=true;
-  isFirstPass=true;
+  updateMarkupWithEachChange = true;
+  isFirstPass = true;
 }
 initVals();
+
+function abbreviateAttribute(attr) {
+  const allElsToBeAbbreviated = tempDOMDumpingGround.querySelectorAll("[" + attr + "]");
+  Array.from(allElsToBeAbbreviated).forEach((el) => {
+    el.setAttribute(attr, "…");
+  });
+}
+function stripAttribute(attr) {
+  const allElsToBeStripped = tempDOMDumpingGround.querySelectorAll("[" + attr + "]");
+  Array.from(allElsToBeStripped).forEach((el) => {
+    el.removeAttribute(attr);
+  });
+}
+
 function addAllEventListeners() {
+
   btnResetEverything.addEventListener("click", (e) => {
-    if (confirm("This will also remove any stored/saved values in the attributes to strip as well as preferences. Only press OK if you're, um, OK with that…")){
+    if (confirm("This will also remove any stored/saved values in the attributes to strip as well as preferences. Only press OK if you're, um, OK with that…")) {
       initVals();
       input.value = "";
       input.focus();
@@ -84,7 +103,6 @@ function addAllEventListeners() {
         }
       }
     }
-
   });
   Array.from(indentRadios).forEach((radio) => {
     radio.addEventListener("change", (e) => {
@@ -105,22 +123,40 @@ function addAllEventListeners() {
       }
     });
   });
-  chkAbbreviateSrcs.addEventListener("click", (e) => {
+  chk_abbreviateClasses.addEventListener("click", (e) => {
+    if (chk_stripClassAttributes.checked) {
+      chk_stripClassAttributes.checked = false;
+      chk_abbreviateClasses.checked = true;
+    }
     if (updateMarkupWithEachChange) {
       generateMarkup();
     }
   });
-  chkAbbreviateSrcSets.addEventListener("click", (e) => {
+  chk_abbreviateStyles.addEventListener("click", (e) => {
+    if (chk_stripStyleAttributes.checked) {
+      chk_stripStyleAttributes.checked = false;
+      chk_abbreviateStyles.checked = true;
+    }
     if (updateMarkupWithEachChange) {
       generateMarkup();
     }
   });
-  chkAbbreviateHrefs.addEventListener("click", (e) => {
+  chk_abbreviateSrcs.addEventListener("click", (e) => {
     if (updateMarkupWithEachChange) {
       generateMarkup();
     }
   });
-  chkAbbreviateTitles.addEventListener("click", (e) => {
+  chk_abbreviateSrcSets.addEventListener("click", (e) => {
+    if (updateMarkupWithEachChange) {
+      generateMarkup();
+    }
+  });
+  chk_abbreviateHrefs.addEventListener("click", (e) => {
+    if (updateMarkupWithEachChange) {
+      generateMarkup();
+    }
+  });
+  chk_abbreviateTitles.addEventListener("click", (e) => {
     if (updateMarkupWithEachChange) {
       generateMarkup();
     }
@@ -130,21 +166,21 @@ function addAllEventListeners() {
   });
   filterCustomAttrs.addEventListener("keyup", (e) => {
     if (updateMarkupWithEachChange) {
-      if (e.keyCode!==9) {
+      if (e.keyCode !== 9) {
         generateMarkup();
       }
     }
   });
   filterotherMiscAttrs.addEventListener("keyup", (e) => {
     if (updateMarkupWithEachChange) {
-      if (e.keyCode!==9) {
+      if (e.keyCode !== 9) {
         generateMarkup();
       }
     }
   });
   filterAnyHTMLtag.addEventListener("keyup", (e) => {
     if (updateMarkupWithEachChange) {
-      if (e.keyCode!==9) {
+      if (e.keyCode !== 9) {
         generateMarkup();
       }
     }
@@ -153,7 +189,7 @@ function addAllEventListeners() {
     if (updateMarkupWithEachChange) {
       generateMarkup();
     }
-  })
+  });
   btnDecrapulate.addEventListener("click", (e) => {
     generateMarkup();
   });
@@ -161,17 +197,21 @@ function addAllEventListeners() {
     let wasInPlaintextMode = false;
     if (convertedRichTextWrapper.getAttribute("hidden")) {
       showPlainTextOutput();
-      wasInPlaintextMode=true;
+      wasInPlaintextMode = true;
     }
     outputRichText.focus();
-    document.execCommand('copy');
+    document.execCommand("copy");
     if (wasInPlaintextMode) {
       showPlainTextOutput();
     }
     btnCopyToClipboard.focus();
   });
+  btnApplyAttributeSettings.addEventListener("click", (e) => {
+    closeModal();
+    generateMarkup();
+  });
   btnDoAnotherPass.addEventListener("click", (e) => {
-    isFirstPass=false;
+    isFirstPass = false;
     input.value = outputPlainText.textContent;
     input.value = input.value.split("> </").join("></");
     input.value = input.value.split("<div></div>").join("");
@@ -181,14 +221,14 @@ function addAllEventListeners() {
   });
   btnRemovePointlessNestedElements.addEventListener("click", (e) => {
     if (confirm("This will remove *all* DIV or SPAN elements that have no attributes applied, flattening down the structure (and may no longer represent the reality of the markup you started with, nor any CSS that may have been wrtten based on that structure).\n\nIf that's what you want, hit the old 'OK' button…")) {
-      stripPointlessSpanOrDivElements(testDivForPointlessElements,['span','div']);
+      stripPointlessSpanOrDivElements(testDivForPointlessElements, ["span", "div"]);
     }
   });
-    btnMorePreferences.addEventListener("click", (e) => {
-    if (btnMorePreferences.getAttribute("aria-expanded")==="false") {
-        btnMorePreferences.setAttribute("aria-expanded","true");
+  btnMorePreferences.addEventListener("click", (e) => {
+    if (btnMorePreferences.getAttribute("aria-expanded") === "false") {
+      btnMorePreferences.setAttribute("aria-expanded", "true");
     } else {
-        btnMorePreferences.setAttribute("aria-expanded","false");
+      btnMorePreferences.setAttribute("aria-expanded", "false");
     }
   });
   Array.from(outputMarkupContainerTypeRads).forEach((radio) => {
@@ -209,6 +249,115 @@ function addAllEventListeners() {
       }
     });
   });
+  function keepCheckboxStatesBetweenMainDocumentAndModalInSync() {
+
+    const all_attributes_abbrev = document.querySelector("#all_attributes_abbrev");
+    const all_attributes_strip = document.querySelector("#all_attributes_strip");
+    const all_attributes_leave = document.querySelector("#all_attributes_leave");
+    const class_abbrev = document.querySelector("#class_abbrev");
+    const style_abbrev = document.querySelector("#style_abbrev");
+    const href_abbrev = document.querySelector("#href_abbrev");
+    const src_abbrev = document.querySelector("#src_abbrev");
+    const srcset_abbrev = document.querySelector("#srcset_abbrev");
+    const title_abbrev = document.querySelector("#title_abbrev");
+
+    const class_strip = document.querySelector("#class_strip");
+    const style_strip = document.querySelector("#style_strip");
+    const href_strip = document.querySelector("#href_strip");
+    const src_strip = document.querySelector("#src_strip");
+    const srcset_strip = document.querySelector("#srcset_strip");
+    const title_strip = document.querySelector("#title_strip");
+
+    const class_leave = document.querySelector("#class_leave");
+    const style_leave = document.querySelector("#style_leave");
+    const href_leave = document.querySelector("#href_leave");
+    const src_leave = document.querySelector("#src_leave");
+    const srcset_leave = document.querySelector("#srcset_leave");
+    const title_leave = document.querySelector("#title_leave");
+
+    all_attributes_abbrev.addEventListener("click", (e) => {
+      var allAbbrevRadios = document.querySelector("#listOfAttributes").querySelectorAll("[id*='_abbrev']");
+      Array.from(allAbbrevRadios).forEach((abbrevRadio) => {
+        abbrevRadio.click();
+      });
+    });
+    all_attributes_strip.addEventListener("click", (e) => {
+      var allStripRadios = document.querySelector("#listOfAttributes").querySelectorAll("[id*='_strip']");
+      Array.from(allStripRadios).forEach((stripRadio) => {
+        stripRadio.click();
+      });
+    });
+    all_attributes_leave.addEventListener("click", (e) => {
+      var allLeaveRadios = document.querySelector("#listOfAttributes").querySelectorAll("[id*='_leave']");
+      Array.from(allLeaveRadios).forEach((leaveRadio) => {
+        leaveRadio.click();
+      });
+    });
+
+    class_abbrev.addEventListener("click", (e) => {
+      chk_abbreviateClasses.checked = true;
+      chk_stripClassAttributes.checked = false;
+    });
+    style_abbrev.addEventListener("click", (e) => {
+      chk_abbreviateStyles.checked = true;
+      chk_stripStyleAttributes.checked = false;
+    });
+    href_abbrev.addEventListener("click", (e) => {
+      chk_abbreviateHrefs.checked = true;
+    });
+    src_abbrev.addEventListener("click", (e) => {
+      chk_abbreviateSrcs.checked = true;
+    });
+    srcset_abbrev.addEventListener("click", (e) => {
+      chk_abbreviateSrcSets.checked = true;
+    });
+    title_abbrev.addEventListener("click", (e) => {
+      chk_abbreviateTitles.checked = true;
+    });
+
+    class_strip.addEventListener("click", (e) => {
+      chk_abbreviateClasses.checked = false;
+      chk_stripClassAttributes.checked = true;
+    });
+    style_strip.addEventListener("click", (e) => {
+      chk_abbreviateStyles.checked = false;
+      chk_stripStyleAttributes.checked = true;
+    });
+    href_strip.addEventListener("click", (e) => {
+      chk_abbreviateHrefs.checked = false;
+    });
+    src_strip.addEventListener("click", (e) => {
+      chk_abbreviateSrcs.checked = false;
+    });
+    srcset_strip.addEventListener("click", (e) => {
+      chk_abbreviateSrcSets.checked = false;
+    });
+    title_strip.addEventListener("click", (e) => {
+      chk_abbreviateTitles.checked = false;
+    });
+
+    class_leave.addEventListener("click", (e) => {
+      chk_abbreviateClasses.checked = false;
+      chk_stripClassAttributes.checked = false;
+    });
+    style_leave.addEventListener("click", (e) => {
+      chk_abbreviateStyles.checked = false;
+      chk_stripStyleAttributes.checked = false;
+    });
+    href_leave.addEventListener("click", (e) => {
+      chk_abbreviateHrefs.checked = false;
+    });
+    src_leave.addEventListener("click", (e) => {
+      chk_abbreviateSrcs.checked = false;
+    });
+    srcset_leave.addEventListener("click", (e) => {
+      chk_abbreviateSrcSets.checked = false;
+    });
+    title_leave.addEventListener("click", (e) => {
+      chk_abbreviateTitles.checked = false;
+    });
+  }
+  keepCheckboxStatesBetweenMainDocumentAndModalInSync();
   triggerClicksForUrlEncodedData();
 }
 function removeIndentsInInputText() {
@@ -277,45 +426,45 @@ function applyIndenting() {
     indentStr += indentStyle;
   }
 }
-function loadAndSaveData(){
-  let userEnteredData_id,userEnteredData_text;
+function loadAndSaveData() {
+  let userEnteredData_id, userEnteredData_text;
   const userEnteredTextFields = document.querySelectorAll("[data-user-entered]");
-  
+
   function savePreferredAttributesAndTagsToStrip(timeout, field, time) {
-      clearTimeout(timeout);
-      timeout = setTimeout(function () {
-          userEnteredData_id = field.getAttribute("id");
-          userEnteredData_text = field.value;
-          localStorage.setItem("dataStorage-" + userEnteredData_id, userEnteredData_text);
-        }, time);
-        return timeout;
-      }
-      function loadPreferredAttributesAndTagsToStrip() {
-        for (var key in localStorage) {
-          if (key.includes("dataStorage-")) {
-            const id = key.replace("dataStorage-", "");
-            if (document.querySelector("#" + id)) {
-              if (localStorage.getItem(key)) {
-                document.querySelector("#" + id).value = localStorage.getItem(key);
-              }
-            }
+    clearTimeout(timeout);
+    timeout = setTimeout(function () {
+      userEnteredData_id = field.getAttribute("id");
+      userEnteredData_text = field.value;
+      localStorage.setItem("dataStorage-" + userEnteredData_id, userEnteredData_text);
+    }, time);
+    return timeout;
+  }
+  function loadPreferredAttributesAndTagsToStrip() {
+    for (var key in localStorage) {
+      if (key.includes("dataStorage-")) {
+        const id = key.replace("dataStorage-", "");
+        if (document.querySelector("#" + id)) {
+          if (localStorage.getItem(key)) {
+            document.querySelector("#" + id).value = localStorage.getItem(key);
           }
         }
       }
+    }
+  }
 
   Array.from(userEnteredTextFields).forEach((field) => {
-    field.setAttribute("data-user-entered","true");
+    field.setAttribute("data-user-entered", "true");
     let timeout = null;
     field.addEventListener("blur", (e) => {
       timeout = savePreferredAttributesAndTagsToStrip(timeout, field, 1);
-    })
+    });
     field.addEventListener("keyup", (e) => {
-     timeout = savePreferredAttributesAndTagsToStrip(timeout, field, 3000);
-    })
+      timeout = savePreferredAttributesAndTagsToStrip(timeout, field, 3000);
+    });
   });
-  
-  document.addEventListener("DOMContentLoaded", function(){
-  loadPreferredAttributesAndTagsToStrip();
+
+  document.addEventListener("DOMContentLoaded", function () {
+    loadPreferredAttributesAndTagsToStrip();
   });
 }
 function saveOtherPrefs() {
@@ -327,38 +476,36 @@ function saveOtherPrefs() {
     localStorage.setItem("dataStorage-fartBigReductions", "true");
   } else {
     localStorage.setItem("dataStorage-fartBigReductions", "false");
-
   }
   if (document.querySelector("#chk_brailleFriendlyOutput").checked) {
     localStorage.setItem("dataStorage-brailleFriendlyOutput", "true");
   } else {
     localStorage.setItem("dataStorage-brailleFriendlyOutput", "false");
-
   }
 }
 function loadOtherPrefs() {
-  document.querySelector("[name='rad_Indentstyle'][value='" + localStorage.getItem("dataStorage-indentStyle") + "']").checked=true;
-  document.querySelector("[name='rad_Indentdepth'][value='" + localStorage.getItem("dataStorage-indentDepth") + "']").checked=true;
-  if (localStorage.getItem("dataStorage-brailleFriendlyOutput")==="true") {
-    document.querySelector("#chk_brailleFriendlyOutput").checked=true;
+  document.querySelector("[name='rad_Indentstyle'][value='" + localStorage.getItem("dataStorage-indentStyle") + "']").checked = true;
+  document.querySelector("[name='rad_Indentdepth'][value='" + localStorage.getItem("dataStorage-indentDepth") + "']").checked = true;
+  if (localStorage.getItem("dataStorage-brailleFriendlyOutput") === "true") {
+    document.querySelector("#chk_brailleFriendlyOutput").checked = true;
   }
-  if (localStorage.getItem("dataStorage-outputMarkupContainerType")==="plaintext") {
-    document.querySelector("#outputMarkupContainerType_plaintext").checked=true;
+  if (localStorage.getItem("dataStorage-outputMarkupContainerType") === "plaintext") {
+    document.querySelector("#outputMarkupContainerType_plaintext").checked = true;
     showPlainTextOutput();
   }
-  if (localStorage.getItem("dataStorage-whenShouldTheMarkupUpdate")==="OnlyWithSubmit") {
-    document.querySelector("#whenShouldTheMarkupUpdate_OnlyWithSubmit").checked=true;
-    updateMarkupWithEachChange=false;
+  if (localStorage.getItem("dataStorage-whenShouldTheMarkupUpdate") === "OnlyWithSubmit") {
+    document.querySelector("#whenShouldTheMarkupUpdate_OnlyWithSubmit").checked = true;
+    updateMarkupWithEachChange = false;
   }
-  if (localStorage.getItem("dataStorage-fartBigReductions")==="true") {
-    document.querySelector("#fartBigReductions").checked=true;
+  if (localStorage.getItem("dataStorage-fartBigReductions") === "true") {
+    document.querySelector("#fartBigReductions").checked = true;
   }
 }
 function stripPointlessSpanOrDivElements(startElement, toStrip) {
-  testDivForPointlessElements.innerHTML=outputPlainText.value;
+  testDivForPointlessElements.innerHTML = outputPlainText.value;
   const test = document.createElement("div");
   test.innerHTML = startElement.innerHTML;
-  [...test.querySelectorAll('*')].forEach(elem => {
+  [...test.querySelectorAll("*")].forEach((elem) => {
     if (!elem.attributes.length && toStrip.includes(elem.tagName.toLowerCase())) {
       if (elem.children.length) elem.replaceWith(...elem.children);
       else elem.replaceWith(elem.innerText);
@@ -369,14 +516,13 @@ function stripPointlessSpanOrDivElements(startElement, toStrip) {
   btnDecrapulate.click();
 }
 function generateMarkup() {
-
   //String manipulations (on raw)
   function addTableMarkupToOrphanedInnerTableElements() {
     isTableCell = false;
     isTableHeader = false;
     isTableBody = false;
     isTableRow = false;
-    if ((raw.indexOf("<th") === 0) || (raw.indexOf("<td") === 0)) {
+    if (raw.indexOf("<th") === 0 || raw.indexOf("<td") === 0) {
       isTableCell = true;
       isTableHeader = false;
       isTableBody = false;
@@ -441,34 +587,40 @@ function generateMarkup() {
   }
 
   function filterAttributes() {
+    if (filterClass.checked) {
+      stripAttribute("class");
+      if (chk_abbreviateClasses.checked) {
+        chk_abbreviateClasses.checked = false;
+      }
+    }
+    if (filterStyle.checked) {
+      stripAttribute("style");
+      if (chk_abbreviateStyles.checked) {
+        chk_abbreviateStyles.checked = false;
+      }
+    }
+    if (filterOnclick.checked) {
+      stripAttribute("onclick");
+    }
+    if (filterOnClickReact.checked) {
+      stripAttribute("onClick");
+    }
     Array.from(allElsInTempDom).forEach((el) => {
       let attrs = el.attributes;
-      if (filterClass.checked) {
-        el.removeAttribute("class");
-      }
-      if (filterStyle.checked) {
-        el.removeAttribute("style");
-      }
-      if (filterOnclick.checked) {
-        el.removeAttribute("onclick");
-      }
-      if (filterOnClickReact.checked) {
-        el.removeAttribute("onClick");
-      }
       Array.from(attrs).forEach((attr) => {
         if (filterDataDash.checked) {
           if (attr.name.indexOf("data-") === 0) {
-            el.removeAttribute(attr.name);
+            stripAttribute(attr.name);
           }
         }
         if (filterAngularNgCrapAttributes1.checked) {
           if (attr.name.indexOf("ng-") === 0) {
-            el.removeAttribute(attr.name);
+            stripAttribute(attr.name);
           }
         }
         if (filterAngularNgCrapAttributes2.checked) {
           if (attr.name.indexOf("_ng") === 0) {
-            el.removeAttribute(attr.name);
+            stripAttribute(attr.name);
           }
         }
 
@@ -478,9 +630,8 @@ function generateMarkup() {
             arrFilterCustomAttr = arrFilterCustomAttr.trim();
             if (arrFilterCustomAttr !== "") {
               if (attr.name.indexOf(arrFilterCustomAttr) === 0) {
-                el.removeAttribute(attr.name);
+                stripAttribute(attr.name);
               }
-
             }
           });
         }
@@ -489,7 +640,7 @@ function generateMarkup() {
           Array.from(arrOtherMiscAttrs).forEach((arrOtherMiscAttr) => {
             arrOtherMiscAttr = arrOtherMiscAttr.trim();
             if (attr.name.toLowerCase() === arrOtherMiscAttr.toLowerCase()) {
-              el.removeAttribute(attr.name);
+              stripAttribute(attr.name);
             }
           });
         }
@@ -505,51 +656,73 @@ function generateMarkup() {
       emptyEls = tempDOMDumpingGround.querySelectorAll("*:empty");
     }
   }
-  function abbreviateSrcs(){
-    const allElsWithSrc = tempDOMDumpingGround.querySelectorAll("[src]");
-    if (chkAbbreviateSrcs.checked) {
-      Array.from(allElsWithSrc).forEach((el) => {
-        el.setAttribute("src","…");
-      });
-    } 
-  }
-  function abbreviateSrcSets(){
-    const allElsWithSrcSet = tempDOMDumpingGround.querySelectorAll("[srcset]");
-    if (chkAbbreviateSrcSets.checked) {
-      Array.from(allElsWithSrcSet).forEach((el) => {
-        el.setAttribute("srcset","…");
-      });
-    } 
-  }
-  function abbreviateHrefs(){
-    const allHElsWithref = tempDOMDumpingGround.querySelectorAll("[href]");
-    if (chkAbbreviateHrefs.checked) {
-      Array.from(allHElsWithref).forEach((el) => {
-        el.setAttribute("href","…");
-      });
+
+  function abbreviateClasses() {
+    if (chk_abbreviateClasses.checked) {
+      abbreviateAttribute("class");
     }
   }
-  function abbreviateTitles(){
-    const allTElsWittitle = tempDOMDumpingGround.querySelectorAll("[title]");
-    if (chkAbbreviateTitles.checked) {
-      Array.from(allTElsWittitle).forEach((el) => {
-        el.setAttribute("title","…");
+  function abbreviateStyles() {
+    if (chk_abbreviateStyles.checked) {
+      abbreviateAttribute("style");
+    }
+  }
+  function abbreviateSrcs() {
+    if (chk_abbreviateSrcs.checked) {
+      abbreviateAttribute("src");
+    }
+  }
+  function abbreviateSrcSets() {
+    if (chk_abbreviateSrcSets.checked) {
+      abbreviateAttribute("srcset");
+    }
+  }
+  function abbreviateHrefs() {
+    if (chk_abbreviateHrefs.checked) {
+      abbreviateAttribute("href");
+    }
+  }
+  function abbreviateTitles() {
+    if (chk_abbreviateTitles.checked) {
+      abbreviateAttribute("title");
+    }
+  }
+
+  function checkActionsAppliedInModal() {
+    if (modal) {
+      //modal has been opened and something has (possibly) been set
+      const radioButtonsSetInModal = modal.querySelectorAll("input[type=radio]:checked");
+      Array.from(radioButtonsSetInModal).forEach((radio) => {
+        const action = radio.getAttribute("id").split("_")[1];
+        const attribute = radio.getAttribute("data-attribute");
+        if (action === "abbrev") {
+          abbreviateAttribute(attribute);
+        }
+        if (action === "strip") {
+          stripAttribute(attribute);
+        }
+        if (action === "leave") {
+          // do bugger all
+        }
       });
-    } 
+    }
   }
 
   // Convert back to indented outputRichText
   function convertTempDomNodeToIndentedOutputRichText() {
-    indented = tempDOMDumpingGround.innerHTML.split("><").join(">\n<").replaceAll(/<(?<tag>\w+)([^>]*)>\n<\/\k<tag>>/g, "<$1$2></$1>");
+    indented = tempDOMDumpingGround.innerHTML
+      .split("><")
+      .join(">\n<")
+      .replaceAll(/<(?<tag>\w+)([^>]*)>\n<\/\k<tag>>/g, "<$1$2></$1>");
     if (formatBrailleFriendlyOutput.checked) {
-      var arrayOfLines = indented.split('\n');
+      var arrayOfLines = indented.split("\n");
       for (let i = 0; i < arrayOfLines.length; i++) {
         if (arrayOfLines[i].length > 80) {
-          arrayOfLines[i] = arrayOfLines[i].replace(/(.{1,80})/g, '$1\n');
+          arrayOfLines[i] = arrayOfLines[i].replace(/(.{1,80})/g, "$1\n");
         }
       }
       indented = arrayOfLines.join("\n");
-      indented = indented.replace(/\n\n/g, '\n');
+      indented = indented.replace(/\n\n/g, "\n");
     } else {
       indented = indent.js(indented, { tabString: indentStr });
     }
@@ -573,14 +746,14 @@ function generateMarkup() {
     }
     outputRichText.textContent = outputRichText.textContent.trim();
     outputPlainText.textContent = outputRichText.textContent.trim();
-    if (outputRichText.textContent.length>0) {
+    if (outputRichText.textContent.length > 0) {
       btnCopyToClipboard.removeAttribute("disabled");
       btnDoAnotherPass.removeAttribute("disabled");
       btnRemovePointlessNestedElements.removeAttribute("disabled");
     } else {
-      btnCopyToClipboard.setAttribute("disabled","disabled");
-      btnDoAnotherPass.setAttribute("disabled","disabled");
-      btnRemovePointlessNestedElements.setAttribute("disabled","disabled");
+      btnCopyToClipboard.setAttribute("disabled", "disabled");
+      btnDoAnotherPass.setAttribute("disabled", "disabled");
+      btnRemovePointlessNestedElements.setAttribute("disabled", "disabled");
     }
   }
   // Other stuff
@@ -597,7 +770,7 @@ function generateMarkup() {
   function celebrateBigReductionsWithANiceLongFart() {
     if (fartBigReductions.checked) {
       if (percentage < 15) {
-        var audio = new Audio('longfart.mp3');
+        var audio = new Audio("longfart.mp3");
         audio.play();
       }
     }
@@ -616,20 +789,23 @@ function generateMarkup() {
   filterHtmlElements();
   filterAttributes();
   filterEmptyElements();
+  abbreviateClasses();
+  abbreviateStyles();
+  abbreviateHrefs();
   abbreviateSrcs();
   abbreviateSrcSets();
-  abbreviateHrefs();
   abbreviateTitles();
+  checkActionsAppliedInModal();
   convertTempDomNodeToIndentedOutputRichText();
   outputRichText.innerHTML = indented;
   afterSize = outputRichText.textContent.length;
   let percentage = ((afterSize / beforeSize) * 100).toFixed(2);
-  log.innerHTML = "<span class='visually-hidden'>Markup updated. </span>Size before: <span>" + beforeSize + " characters</span>. Size after: <span>" + afterSize + " characters</span>. Cleaned/indented = <span>" + percentage + "%</span> of original markup<div aria-hidden=\"true\" id=\"turd\"></div>";
+  log.innerHTML = "<span class='visually-hidden'>Markup updated. </span>Size before: <span>" + beforeSize + " characters</span>. Size after: <span>" + afterSize + " characters</span>. Cleaned/indented = <span>" + percentage + '%</span> of original markup<div aria-hidden="true" id="turd"></div>';
   celebrateBigReductionsWithANiceLongFart();
   removeAddedTableMarkup();
   hljs.highlightBlock(outputRichText);
   const turd = document.querySelector("#turd");
-  turd.style.width=percentage+"%";
+  turd.style.width = percentage + "%";
 }
 addAllEventListeners();
 loadAndSaveData();
