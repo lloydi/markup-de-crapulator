@@ -85,6 +85,7 @@ function stripAttribute(attr) {
 }
 
 function addAllEventListeners() {
+
   btnResetEverything.addEventListener("click", (e) => {
     if (confirm("This will also remove any stored/saved values in the attributes to strip as well as preferences. Only press OK if you're, um, OK with that…")) {
       initVals();
@@ -248,6 +249,92 @@ function addAllEventListeners() {
       }
     });
   });
+  function keepCheckboxStatesBetweenMainDocumentAndModalInSync() {
+    const class_abbrev = document.querySelector("#class_abbrev");
+    const style_abbrev = document.querySelector("#style_abbrev");
+    const href_abbrev = document.querySelector("#href_abbrev");
+    const src_abbrev = document.querySelector("#src_abbrev");
+    const srcset_abbrev = document.querySelector("#srcset_abbrev");
+    const title_abbrev = document.querySelector("#title_abbrev");
+
+    const class_strip = document.querySelector("#class_strip");
+    const style_strip = document.querySelector("#style_strip");
+    const href_strip = document.querySelector("#href_strip");
+    const src_strip = document.querySelector("#src_strip");
+    const srcset_strip = document.querySelector("#srcset_strip");
+    const title_strip = document.querySelector("#title_strip");
+
+    const class_leave = document.querySelector("#class_leave");
+    const style_leave = document.querySelector("#style_leave");
+    const href_leave = document.querySelector("#href_leave");
+    const src_leave = document.querySelector("#src_leave");
+    const srcset_leave = document.querySelector("#srcset_leave");
+    const title_leave = document.querySelector("#title_leave");
+
+    class_abbrev.addEventListener("click", (e) => {
+      chk_abbreviateClasses.checked = true;
+      chk_stripClassAttributes.checked = false;
+    });
+    style_abbrev.addEventListener("click", (e) => {
+      chk_abbreviateStyles.checked = true;
+      chk_stripStyleAttributes.checked = false;
+    });
+    href_abbrev.addEventListener("click", (e) => {
+      chk_abbreviateHrefs.checked = true;
+    });
+    src_abbrev.addEventListener("click", (e) => {
+      chk_abbreviateSrcs.checked = true;
+    });
+    srcset_abbrev.addEventListener("click", (e) => {
+      chk_abbreviateSrcSets.checked = true;
+    });
+    title_abbrev.addEventListener("click", (e) => {
+      chk_abbreviateTitles.checked = true;
+    });
+
+    class_strip.addEventListener("click", (e) => {
+      chk_abbreviateClasses.checked = false;
+      chk_stripClassAttributes.checked = true;
+    });
+    style_strip.addEventListener("click", (e) => {
+      chk_abbreviateStyles.checked = false;
+      chk_stripStyleAttributes.checked = true;
+    });
+    href_strip.addEventListener("click", (e) => {
+      chk_abbreviateHrefs.checked = false;
+    });
+    src_strip.addEventListener("click", (e) => {
+      chk_abbreviateSrcs.checked = false;
+    });
+    srcset_strip.addEventListener("click", (e) => {
+      chk_abbreviateSrcSets.checked = false;
+    });
+    title_strip.addEventListener("click", (e) => {
+      chk_abbreviateTitles.checked = false;
+    });
+
+    class_leave.addEventListener("click", (e) => {
+      chk_abbreviateClasses.checked = false;
+      chk_stripClassAttributes.checked = false;
+    });
+    style_leave.addEventListener("click", (e) => {
+      chk_abbreviateStyles.checked = false;
+      chk_stripStyleAttributes.checked = false;
+    });
+    href_leave.addEventListener("click", (e) => {
+      chk_abbreviateHrefs.checked = false;
+    });
+    src_leave.addEventListener("click", (e) => {
+      chk_abbreviateSrcs.checked = false;
+    });
+    srcset_leave.addEventListener("click", (e) => {
+      chk_abbreviateSrcSets.checked = false;
+    });
+    title_leave.addEventListener("click", (e) => {
+      chk_abbreviateTitles.checked = false;
+    });
+  }
+  keepCheckboxStatesBetweenMainDocumentAndModalInSync();
   triggerClicksForUrlEncodedData();
 }
 function removeIndentsInInputText() {
