@@ -250,6 +250,10 @@ function addAllEventListeners() {
     });
   });
   function keepCheckboxStatesBetweenMainDocumentAndModalInSync() {
+
+    const all_attributes_abbrev = document.querySelector("#all_attributes_abbrev");
+    const all_attributes_strip = document.querySelector("#all_attributes_strip");
+    const all_attributes_leave = document.querySelector("#all_attributes_leave");
     const class_abbrev = document.querySelector("#class_abbrev");
     const style_abbrev = document.querySelector("#style_abbrev");
     const href_abbrev = document.querySelector("#href_abbrev");
@@ -270,6 +274,25 @@ function addAllEventListeners() {
     const src_leave = document.querySelector("#src_leave");
     const srcset_leave = document.querySelector("#srcset_leave");
     const title_leave = document.querySelector("#title_leave");
+
+    all_attributes_abbrev.addEventListener("click", (e) => {
+      var allAbbrevRadios = document.querySelector("#listOfAttributes").querySelectorAll("[id*='_abbrev']");
+      Array.from(allAbbrevRadios).forEach((abbrevRadio) => {
+        abbrevRadio.click();
+      });
+    });
+    all_attributes_strip.addEventListener("click", (e) => {
+      var allStripRadios = document.querySelector("#listOfAttributes").querySelectorAll("[id*='_strip']");
+      Array.from(allStripRadios).forEach((stripRadio) => {
+        stripRadio.click();
+      });
+    });
+    all_attributes_leave.addEventListener("click", (e) => {
+      var allLeaveRadios = document.querySelector("#listOfAttributes").querySelectorAll("[id*='_leave']");
+      Array.from(allLeaveRadios).forEach((leaveRadio) => {
+        leaveRadio.click();
+      });
+    });
 
     class_abbrev.addEventListener("click", (e) => {
       chk_abbreviateClasses.checked = true;
