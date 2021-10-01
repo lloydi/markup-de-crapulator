@@ -57,6 +57,8 @@ let isTableBody;
 let isTableRow;
 let updateMarkupWithEachChange;
 let isFirstPass;
+let suppressalerts = (location.href.indexOf("suppressalerts=true")!==-1);
+let resetOK=false;
 
 function initVals() {
   beforeSize = 0;
@@ -87,7 +89,14 @@ function stripAttribute(attr) {
 function addAllEventListeners() {
 
   btnResetEverything.addEventListener("click", (e) => {
-    if (confirm("This will also remove any stored/saved values in the attributes to strip as well as preferences. Only press OK if you're, um, OK with that…")) {
+    if (!suppressalerts) {
+      if (confirm("This will also remove any stored/saved values in the attributes to strip as well as preferences. Only press OK if you're, um, OK with that…")) {
+        resetOK=true;
+      }
+    } else {
+      resetOK=true;
+    }
+    if (resetOK) {
       initVals();
       input.value = "";
       input.focus();
@@ -220,7 +229,15 @@ function addAllEventListeners() {
     btnDecrapulate.click();
   });
   btnRemovePointlessNestedElements.addEventListener("click", (e) => {
-    if (confirm("This will remove *all* DIV or SPAN elements that have no attributes applied, flattening down the structure (and may no longer represent the reality of the markup you started with, nor any CSS that may have been wrtten based on that structure).\n\nIf that's what you want, hit the old 'OK' button…")) {
+    let flattenOK = false;
+    if (!suppressalerts) {
+      if (confirm("This will remove *all* DIV or SPAN elements that have no attributes applied, flattening down the structure (and may no longer represent the reality of the markup you started with, nor any CSS that may have been wrtten based on that structure).\n\nIf that's what you want, hit the old 'OK' button…")) {
+        flattenOK=true;
+      }
+    } else {
+      flattenOK=true;
+    }
+    if (flattenOK) {
       stripPointlessSpanOrDivElements(testDivForPointlessElements, ["span", "div"]);
     }
   });
