@@ -30,6 +30,11 @@ const filterCustomAttrs = document.querySelector("#txt_customAttrs");
 const filterotherMiscAttrs = document.querySelector("#txt_otherMiscAttrs");
 const filterAnyHTMLtag = document.querySelector("#txt_anyHTMLtag");
 const removeAll = document.querySelector("#removeAll");
+if ((typeof kmTrigger !=="undefined")) {
+ var tempDOMDumpingGroundNew = document.createElement("div");
+ tempDOMDumpingGroundNew.setAttribute("id","tempDOMDumpingGround");
+ document.body.appendChild(tempDOMDumpingGroundNew);
+}
 const tempDOMDumpingGround = document.querySelector("#tempDOMDumpingGround");
 const testDivForPointlessElements = document.querySelector("#testDivForPointlessElements");
 const log = document.querySelector("#log");
@@ -54,8 +59,8 @@ const moreElAndAttributeOptionsButtons = document.querySelectorAll(".moreElAndAt
 const btnApplyAttributeSettings = document.querySelector("#btnApplyAttributeSettings");
 let raw = "";
 let indented = "";
-let indentStyle;
-let indentDepth;
+let indentStyle = "space";
+let indentDepth = "1";
 let indentStr = "";
 let urlEncoded = location.href.split("?markup=")[1];
 let beforeSize;
@@ -442,8 +447,12 @@ function unsetAllCheckboxes() {
 }
 function applyIndenting() {
   indentStr = "";
-  indentStyle = document.querySelector("[name=rad_Indentstyle]:checked").value;
-  indentDepth = document.querySelector("[name=rad_Indentdepth]:checked").value;
+
+  if ((typeof kmTrigger ==="undefined")) {
+   indentStyle = document.querySelector("[name=rad_Indentstyle]:checked").value;
+   indentDepth = document.querySelector("[name=rad_Indentdepth]:checked").value;
+  }
+
   if (indentStyle === "space") {
     indentStyle = " "; //space character
   } else {
@@ -586,21 +595,36 @@ function generateMarkup() {
     }
   }
   function filterComments() {
+   if ((typeof kmTrigger ==="undefined")) {
     if (filterAllHTMLcomments.checked) {
       raw = raw.replace(/<!--(.*?)-->/g, "");
     }
     if (filterEmptyComments.checked) {
       raw = raw.replace(/<!--(-*?)-->/g, "");
     }
+   } else {
+    //TODO
+   }
+
+
+
   }
   function filterAngularTags() {
+
+   if ((typeof kmTrigger ==="undefined")) {
     if (filterAngularNgCrapTags.checked) {
       raw = raw.replace(/<ng-(.*?)>/g, "");
       raw = raw.replace(/<\/ng-(.*?)>/g, "");
     }
+   } else {
+    //TODO
+   }
+
+
   }
   // DOM traversal operations
   function filterHtmlElements() {
+   if ((typeof kmTrigger ==="undefined")) {
     if (filterAnyHTMLtag.value !== "") {
       let arrAnyHTMLtags = filterAnyHTMLtag.value.split(",");
       Array.from(arrAnyHTMLtags).forEach((arrAnyHTMLtag) => {
@@ -611,9 +635,13 @@ function generateMarkup() {
         });
       });
     }
+   } else {
+    //TODO
+   }
   }
 
   function filterAttributes() {
+   if ((typeof kmIndented ==="undefined")) {
     if (filterClass.checked) {
       stripAttribute("class");
       if (chk_abbreviateClasses.checked) {
@@ -673,14 +701,21 @@ function generateMarkup() {
         }
       });
     });
+   } else {
+    //TODO
+   }
   }
   function filterEmptyElements() {
     let emptyEls = tempDOMDumpingGround.querySelectorAll(":empty:not(area):not(base):not(br):not(col):not(embed):not(hr):not(img):not(input):not(keygen):not(link):not(meta):not(param):not(source):not(track):not(wbr)");
-    if (filterEmpty.checked) {
-      Array.from(emptyEls).forEach((el) => {
-        el.parentNode.removeChild(el);
-      });
-      emptyEls = tempDOMDumpingGround.querySelectorAll("*:empty");
+    if ((typeof kmTrigger ==="undefined")) {
+     if (filterEmpty.checked) {
+       Array.from(emptyEls).forEach((el) => {
+         el.parentNode.removeChild(el);
+       });
+       emptyEls = tempDOMDumpingGround.querySelectorAll("*:empty");
+     }
+    } else {
+     //TODO
     }
   }
 
@@ -716,6 +751,7 @@ function generateMarkup() {
   }
 
   function checkActionsAppliedInModal() {
+   if ((typeof kmTrigger ==="undefined")) {
     if (modal) {
       //modal has been opened and something has (possibly) been set
       const radioButtonsSetInModal = modal.querySelectorAll("input[type=radio]:checked");
@@ -733,6 +769,9 @@ function generateMarkup() {
         }
       });
     }
+   } else {
+    //TODO
+   }
   }
 
   // Convert back to indented outputRichText
@@ -741,17 +780,21 @@ function generateMarkup() {
       .split("><")
       .join(">\n<")
       .replaceAll(/<(?<tag>\w+)([^>]*)>\n<\/\k<tag>>/g, "<$1$2></$1>");
-    if (formatBrailleFriendlyOutput.checked) {
-      var arrayOfLines = indented.split("\n");
-      for (let i = 0; i < arrayOfLines.length; i++) {
-        if (arrayOfLines[i].length > 80) {
-          arrayOfLines[i] = arrayOfLines[i].replace(/(.{1,80})/g, "$1\n");
-        }
-      }
-      indented = arrayOfLines.join("\n");
-      indented = indented.replace(/\n\n/g, "\n");
+    if ((typeof kmTrigger ==="undefined")) {
+     if (formatBrailleFriendlyOutput.checked) {
+       var arrayOfLines = indented.split("\n");
+       for (let i = 0; i < arrayOfLines.length; i++) {
+         if (arrayOfLines[i].length > 80) {
+           arrayOfLines[i] = arrayOfLines[i].replace(/(.{1,80})/g, "$1\n");
+         }
+       }
+       indented = arrayOfLines.join("\n");
+       indented = indented.replace(/\n\n/g, "\n");
+     } else {
+       indented = indent.js(indented, { tabString: indentStr });
+     }
     } else {
-      indented = indent.js(indented, { tabString: indentStr });
+     //TODO
     }
     indented = indented.split("<").join("&lt;");
     indented = indented.split(">").join("&gt;");
@@ -791,7 +834,11 @@ function generateMarkup() {
       raw = raw.replace(/%2F/g, "/");
       input.value = raw;
     } else {
+     if ((typeof kmTrigger ==="undefined")) {
       raw = document.querySelector("#txtRaw").value;
+     } else {
+      raw = document.kmvar.Markup1Raw;
+     }
     }
   }
   function celebrateBigReductionsWithANiceLongFart() {
@@ -816,37 +863,53 @@ function generateMarkup() {
   filterHtmlElements();
   filterAttributes();
   filterEmptyElements();
-  abbreviateClasses();
-  abbreviateStyles();
-  abbreviateHrefs();
-  abbreviateSrcs();
-  abbreviateSrcSets();
-  abbreviateTitles();
+  if ((typeof kmTrigger ==="undefined")) {
+   abbreviateClasses();
+   abbreviateStyles();
+   abbreviateHrefs();
+   abbreviateSrcs();
+   abbreviateSrcSets();
+   abbreviateTitles();
+  } else {
+   //TODO
+   // abbreviateAttribute("class");
+   // abbreviateAttribute("style");
+   // abbreviateAttribute("src");
+   // abbreviateAttribute("srcset");
+   // abbreviateAttribute("href");
+   // abbreviateAttribute("title");
+  }
+
   checkActionsAppliedInModal();
   convertTempDomNodeToIndentedOutputRichText();
-  outputRichText.innerHTML = indented;
-  afterSize = outputRichText.textContent.length;
-  let percentage = ((afterSize / beforeSize) * 100).toFixed(2);
-  log.innerHTML = "<span class='visually-hidden'>Markup updated. </span>Size before: <span>" + beforeSize + " characters</span>. Size after: <span>" + afterSize + " characters</span>. Cleaned/indented = <span>" + percentage + '%</span> of original markup<div aria-hidden="true" id="turd"></div>';
-  celebrateBigReductionsWithANiceLongFart();
-  removeAddedTableMarkup();
-  hljs.highlightBlock(outputRichText);
-  const turd = document.querySelector("#turd");
-  turd.style.width = percentage + "%";
+
+  if ((typeof kmTrigger ==="undefined")) {
+   outputRichText.innerHTML = indented;
+   afterSize = outputRichText.textContent.length;
+   let percentage = ((afterSize / beforeSize) * 100).toFixed(2);
+   log.innerHTML = "<span class='visually-hidden'>Markup updated. </span>Size before: <span>" + beforeSize + " characters</span>. Size after: <span>" + afterSize + " characters</span>. Cleaned/indented = <span>" + percentage + '%</span> of original markup<div aria-hidden="true" id="turd"></div>';
+   celebrateBigReductionsWithANiceLongFart();
+   removeAddedTableMarkup();
+   hljs.highlightBlock(outputRichText);
+   const turd = document.querySelector("#turd");
+   turd.style.width = percentage + "%";
+  //} else {
+  }
+
+
+
 }
 
-if ((typeof kmIndented !=="undefined")) {
- raw = document.kmvar.Markup1Raw;
- alert(raw);
+if ((typeof kmTrigger !=="undefined")) {
+ // raw = document.kmvar.Markup1Raw;
+ // alert(raw);
  if (kmIndented) {
  }
  if (kmDecrapulated) {
  }
  if (kmDecrapulatedFlattened) {
  }
- // alert("kmIndented = " + kmIndented);
- // alert("kmDecrapulated = " + kmDecrapulated);
- // alert("kmDecrapulatedFlattened = " + kmDecrapulatedFlattened);
+ generateMarkup();
 } else {
  addAllEventListeners();
  loadAndSaveData();
