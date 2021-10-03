@@ -53,13 +53,6 @@ const chk_abbreviateTitles = document.querySelector("#chk_abbreviateTitles");
 const moreElAndAttributeOptionsButtons = document.querySelectorAll(".moreElAndAttributeOptions");
 const btnApplyAttributeSettings = document.querySelector("#btnApplyAttributeSettings");
 let raw = "";
-
-if ((typeof kmTrigger !=="undefined")) {
- //run KM specific scripts here
- raw = document.kmvar.Markup1Raw;
- alert(raw);
-}
-
 let indented = "";
 let indentStyle;
 let indentDepth;
@@ -842,11 +835,18 @@ function generateMarkup() {
   turd.style.width = percentage + "%";
 }
 
-
 if ((typeof kmIndented !=="undefined")) {
- alert("kmIndented = " + kmIndented);
- alert("kmDecrapulated = " + kmDecrapulated);
- alert("kmDecrapulatedFlattened = " + kmDecrapulatedFlattened);
+ raw = document.kmvar.Markup1Raw;
+ alert(raw);
+ if (kmIndented) {
+ }
+ if (kmDecrapulated) {
+ }
+ if (kmDecrapulatedFlattened) {
+ }
+ // alert("kmIndented = " + kmIndented);
+ // alert("kmDecrapulated = " + kmDecrapulated);
+ // alert("kmDecrapulatedFlattened = " + kmDecrapulatedFlattened);
 } else {
  addAllEventListeners();
  loadAndSaveData();
