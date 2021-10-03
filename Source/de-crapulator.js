@@ -1,3 +1,13 @@
+// Run in Keyboard maestro:
+
+var kmTrigger = true;
+var kmIndented = true;
+var kmDecrapulated = false;
+var kmDecrapulatedFlattened = false;
+
+//------
+
+function initDecrapulator(){
 const input = document.querySelector("#txtRaw");
 const outputRichText = document.querySelector("#txtConvertedRichText");
 const outputPlainText = document.querySelector("#txtConvertedPlainText");
@@ -43,6 +53,13 @@ const chk_abbreviateTitles = document.querySelector("#chk_abbreviateTitles");
 const moreElAndAttributeOptionsButtons = document.querySelectorAll(".moreElAndAttributeOptions");
 const btnApplyAttributeSettings = document.querySelector("#btnApplyAttributeSettings");
 let raw = "";
+
+if ((typeof kmTrigger !=="undefined")) {
+ //run KM specific scripts here
+ raw = document.kmvar.Markup1Raw;
+ alert(raw);
+}
+
 let indented = "";
 let indentStyle;
 let indentDepth;
@@ -824,6 +841,17 @@ function generateMarkup() {
   const turd = document.querySelector("#turd");
   turd.style.width = percentage + "%";
 }
-addAllEventListeners();
-loadAndSaveData();
-loadOtherPrefs();
+
+
+if ((typeof kmIndented !=="undefined")) {
+ alert("kmIndented = " + kmIndented);
+ alert("kmDecrapulated = " + kmDecrapulated);
+ alert("kmDecrapulatedFlattened = " + kmDecrapulatedFlattened);
+} else {
+ addAllEventListeners();
+ loadAndSaveData();
+ loadOtherPrefs();
+}
+
+}
+initDecrapulator();
