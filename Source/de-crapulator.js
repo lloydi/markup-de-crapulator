@@ -1,15 +1,3 @@
-// Run in Keyboard maestro:
-
-var kmTrigger = true;
-var kmIndented = true;
-var kmDecrapulated = false;
-var kmDecrapulatedFlattened = false;
-var results;
-
-
-
-//------
-
 var isKM=false;//being triggered from Keyboard Maestro
 if (typeof kmTrigger !=="undefined") {
  isKM=true;
@@ -38,9 +26,14 @@ const filterotherMiscAttrs = document.querySelector("#txt_otherMiscAttrs");
 const filterAnyHTMLtag = document.querySelector("#txt_anyHTMLtag");
 const removeAll = document.querySelector("#removeAll");
 if (typeof kmTrigger !=="undefined") {
-  var tempDOMDumpingGroundNew = document.createElement("div");
+ var tempDOMDumpingGroundNew = document.createElement("div");
  tempDOMDumpingGroundNew.setAttribute("id","tempDOMDumpingGround");
+ tempDOMDumpingGroundNew.setAttribute("hidden","hidden");
  document.body.appendChild(tempDOMDumpingGroundNew);
+ var testDivForPointlessElementsNew = document.createElement("div");
+ testDivForPointlessElementsNew.setAttribute("id","testDivForPointlessElements");
+ testDivForPointlessElementsNew.setAttribute("hidden","hidden");
+ document.body.appendChild(testDivForPointlessElementsNew);
 }
 const tempDOMDumpingGround = document.querySelector("#tempDOMDumpingGround");
 const testDivForPointlessElements = document.querySelector("#testDivForPointlessElements");
@@ -95,13 +88,19 @@ function initVals() {
 }
 initVals();
 
+  function flattenMarkup() {
+   stripPointlessSpanOrDivElements(testDivForPointlessElements, ["span", "div"]);
+  }
+
 function abbreviateAttribute(attr) {
+ console.log("abbreviateAttribute " + attr);
   const allElsToBeAbbreviated = tempDOMDumpingGround.querySelectorAll("[" + attr + "]");
   Array.from(allElsToBeAbbreviated).forEach((el) => {
     el.setAttribute(attr, "…");
   });
 }
 function stripAttribute(attr) {
+ console.log("strip " + attr);
   const allElsToBeStripped = tempDOMDumpingGround.querySelectorAll("[" + attr + "]");
   Array.from(allElsToBeStripped).forEach((el) => {
     el.removeAttribute(attr);
@@ -260,7 +259,7 @@ function addAllEventListeners() {
       flattenOK=true;
     }
     if (flattenOK) {
-      stripPointlessSpanOrDivElements(testDivForPointlessElements, ["span", "div"]);
+     flattenMarkup();
     }
   });
   btnMorePreferences.addEventListener("click", (e) => {
@@ -458,6 +457,9 @@ function applyIndenting() {
   if (!isKM) {
    indentStyle = document.querySelector("[name=rad_Indentstyle]:checked").value;
    indentDepth = document.querySelector("[name=rad_Indentdepth]:checked").value;
+  } else {
+   indentStyle = "space";
+   indentDepth = 1;
   }
 
   if (indentStyle === "space") {
@@ -554,9 +556,13 @@ function stripPointlessSpanOrDivElements(startElement, toStrip) {
       else elem.replaceWith(elem.innerText);
     }
   });
-  input.value = test.innerHTML;
-  removeIndentsInInputText();
-  btnDecrapulate.click();
+  if (!isKM) {
+   input.value = test.innerHTML;
+   removeIndentsInInputText();
+   btnDecrapulate.click();
+  } else {
+
+  }
 }
 function generateMarkup() {
   //String manipulations (on raw)
@@ -648,7 +654,7 @@ function generateMarkup() {
   }
 
   function filterAttributes() {
-   if ((typeof kmIndented ==="undefined")) {
+   if ((typeof kmTrigger ==="undefined")) {
     if (filterClass.checked) {
       stripAttribute("class");
       if (chk_abbreviateClasses.checked) {
@@ -878,13 +884,15 @@ function generateMarkup() {
    abbreviateSrcSets();
    abbreviateTitles();
   } else {
-   //TODO
-   // abbreviateAttribute("class");
-   // abbreviateAttribute("style");
-   // abbreviateAttribute("src");
-   // abbreviateAttribute("srcset");
-   // abbreviateAttribute("href");
-   // abbreviateAttribute("title");
+   if (kmDecrapulated) {
+    console.clear();
+    stripAttribute("class");
+    stripAttribute("style");
+    abbreviateAttribute("src");
+    abbreviateAttribute("srcset");
+    abbreviateAttribute("href");
+    abbreviateAttribute("title");
+   }
   }
 
   checkActionsAppliedInModal();
@@ -907,13 +915,13 @@ function generateMarkup() {
 }
 
 if (typeof kmTrigger !=="undefined") {
-  if (kmIndented) {
- }
- if (kmDecrapulated) {
- }
- if (kmDecrapulatedFlattened) {
- }
  generateMarkup();
+ if (kmDecrapulatedFlattened) {
+  alert("flattening");
+  raw = document.kmvar.Markup3Decrapulated;
+  // flattenMarkup();
+  generateMarkup();
+ }
 } else {
  addAllEventListeners();
  loadAndSaveData();
