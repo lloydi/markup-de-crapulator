@@ -4,6 +4,7 @@ var kmTrigger = true;
 var kmIndented = true;
 var kmDecrapulated = false;
 var kmDecrapulatedFlattened = false;
+var results;
 
 //------
 
@@ -793,11 +794,11 @@ function generateMarkup() {
      } else {
        indented = indent.js(indented, { tabString: indentStr });
      }
+     indented = indented.split("<").join("&lt;");
+     indented = indented.split(">").join("&gt;");
     } else {
      //TODO
     }
-    indented = indented.split("<").join("&lt;");
-    indented = indented.split(">").join("&gt;");
     indented = indented.split("QUESTION_MARK").join("?");
   }
   function removeAddedTableMarkup() {
@@ -893,16 +894,13 @@ function generateMarkup() {
    hljs.highlightBlock(outputRichText);
    const turd = document.querySelector("#turd");
    turd.style.width = percentage + "%";
-  //} else {
+  } else {
+   results = indented;
+   //TODO - send results to KM Variable
   }
-
-
-
 }
 
 if ((typeof kmTrigger !=="undefined")) {
- // raw = document.kmvar.Markup1Raw;
- // alert(raw);
  if (kmIndented) {
  }
  if (kmDecrapulated) {
@@ -918,3 +916,4 @@ if ((typeof kmTrigger !=="undefined")) {
 
 }
 initDecrapulator();
+results;
