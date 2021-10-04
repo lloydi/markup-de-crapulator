@@ -6,8 +6,14 @@ var kmDecrapulated = false;
 var kmDecrapulatedFlattened = false;
 var results;
 
+
+
 //------
 
+var isKM=false;//being triggered from Keyboard Maestro
+if (typeof kmTrigger !=="undefined") {
+ isKM=true;
+}
 function initDecrapulator(){
 const input = document.querySelector("#txtRaw");
 const outputRichText = document.querySelector("#txtConvertedRichText");
@@ -31,8 +37,8 @@ const filterCustomAttrs = document.querySelector("#txt_customAttrs");
 const filterotherMiscAttrs = document.querySelector("#txt_otherMiscAttrs");
 const filterAnyHTMLtag = document.querySelector("#txt_anyHTMLtag");
 const removeAll = document.querySelector("#removeAll");
-if ((typeof kmTrigger !=="undefined")) {
- var tempDOMDumpingGroundNew = document.createElement("div");
+if (typeof kmTrigger !=="undefined") {
+  var tempDOMDumpingGroundNew = document.createElement("div");
  tempDOMDumpingGroundNew.setAttribute("id","tempDOMDumpingGround");
  document.body.appendChild(tempDOMDumpingGroundNew);
 }
@@ -449,7 +455,7 @@ function unsetAllCheckboxes() {
 function applyIndenting() {
   indentStr = "";
 
-  if ((typeof kmTrigger ==="undefined")) {
+  if (!isKM) {
    indentStyle = document.querySelector("[name=rad_Indentstyle]:checked").value;
    indentDepth = document.querySelector("[name=rad_Indentdepth]:checked").value;
   }
@@ -596,7 +602,7 @@ function generateMarkup() {
     }
   }
   function filterComments() {
-   if ((typeof kmTrigger ==="undefined")) {
+   if (!isKM) {
     if (filterAllHTMLcomments.checked) {
       raw = raw.replace(/<!--(.*?)-->/g, "");
     }
@@ -612,7 +618,7 @@ function generateMarkup() {
   }
   function filterAngularTags() {
 
-   if ((typeof kmTrigger ==="undefined")) {
+   if (!isKM) {
     if (filterAngularNgCrapTags.checked) {
       raw = raw.replace(/<ng-(.*?)>/g, "");
       raw = raw.replace(/<\/ng-(.*?)>/g, "");
@@ -625,7 +631,7 @@ function generateMarkup() {
   }
   // DOM traversal operations
   function filterHtmlElements() {
-   if ((typeof kmTrigger ==="undefined")) {
+   if (!isKM) {
     if (filterAnyHTMLtag.value !== "") {
       let arrAnyHTMLtags = filterAnyHTMLtag.value.split(",");
       Array.from(arrAnyHTMLtags).forEach((arrAnyHTMLtag) => {
@@ -708,7 +714,7 @@ function generateMarkup() {
   }
   function filterEmptyElements() {
     let emptyEls = tempDOMDumpingGround.querySelectorAll(":empty:not(area):not(base):not(br):not(col):not(embed):not(hr):not(img):not(input):not(keygen):not(link):not(meta):not(param):not(source):not(track):not(wbr)");
-    if ((typeof kmTrigger ==="undefined")) {
+    if (!isKM) {
      if (filterEmpty.checked) {
        Array.from(emptyEls).forEach((el) => {
          el.parentNode.removeChild(el);
@@ -752,7 +758,7 @@ function generateMarkup() {
   }
 
   function checkActionsAppliedInModal() {
-   if ((typeof kmTrigger ==="undefined")) {
+   if (!isKM) {
     if (modal) {
       //modal has been opened and something has (possibly) been set
       const radioButtonsSetInModal = modal.querySelectorAll("input[type=radio]:checked");
@@ -781,7 +787,7 @@ function generateMarkup() {
       .split("><")
       .join(">\n<")
       .replaceAll(/<(?<tag>\w+)([^>]*)>\n<\/\k<tag>>/g, "<$1$2></$1>");
-    if ((typeof kmTrigger ==="undefined")) {
+    if (!isKM) {
      if (formatBrailleFriendlyOutput.checked) {
        var arrayOfLines = indented.split("\n");
        for (let i = 0; i < arrayOfLines.length; i++) {
@@ -835,7 +841,7 @@ function generateMarkup() {
       raw = raw.replace(/%2F/g, "/");
       input.value = raw;
     } else {
-     if ((typeof kmTrigger ==="undefined")) {
+     if (!isKM) {
       raw = document.querySelector("#txtRaw").value;
      } else {
       raw = document.kmvar.Markup1Raw;
@@ -864,7 +870,7 @@ function generateMarkup() {
   filterHtmlElements();
   filterAttributes();
   filterEmptyElements();
-  if ((typeof kmTrigger ==="undefined")) {
+  if (!isKM) {
    abbreviateClasses();
    abbreviateStyles();
    abbreviateHrefs();
@@ -884,7 +890,7 @@ function generateMarkup() {
   checkActionsAppliedInModal();
   convertTempDomNodeToIndentedOutputRichText();
 
-  if ((typeof kmTrigger ==="undefined")) {
+  if (!isKM) {
    outputRichText.innerHTML = indented;
    afterSize = outputRichText.textContent.length;
    let percentage = ((afterSize / beforeSize) * 100).toFixed(2);
@@ -900,8 +906,8 @@ function generateMarkup() {
   }
 }
 
-if ((typeof kmTrigger !=="undefined")) {
- if (kmIndented) {
+if (typeof kmTrigger !=="undefined") {
+  if (kmIndented) {
  }
  if (kmDecrapulated) {
  }
