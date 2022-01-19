@@ -1,8 +1,3 @@
-var isKM=false;//being triggered from Keyboard Maestro
-if (typeof kmTrigger !=="undefined") {
- isKM=true;
-}
-function initDecrapulator(){
 const input = document.querySelector("#txtRaw");
 const outputRichText = document.querySelector("#txtConvertedRichText");
 const outputPlainText = document.querySelector("#txtConvertedPlainText");
@@ -25,16 +20,6 @@ const filterCustomAttrs = document.querySelector("#txt_customAttrs");
 const filterotherMiscAttrs = document.querySelector("#txt_otherMiscAttrs");
 const filterAnyHTMLtag = document.querySelector("#txt_anyHTMLtag");
 const removeAll = document.querySelector("#removeAll");
-if (typeof kmTrigger !=="undefined") {
- var tempDOMDumpingGroundNew = document.createElement("div");
- tempDOMDumpingGroundNew.setAttribute("id","tempDOMDumpingGround");
- tempDOMDumpingGroundNew.setAttribute("hidden","hidden");
- document.body.appendChild(tempDOMDumpingGroundNew);
- var testDivForPointlessElementsNew = document.createElement("div");
- testDivForPointlessElementsNew.setAttribute("id","testDivForPointlessElements");
- testDivForPointlessElementsNew.setAttribute("hidden","hidden");
- document.body.appendChild(testDivForPointlessElementsNew);
-}
 const tempDOMDumpingGround = document.querySelector("#tempDOMDumpingGround");
 const testDivForPointlessElements = document.querySelector("#testDivForPointlessElements");
 const log = document.querySelector("#log");
@@ -59,8 +44,8 @@ const moreElAndAttributeOptionsButtons = document.querySelectorAll(".moreElAndAt
 const btnApplyAttributeSettings = document.querySelector("#btnApplyAttributeSettings");
 let raw = "";
 let indented = "";
-let indentStyle = "space";
-let indentDepth = "1";
+let indentStyle;
+let indentDepth;
 let indentStr = "";
 let urlEncoded = location.href.split("?markup=")[1];
 let beforeSize;
@@ -88,19 +73,13 @@ function initVals() {
 }
 initVals();
 
-  function flattenMarkup() {
-   stripPointlessSpanOrDivElements(testDivForPointlessElements, ["span", "div"]);
-  }
-
 function abbreviateAttribute(attr) {
- console.log("abbreviateAttribute " + attr);
   const allElsToBeAbbreviated = tempDOMDumpingGround.querySelectorAll("[" + attr + "]");
   Array.from(allElsToBeAbbreviated).forEach((el) => {
     el.setAttribute(attr, "…");
   });
 }
 function stripAttribute(attr) {
- console.log("strip " + attr);
   const allElsToBeStripped = tempDOMDumpingGround.querySelectorAll("[" + attr + "]");
   Array.from(allElsToBeStripped).forEach((el) => {
     el.removeAttribute(attr);
@@ -263,7 +242,7 @@ function addAllEventListeners() {
       flattenOK=true;
     }
     if (flattenOK) {
-     flattenMarkup();
+      stripPointlessSpanOrDivElements(testDivForPointlessElements, ["span", "div"]);
     }
   });
   btnMorePreferences.addEventListener("click", (e) => {
@@ -457,15 +436,8 @@ function unsetAllCheckboxes() {
 }
 function applyIndenting() {
   indentStr = "";
-
-  if (!isKM) {
-   indentStyle = document.querySelector("[name=rad_Indentstyle]:checked").value;
-   indentDepth = document.querySelector("[name=rad_Indentdepth]:checked").value;
-  } else {
-   indentStyle = "space";
-   indentDepth = 1;
-  }
-
+  indentStyle = document.querySelector("[name=rad_Indentstyle]:checked").value;
+  indentDepth = document.querySelector("[name=rad_Indentdepth]:checked").value;
   if (indentStyle === "space") {
     indentStyle = " "; //space character
   } else {
@@ -560,13 +532,9 @@ function stripPointlessSpanOrDivElements(startElement, toStrip) {
       else elem.replaceWith(elem.innerText);
     }
   });
-  if (!isKM) {
-   input.value = test.innerHTML;
-   removeIndentsInInputText();
-   btnDecrapulate.click();
-  } else {
-
-  }
+  input.value = test.innerHTML;
+  removeIndentsInInputText();
+  btnDecrapulate.click();
 }
 function generateMarkup() {
   //String manipulations (on raw)
@@ -612,36 +580,21 @@ function generateMarkup() {
     }
   }
   function filterComments() {
-   if (!isKM) {
     if (filterAllHTMLcomments.checked) {
       raw = raw.replace(/<!--(.*?)-->/g, "");
     }
     if (filterEmptyComments.checked) {
       raw = raw.replace(/<!--(-*?)-->/g, "");
     }
-   } else {
-    //TODO
-   }
-
-
-
   }
   function filterAngularTags() {
-
-   if (!isKM) {
     if (filterAngularNgCrapTags.checked) {
       raw = raw.replace(/<ng-(.*?)>/g, "");
       raw = raw.replace(/<\/ng-(.*?)>/g, "");
     }
-   } else {
-    //TODO
-   }
-
-
   }
   // DOM traversal operations
   function filterHtmlElements() {
-   if (!isKM) {
     if (filterAnyHTMLtag.value !== "") {
       let arrAnyHTMLtags = filterAnyHTMLtag.value.split(",");
       Array.from(arrAnyHTMLtags).forEach((arrAnyHTMLtag) => {
@@ -652,13 +605,9 @@ function generateMarkup() {
         });
       });
     }
-   } else {
-    //TODO
-   }
   }
 
   function filterAttributes() {
-   if ((typeof kmTrigger ==="undefined")) {
     if (filterClass.checked) {
       stripAttribute("class");
       if (chk_abbreviateClasses.checked) {
@@ -718,21 +667,14 @@ function generateMarkup() {
         }
       });
     });
-   } else {
-    //TODO
-   }
   }
   function filterEmptyElements() {
     let emptyEls = tempDOMDumpingGround.querySelectorAll(":empty:not(area):not(base):not(br):not(col):not(embed):not(hr):not(img):not(input):not(keygen):not(link):not(meta):not(param):not(source):not(track):not(wbr)");
-    if (!isKM) {
-     if (filterEmpty.checked) {
-       Array.from(emptyEls).forEach((el) => {
-         el.parentNode.removeChild(el);
-       });
-       emptyEls = tempDOMDumpingGround.querySelectorAll("*:empty");
-     }
-    } else {
-     //TODO
+    if (filterEmpty.checked) {
+      Array.from(emptyEls).forEach((el) => {
+        el.parentNode.removeChild(el);
+      });
+      emptyEls = tempDOMDumpingGround.querySelectorAll("*:empty");
     }
   }
 
@@ -768,7 +710,6 @@ function generateMarkup() {
   }
 
   function checkActionsAppliedInModal() {
-   if (!isKM) {
     if (modal) {
       //modal has been opened and something has (possibly) been set
       const radioButtonsSetInModal = modal.querySelectorAll("input[type=radio]:checked");
@@ -786,9 +727,6 @@ function generateMarkup() {
         }
       });
     }
-   } else {
-    //TODO
-   }
   }
 
   // Convert back to indented outputRichText
@@ -797,24 +735,20 @@ function generateMarkup() {
       .split("><")
       .join(">\n<")
       .replaceAll(/<(?<tag>\w+)([^>]*)>\n<\/\k<tag>>/g, "<$1$2></$1>");
-    if (!isKM) {
-     if (formatBrailleFriendlyOutput.checked) {
-       var arrayOfLines = indented.split("\n");
-       for (let i = 0; i < arrayOfLines.length; i++) {
-         if (arrayOfLines[i].length > 80) {
-           arrayOfLines[i] = arrayOfLines[i].replace(/(.{1,80})/g, "$1\n");
-         }
-       }
-       indented = arrayOfLines.join("\n");
-       indented = indented.replace(/\n\n/g, "\n");
-     } else {
-       indented = indent.js(indented, { tabString: indentStr });
-     }
-     indented = indented.split("<").join("&lt;");
-     indented = indented.split(">").join("&gt;");
+    if (formatBrailleFriendlyOutput.checked) {
+      var arrayOfLines = indented.split("\n");
+      for (let i = 0; i < arrayOfLines.length; i++) {
+        if (arrayOfLines[i].length > 80) {
+          arrayOfLines[i] = arrayOfLines[i].replace(/(.{1,80})/g, "$1\n");
+        }
+      }
+      indented = arrayOfLines.join("\n");
+      indented = indented.replace(/\n\n/g, "\n");
     } else {
-     //TODO
+      indented = indent.js(indented, { tabString: indentStr });
     }
+    indented = indented.split("<").join("&lt;");
+    indented = indented.split(">").join("&gt;");
     indented = indented.split("QUESTION_MARK").join("?");
   }
   function removeAddedTableMarkup() {
@@ -851,11 +785,7 @@ function generateMarkup() {
       raw = raw.replace(/%2F/g, "/");
       input.value = raw;
     } else {
-     if (!isKM) {
       raw = document.querySelector("#txtRaw").value;
-     } else {
-      raw = document.kmvar.Markup1Raw;
-     }
     }
   }
   function celebrateBigReductionsWithANiceLongFart() {
@@ -880,58 +810,24 @@ function generateMarkup() {
   filterHtmlElements();
   filterAttributes();
   filterEmptyElements();
-  if (!isKM) {
-   abbreviateClasses();
-   abbreviateStyles();
-   abbreviateHrefs();
-   abbreviateSrcs();
-   abbreviateSrcSets();
-   abbreviateTitles();
-  } else {
-   if (kmDecrapulated) {
-    console.clear();
-    stripAttribute("class");
-    stripAttribute("style");
-    abbreviateAttribute("src");
-    abbreviateAttribute("srcset");
-    abbreviateAttribute("href");
-    abbreviateAttribute("title");
-   }
-  }
-
+  abbreviateClasses();
+  abbreviateStyles();
+  abbreviateHrefs();
+  abbreviateSrcs();
+  abbreviateSrcSets();
+  abbreviateTitles();
   checkActionsAppliedInModal();
   convertTempDomNodeToIndentedOutputRichText();
-
-  if (!isKM) {
-   outputRichText.innerHTML = indented;
-   afterSize = outputRichText.textContent.length;
-   let percentage = ((afterSize / beforeSize) * 100).toFixed(2);
-   log.innerHTML = "<span class='visually-hidden'>Markup updated. </span>Size before: <span>" + beforeSize + " characters</span>. Size after: <span>" + afterSize + " characters</span>. Cleaned/indented = <span>" + percentage + '%</span> of original markup<div aria-hidden="true" id="turd"></div>';
-   celebrateBigReductionsWithANiceLongFart();
-   removeAddedTableMarkup();
-   hljs.highlightBlock(outputRichText);
-   const turd = document.querySelector("#turd");
-   turd.style.width = percentage + "%";
-  } else {
-   results = indented;
-   //TODO - send results to KM Variable
-  }
+  outputRichText.innerHTML = indented;
+  afterSize = outputRichText.textContent.length;
+  let percentage = ((afterSize / beforeSize) * 100).toFixed(2);
+  log.innerHTML = "<span class='visually-hidden'>Markup updated. </span>Size before: <span>" + beforeSize + " characters</span>. Size after: <span>" + afterSize + " characters</span>. Cleaned/indented = <span>" + percentage + '%</span> of original markup<div aria-hidden="true" id="turd"></div>';
+  celebrateBigReductionsWithANiceLongFart();
+  removeAddedTableMarkup();
+  hljs.highlightBlock(outputRichText);
+  const turd = document.querySelector("#turd");
+  turd.style.width = percentage + "%";
 }
-
-if (typeof kmTrigger !=="undefined") {
- generateMarkup();
- if (kmDecrapulatedFlattened) {
-  alert("flattening");
-  raw = document.kmvar.Markup3Decrapulated;
-  // flattenMarkup();
-  generateMarkup();
- }
-} else {
- addAllEventListeners();
- loadAndSaveData();
- loadOtherPrefs();
-}
-
-}
-initDecrapulator();
-results;
+addAllEventListeners();
+loadAndSaveData();
+loadOtherPrefs();
