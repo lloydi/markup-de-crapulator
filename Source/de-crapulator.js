@@ -113,6 +113,7 @@ function addAllEventListeners() {
       }
     }
   });
+
   Array.from(indentRadios).forEach((radio) => {
     radio.addEventListener("change", (e) => {
       if (updateMarkupWithEachChange) {
@@ -205,13 +206,16 @@ function addAllEventListeners() {
   btnCopyToClipboard.addEventListener("click", (e) => {
     let wasInPlaintextMode = false;
     if (convertedRichTextWrapper.getAttribute("hidden")) {
-      showPlainTextOutput();
       wasInPlaintextMode = true;
     }
-    outputRichText.focus();
+    showPlainTextOutput();
+    outputPlainText.focus();
+    outputPlainText.select();
     document.execCommand("copy");
     if (wasInPlaintextMode) {
       showPlainTextOutput();
+    } else {
+      showRichTextOutput();
     }
     btnCopyToClipboard.focus();
   });
