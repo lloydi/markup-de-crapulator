@@ -9,6 +9,7 @@ const filterStyle = document.querySelector("#chk_stripStyleAttributes");
 const filterOnclick = document.querySelector("#chk_onclick");
 const filterOnClickReact = document.querySelector("#chk_stripOnClickReactAttributes");
 const filterDataDash = document.querySelector("#chk_stripDataDashAttributes");
+const filterARIADash = document.querySelector("#chk_stripARIADashAttributes");
 const filterAngularNgCrapAttributes1 = document.querySelector("#chk_stripAngularCrapAttributes1");
 const filterAngularNgCrapAttributes2 = document.querySelector("#chk_stripAngularCrapAttributes2");
 const fartBigReductions = document.querySelector("#fartBigReductions");
@@ -34,6 +35,7 @@ const btnDoAnotherPass = document.querySelector("#btnDoAnotherPass");
 const btnRemovePointlessNestedElements = document.querySelector("#btnRemovePointlessNestedElements");
 const btnMorePreferences = document.querySelector("#btnMorePreferences");
 const btnResetEverything = document.querySelector("#btnResetEverything");
+const chk_abbreviateARIA = document.querySelector("#chk_abbreviateARIA");
 const chk_abbreviateClasses = document.querySelector("#chk_abbreviateClasses");
 const chk_abbreviateStyles = document.querySelector("#chk_abbreviateStyles");
 const chk_abbreviateHrefs = document.querySelector("#chk_abbreviateHrefs");
@@ -608,6 +610,12 @@ function generateMarkup() {
   }
 
   function filterAttributes() {
+    // if (filterARIADash.checked) {
+    //   stripAttribute("aria");
+    //   if (chk_abbreviateARIA.checked) {
+    //     chk_abbreviateARIA.checked = false;
+    //   }
+    // }
     if (filterClass.checked) {
       stripAttribute("class");
       if (chk_abbreviateClasses.checked) {
@@ -629,6 +637,11 @@ function generateMarkup() {
     Array.from(allElsInTempDom).forEach((el) => {
       let attrs = el.attributes;
       Array.from(attrs).forEach((attr) => {
+        if (filterARIADash.checked) {
+          if (attr.name.indexOf("aria-") === 0) {
+            stripAttribute(attr.name);
+          }
+        }
         if (filterDataDash.checked) {
           if (attr.name.indexOf("data-") === 0) {
             stripAttribute(attr.name);
