@@ -35,7 +35,6 @@ const btnDoAnotherPass = document.querySelector("#btnDoAnotherPass");
 const btnRemovePointlessNestedElements = document.querySelector("#btnRemovePointlessNestedElements");
 const btnMorePreferences = document.querySelector("#btnMorePreferences");
 const btnResetEverything = document.querySelector("#btnResetEverything");
-const chk_abbreviateARIA = document.querySelector("#chk_abbreviateARIA");
 const chk_abbreviateClasses = document.querySelector("#chk_abbreviateClasses");
 const chk_abbreviateStyles = document.querySelector("#chk_abbreviateStyles");
 const chk_abbreviateHrefs = document.querySelector("#chk_abbreviateHrefs");
@@ -610,12 +609,6 @@ function generateMarkup() {
   }
 
   function filterAttributes() {
-    // if (filterARIADash.checked) {
-    //   stripAttribute("aria");
-    //   if (chk_abbreviateARIA.checked) {
-    //     chk_abbreviateARIA.checked = false;
-    //   }
-    // }
     if (filterClass.checked) {
       stripAttribute("class");
       if (chk_abbreviateClasses.checked) {
