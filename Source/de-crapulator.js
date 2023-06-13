@@ -9,6 +9,7 @@ const filterStyle = document.querySelector("#chk_stripStyleAttributes");
 const filterOnclick = document.querySelector("#chk_onclick");
 const filterOnClickReact = document.querySelector("#chk_stripOnClickReactAttributes");
 const filterDataDash = document.querySelector("#chk_stripDataDashAttributes");
+const filterARIADash = document.querySelector("#chk_stripARIADashAttributes");
 const filterAngularNgCrapAttributes1 = document.querySelector("#chk_stripAngularCrapAttributes1");
 const filterAngularNgCrapAttributes2 = document.querySelector("#chk_stripAngularCrapAttributes2");
 const fartBigReductions = document.querySelector("#fartBigReductions");
@@ -629,6 +630,11 @@ function generateMarkup() {
     Array.from(allElsInTempDom).forEach((el) => {
       let attrs = el.attributes;
       Array.from(attrs).forEach((attr) => {
+        if (filterARIADash.checked) {
+          if (attr.name.indexOf("aria-") === 0) {
+            stripAttribute(attr.name);
+          }
+        }
         if (filterDataDash.checked) {
           if (attr.name.indexOf("data-") === 0) {
             stripAttribute(attr.name);
