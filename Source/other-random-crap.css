@@ -178,7 +178,8 @@ legend {
 #turd {
  background: rgb(102, 70, 70);
  border-radius: 15px;
- height: 30px;
+ border: 1px solid black;
+ height: 35px;
  width: 100%;
  margin: 1em 0;
  transition-duration: .4s;
@@ -191,7 +192,8 @@ legend {
  position: absolute;
  color: white;
  display: inline-block;
- padding: 4px 20px;
+ padding: 2px 20px 4px 20px;
+ white-space: nowrap;
 }
 
 #morePreferences {
