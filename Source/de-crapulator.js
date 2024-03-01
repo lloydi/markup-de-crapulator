@@ -15,6 +15,7 @@ const filterARIADash = document.querySelector("#chk_stripARIADashAttributes");
 const filterAngularNgCrapAttributes1 = document.querySelector("#chk_stripAngularCrapAttributes1");
 const filterAngularNgCrapAttributes2 = document.querySelector("#chk_stripAngularCrapAttributes2");
 const fartBigReductions = document.querySelector("#fartBigReductions");
+const filterMetaTags = document.querySelector("#chk_stripMetaTags");
 const filterAngularNgCrapTags = document.querySelector("#chk_stripAngularCrapTags");
 const formatBrailleFriendlyOutput = document.querySelector("#chk_brailleFriendlyOutput");
 const filterAllHTMLcomments = document.querySelector("#chk_allHTMLcomments");
@@ -407,6 +408,7 @@ function triggerClicksForUrlEncodedData() {
     filterEmpty.click();
     filterAngularNgCrapAttributes1.click();
     filterAngularNgCrapAttributes2.click();
+    filterMetaTags.click();
     filterAngularNgCrapTags.click();
     filterAllHTMLcomments.click();
     filterEmptyComments.click();
@@ -596,18 +598,36 @@ function generateMarkup() {
       raw = raw.replace(/<\/ng-(.*?)>/g, "");
     }
   }
+  function filterOutMetaTags() {
+    if (filterMetaTags.checked) {
+      stripTag("meta");
+      // let elsToStrip = tempDOMDumpingGround.querySelectorAll("meta");
+      // Array.from(elsToStrip).forEach((elToStrip) => {
+      //   console.log("* ", elToStrip);
+      //   elToStrip.parentNode.removeChild(elToStrip);
+      // });
+    }
+  }
   // DOM traversal operations
   function filterHtmlElements() {
     if (filterAnyHTMLtag.value !== "") {
       let arrAnyHTMLtags = filterAnyHTMLtag.value.split(",");
       Array.from(arrAnyHTMLtags).forEach((arrAnyHTMLtag) => {
         arrAnyHTMLtag = arrAnyHTMLtag.trim();
-        let elsToStrip = tempDOMDumpingGround.querySelectorAll(arrAnyHTMLtag);
-        Array.from(elsToStrip).forEach((elToStrip) => {
-          elToStrip.parentNode.removeChild(elToStrip);
-        });
+        // let elsToStrip = tempDOMDumpingGround.querySelectorAll(arrAnyHTMLtag);
+        // Array.from(elsToStrip).forEach((elToStrip) => {
+        //   elToStrip.parentNode.removeChild(elToStrip);
+        // });
+        stripTag(arrAnyHTMLtag)
       });
     }
+  }
+
+  function stripTag(el){
+    let elsToStrip = tempDOMDumpingGround.querySelectorAll(el);
+    Array.from(elsToStrip).forEach((elToStrip) => {
+      elToStrip.parentNode.removeChild(elToStrip);
+    });
   }
 
   function filterAttributes() {
@@ -816,6 +836,7 @@ function generateMarkup() {
     beforeSize = raw.length;
   }
   addTableMarkupToOrphanedInnerTableElements();
+  filterOutMetaTags();
   filterAngularTags();
   filterComments();
   raw = raw.replace(/\?/g, "QUESTION_MARK");
