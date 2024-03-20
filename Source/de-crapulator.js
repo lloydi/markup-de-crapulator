@@ -6,6 +6,8 @@ const convertedPlainTextWrapper = document.querySelector("#convertedPlainTextWra
 const filterEmpty = document.querySelector("#chk_emptyTags");
 const filterClass = document.querySelector("#chk_stripClassAttributes");
 const filterStyle = document.querySelector("#chk_stripStyleAttributes");
+const filterDir = document.querySelector("#chk_stripDirAttributes");
+const filterLang = document.querySelector("#chk_stripLangAttributes");
 const filterOnclick = document.querySelector("#chk_onclick");
 const filterOnClickReact = document.querySelector("#chk_stripOnClickReactAttributes");
 const filterDataDash = document.querySelector("#chk_stripDataDashAttributes");
@@ -620,6 +622,12 @@ function generateMarkup() {
       if (chk_abbreviateStyles.checked) {
         chk_abbreviateStyles.checked = false;
       }
+    }
+    if (filterDir.checked) {
+      stripAttribute("dir");
+    }
+    if (filterLang.checked) {
+      stripAttribute("lang");
     }
     if (filterOnclick.checked) {
       stripAttribute("onclick");
