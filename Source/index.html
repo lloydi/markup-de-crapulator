@@ -64,18 +64,16 @@
                       >
                     </fieldset>
                     <button type="button" aria-expanded="false" id="btnMorePreferences">More preferences …</button>
-                    <fieldset id="morePreferences">
-                      <legend>More Preferences</legend>
+                    <div class="was-fieldset" id="morePreferences">
+                      <h3>More Preferences</h3>
                       <div class="row">
                         <label for="chk_brailleFriendlyOutput">
-                          <input id="chk_brailleFriendlyOutput" type="checkbox" aria-describedby="brailleFormatDesc" />
-                          Format for Braille-friendly output</label
-                        >
+                          <input id="chk_brailleFriendlyOutput" type="checkbox" aria-describedby="brailleFormatDesc" /> Braille-friendly output</label>
                         <div id="brailleFormatDesc">80 chars max, wrap with each HTML opening or closing tag</div>
                       </div>
                       <div class="row">
                         <fieldset>
-                          <legend>Output markup container type:</legend>
+                          <legend>Output markup container:</legend>
                           <div>
                             <label for="outputMarkupContainerType_richtext">
                               <input value="richtext" id="outputMarkupContainerType_richtext" name="outputMarkupContainerType" type="radio" checked />
@@ -92,17 +90,17 @@
                       </div>
                       <div class="row">
                         <fieldset>
-                          <legend>When should the markup update?</legend>
+                          <legend>Markup updates when...</legend>
                           <div>
                             <label for="whenShouldTheMarkupUpdate_allChanges">
                               <input value="allChanges" id="whenShouldTheMarkupUpdate_allChanges" name="whenShouldTheMarkupUpdate" type="radio" checked />
-                              Any time I change any option</label
+                              Any option/value changes</label
                             >
                           </div>
                           <div>
                             <label for="whenShouldTheMarkupUpdate_OnlyWithSubmit">
                               <input value="OnlyWithSubmit" id="whenShouldTheMarkupUpdate_OnlyWithSubmit" name="whenShouldTheMarkupUpdate" type="radio" />
-                              Only when I press the 'De-crapulate' button</label
+                              Only when submitted</label
                             >
                           </div>
                         </fieldset>
@@ -113,7 +111,7 @@
                           Celebrate big reductions with 'gusto'</label
                         >
                       </div>
-                    </fieldset>
+                    </div>
                   </div>
                 </div>
               </div>
