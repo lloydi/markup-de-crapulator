@@ -340,3 +340,8 @@ div.modal .actions {
 .vert label {
   display: block;
 }
+
+#col1,#col2,#col3 {
+  border: 1px dotted rgb(61, 42, 42);
+  padding: 1em;
+}
