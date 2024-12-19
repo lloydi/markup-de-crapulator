@@ -39,7 +39,7 @@
                       <span><label for="rad_Indentstyle_1"><input value="space" id="rad_Indentstyle_1" name="rad_Indentstyle" type="radio" checked> Spaces</label></span>
                       <span><label for="rad_Indentstyle_2"><input value="tab" id="rad_Indentstyle_2" name="rad_Indentstyle" type="radio"> Tabs</label></span>
                     </fieldset>
-                
+                    <fieldset>
                       <legend>Indent Depth</legend>
                       <span><label for="rad_Indentdepth_0"><input value="0" id="rad_Indentdepth_0" name="rad_Indentdepth" type="radio"> 0</label></span>
                       <span><label for="rad_Indentdepth_1"><input value="1" id="rad_Indentdepth_1" name="rad_Indentdepth" type="radio" checked> 1</label></span>
@@ -52,14 +52,8 @@
                       <div class="row">
                         <fieldset>
                           <legend>Output markup container:</legend>
-                          <div>
-                            <label for="outputMarkupContainerType_richtext">
-                              <input value="richtext" id="outputMarkupContainerType_richtext" name="outputMarkupContainerType" type="radio" checked> Rich text <code>&lt;div&gt;</code> (color-coded markup)</label>
-                          </div>
-                          <div>
-                            <label for="outputMarkupContainerType_plaintext">
-                              <input value="plaintext" id="outputMarkupContainerType_plaintext" name="outputMarkupContainerType" type="radio"> Plain old <code>&lt;textarea&gt;</code></label>
-                          </div>
+                          <div><label for="outputMarkupContainerType_richtext"><input value="richtext" id="outputMarkupContainerType_richtext" name="outputMarkupContainerType" type="radio" checked> Rich text <code>&lt;div&gt;</code> (color-coded markup)</label></div>
+                          <div><label for="outputMarkupContainerType_plaintext"><input value="plaintext" id="outputMarkupContainerType_plaintext" name="outputMarkupContainerType" type="radio"> Plain old <code>&lt;textarea&gt;</code></label></div>
                         </fieldset>
                       </div>
                       <div class="row">
@@ -77,16 +71,8 @@
                           </div>
                         </fieldset>
                       </div>
-                      <div class="row">
-                        <label for="chk_brailleFriendlyOutput">
-                          <input id="chk_brailleFriendlyOutput" type="checkbox" aria-describedby="brailleFormatDesc"> Braille-friendly output</label>
-                        <div id="brailleFormatDesc">80 chars max, wrap with each HTML opening or closing tag</div>
-                      </div>
-                      <div class="row">
-                        <label for="fartBigReductions" aria-describedby="note5">
-                          <input type="checkbox" id="fartBigReductions">
-                          Celebrate big reductions with 'gusto'</label>
-                      </div>
+                      <div class="row"><label for="chk_brailleFriendlyOutput"><input id="chk_brailleFriendlyOutput" type="checkbox" aria-describedby="brailleFormatDesc"> Braille-friendly output</label><div id="brailleFormatDesc">80 chars max, wrap with each HTML opening or closing tag</div></div>
+                      <div class="row"><label for="fartBigReductions" aria-describedby="note5"><input type="checkbox" id="fartBigReductions"> Celebrate big reductions with 'gusto'</label></div>
                     </div>
                   </div>
                 </div>
@@ -105,65 +91,21 @@
                         <h3>Strip these tags:</h3>
                       </legend>
                       <div class="chk_OrRads vert">
-                        <div class="row">
-                          <label for="chk_emptyTags">
-                            <input id="chk_emptyTags" type="checkbox" aria-describedby="note2">
-                            empty tags</label>
-                        </div>
-                        <div>
-                          <label for="chk_stripAngularCrapTags">
-                            <input id="chk_stripAngularCrapTags" type="checkbox">
-                            Angular tags &lt;ng-*&gt;</label>
-                        </div>
-                        <div>
-                          <label for="chk_emptyHTMLComments">
-                            <input id="chk_emptyHTMLComments" type="checkbox">
-                            Empty HTML comments</label>
-                        </div>
-                        <div>
-                          <label for="chk_allHTMLcomments">
-                            <input id="chk_allHTMLcomments" type="checkbox">
-                            All HTML comments</label>
-                        </div>
+                        <div><label for="chk_emptyTags"><input id="chk_emptyTags" type="checkbox" aria-describedby="note2"> empty tags</label></div>
+                        <div><label for="chk_stripAngularCrapTags"><input id="chk_stripAngularCrapTags" type="checkbox"> Angular tags &lt;ng-*&gt;</label></div>
+                        <div><label for="chk_emptyHTMLComments"><input id="chk_emptyHTMLComments" type="checkbox"> Empty HTML comments</label></div>
+                        <div><label for="chk_allHTMLcomments"><input id="chk_allHTMLcomments" type="checkbox"> All HTML comments</label></div>
                       </div>
-                      <div>
-                        <label class="wide" for="txt_anyHTMLtag">Any HTML tag
-                          <div><input id="txt_anyHTMLtag" placeholder="e.g. svg, g, span" type="text" aria-describedby="note1" data-user-entered="false"></div>
-                        </label>
-                      </div>
+                      <div><label class="wide" for="txt_anyHTMLtag">Any HTML tag<div><input id="txt_anyHTMLtag" placeholder="e.g. svg, g, span" type="text" aria-describedby="note1" data-user-entered="false"></div></label></div>
                     </fieldset>
                     <fieldset class="abbrev pr vert">
                       <legend>Abbreviate these attributes:</legend>
-                      <div class="row">
-                        <label for="chk_abbreviateClasses">
-                          <input id="chk_abbreviateClasses" type="checkbox">
-                          class</label>
-                      </div>
-                      <div class="row">
-                        <label for="chk_abbreviateStyles">
-                          <input id="chk_abbreviateStyles" type="checkbox">
-                          style</label>
-                      </div>
-                      <div class="row">
-                        <label for="chk_abbreviateHrefs">
-                          <input id="chk_abbreviateHrefs" type="checkbox">
-                          href</label>
-                      </div>
-                      <div class="row">
-                        <label for="chk_abbreviateSrcs">
-                          <input id="chk_abbreviateSrcs" type="checkbox">
-                          src</label>
-                      </div>
-                      <div class="row">
-                        <label for="chk_abbreviateSrcSets">
-                          <input id="chk_abbreviateSrcSets" type="checkbox">
-                          srcset</label>
-                      </div>
-                      <div class="row">
-                        <label for="chk_abbreviateTitles">
-                          <input id="chk_abbreviateTitles" type="checkbox">
-                          title</label>
-                      </div>
+                      <div><label for="chk_abbreviateClasses"><input id="chk_abbreviateClasses" type="checkbox"> class</label></div>
+                      <div><label for="chk_abbreviateStyles"><input id="chk_abbreviateStyles" type="checkbox"> style</label></div>
+                      <div><label for="chk_abbreviateHrefs"><input id="chk_abbreviateHrefs" type="checkbox"> href</label></div>
+                      <div><label for="chk_abbreviateSrcs"><input id="chk_abbreviateSrcs" type="checkbox"> src</label></div>
+                      <div><label for="chk_abbreviateSrcSets"><input id="chk_abbreviateSrcSets" type="checkbox"> srcset</label></div>
+                      <div><label for="chk_abbreviateTitles"><input id="chk_abbreviateTitles" type="checkbox"> title</label></div>
                       <button type="button" class="moreElAndAttributeOptions modal-trigger" data-target="#attributePickList" id="moreElAndAttributeOptions1" aria-label="More options (abbreviate)">…</button>
                     </fieldset>
                   </div>
@@ -173,69 +115,21 @@
                         <h3>Strip these attributes:</h3>
                       </legend>
                       <div class="chk_OrRads pr vert">
-                        <div>
-                          <label for="chk_stripClassAttributes">
-                            <input id="chk_stripClassAttributes" type="checkbox" aria-label="strip class attributes">
-                            class</label>
-                        </div>
-                        <div>
-                          <label for="chk_stripStyleAttributes">
-                            <input id="chk_stripStyleAttributes" type="checkbox" aria-label="strip style attributes">
-                            style</label>
-                        </div>
-                        <div>
-                          <label for="chk_stripDirAttributes">
-                            <input id="chk_stripDirAttributes" type="checkbox" aria-label="strip dir attributes">
-                            dir</label>
-                        </div>
-                        <div>
-                          <label for="chk_stripLangAttributes">
-                            <input id="chk_stripLangAttributes" type="checkbox" aria-label="strip lang attributes">
-                            lang</label>
-                        </div>
-                        <div>
-                          <label for="chk_stripDataDashAttributes">
-                            <input id="chk_stripDataDashAttributes" type="checkbox" aria-label="strip data- hyphenated attributes">
-                            data-*</label>
-                        </div>
-                        <div>
-                          <label for="chk_stripARIADashAttributes">
-                            <input id="chk_stripARIADashAttributes" type="checkbox" aria-label="strip all aria attributes">
-                            aria-*</label>
-                        </div>
-                        <div>
-                          <label for="chk_onclick">
-                            <input id="chk_onclick" type="checkbox" aria-label="strip onclick attributes (all lowercase)">
-                            onclick</label>
-                        </div>
-                        <div>
-                          <label for="chk_stripOnClickReactAttributes">
-                            <input id="chk_stripOnClickReactAttributes" type="checkbox" aria-label="strip onClick (React) attributes (with capitalized C)">
-                            onClick (React)</label>
-                        </div>
-                        <div>
-                          <label for="chk_stripAngularCrapAttributes1">
-                            <input id="chk_stripAngularCrapAttributes1" type="checkbox" aria-label="strip ng- (Angular) n g hyphenated attributes">
-                            ng- (Angular)</label>
-                        </div>
-                        <div>
-                          <label for="chk_stripAngularCrapAttributes2">
-                            <input id="chk_stripAngularCrapAttributes2" type="checkbox" aria-label="strip _ng (Angular) underscore n g attributes">
-                            _ng (Angular)</label>
-                        </div>
+                        <div><label for="chk_stripClassAttributes"><input id="chk_stripClassAttributes" type="checkbox" aria-label="strip class attributes"> class</label></div>
+                        <div><label for="chk_stripStyleAttributes"><input id="chk_stripStyleAttributes" type="checkbox" aria-label="strip style attributes"> style</label></div>
+                        <div><label for="chk_stripDirAttributes"><input id="chk_stripDirAttributes" type="checkbox" aria-label="strip dir attributes"> dir</label></div>
+                        <div><label for="chk_stripLangAttributes"><input id="chk_stripLangAttributes" type="checkbox" aria-label="strip lang attributes"> lang</label></div>
+                        <div><label for="chk_stripDataDashAttributes"><input id="chk_stripDataDashAttributes" type="checkbox" aria-label="strip data- hyphenated attributes"> data-*</label></div>
+                        <div><label for="chk_stripARIADashAttributes"><input id="chk_stripARIADashAttributes" type="checkbox" aria-label="strip all aria attributes"> aria-*</label></div>
+                        <div><label for="chk_onclick"><input id="chk_onclick" type="checkbox" aria-label="strip onclick attributes (all lowercase)"> onclick</label></div>
+                        <div><label for="chk_stripOnClickReactAttributes"><input id="chk_stripOnClickReactAttributes" type="checkbox" aria-label="strip onClick (React) attributes (with capitalized C)"> onClick (React)</label></div>
+                        <div><label for="chk_stripAngularCrapAttributes1"><input id="chk_stripAngularCrapAttributes1" type="checkbox" aria-label="strip ng- (Angular) n g hyphenated attributes"> ng- (Angular)</label></div>
+                        <div><label for="chk_stripAngularCrapAttributes2"><input id="chk_stripAngularCrapAttributes2" type="checkbox" aria-label="strip _ng (Angular) underscore n g attributes"> _ng (Angular)</label></div>
                         <button type="button" class="moreElAndAttributeOptions modal-trigger" data-target="#attributePickList" id="moreElAndAttributeOptions2" aria-label="More options (strip)">…</button>
                       </div>
                       <div id="miscAttribs">
-                        <div>
-                          <label class="wide" for="txt_customAttrs">All attributes that begin with…
-                            <div><input id="txt_customAttrs" type="text" aria-describedby="note3" data-user-entered="false"></div>
-                          </label>
-                        </div>
-                        <div>
-                          <label class="wide" for="txt_otherMiscAttrs">Other misc attributes
-                            <div><input id="txt_otherMiscAttrs" type="text" aria-describedby="note4" data-user-entered="false"></div>
-                          </label>
-                        </div>
+                        <div><label class="wide" for="txt_customAttrs">All attributes that begin with…<div><input id="txt_customAttrs" type="text" aria-describedby="note3" data-user-entered="false"></div></label></div>
+                        <div><label class="wide" for="txt_otherMiscAttrs">Other misc attributes<div><input id="txt_otherMiscAttrs" type="text" aria-describedby="note4" data-user-entered="false"></div></label></div>
                       </div>
                     </fieldset>
                   </div>
@@ -300,12 +194,9 @@
         </div>
         <fieldset>
           <legend>Apply to all attributes listed below</legend>
-          <span><label for="all_attributes_abbrev"><input aria-label="Abbreviate all attributes" data-attribute="accept" type="radio" name="all_attributes_options" id="all_attributes_abbrev">Abbreviate</label></span
-          >
-          <span><label for="all_attributes_strip"><input aria-label="Strip all attributes" data-attribute="accept" type="radio" name="all_attributes_options" id="all_attributes_strip">Strip</label></span
-          >
-          <span><label for="all_attributes_leave"><input aria-label="Leave intact all attributes" data-attribute="accept" type="radio" name="all_attributes_options" id="all_attributes_leave">Leave intact</label></span
-          >
+          <span><label for="all_attributes_abbrev"><input aria-label="Abbreviate all attributes" data-attribute="accept" type="radio" name="all_attributes_options" id="all_attributes_abbrev">Abbreviate</label></span>
+          <span><label for="all_attributes_strip"><input aria-label="Strip all attributes" data-attribute="accept" type="radio" name="all_attributes_options" id="all_attributes_strip">Strip</label></span>
+          <span><label for="all_attributes_leave"><input aria-label="Leave intact all attributes" data-attribute="accept" type="radio" name="all_attributes_options" id="all_attributes_leave">Leave intact</label></span>
         </fieldset>
         <hr>  
         <div id="listOfAttributes">
