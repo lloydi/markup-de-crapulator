@@ -1,3 +1,6 @@
+#allPageContent * {
+ box-sizing: border-box;
+}
 body {
  background: rgb(102, 70, 70, 0.1);
  font-size: 1.2em;
@@ -134,20 +137,16 @@ input {
 }
 
 fieldset {
- border: 2px solid rgb(102, 70, 70);
- margin: 0 0 1em 0;
-}
-
-fieldset fieldset {
  border: 1px dotted rgb(61, 42, 42);
- padding: 5px;
+ padding: 8px;
  background: rgba(255, 255, 255, 0.4);
  border-radius: 5px;
  transition-duration: 0.3s;
+ margin-top: 0.5em;
 }
 
-fieldset fieldset:hover,
-fieldset fieldset:focus-within {
+fieldset:hover,
+fieldset:focus-within {
  background: rgba(255, 255, 255, 0.8);
 }
 
@@ -155,10 +154,11 @@ legend h2,
 legend h3 {
  margin: 0;
  font-size: 1em;
+ padding: 0 0.3em;
 }
 
 legend {
- margin: 0;
+ margin: 1em 0 0 0;
  outline: 1px dotted rgb(61, 42, 42);
  background: white;
  display: inline-block;
@@ -168,11 +168,6 @@ legend {
 
 #miscAttribs div {
  margin: 5px 0;
-}
-
-#indentLevel fieldset,
-#indentLevel div {
- margin: 10px 0;
 }
 
 #turd {
