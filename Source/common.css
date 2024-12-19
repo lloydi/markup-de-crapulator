@@ -1,18 +1,18 @@
-.visuallyhidden,.visually-hidden {clip-path: inset(100%);clip: rect(1px, 1px, 1px, 1px);height: 1px;overflow: hidden;position: absolute;white-space: nowrap;width: 1px;}
-* {-webkit-box-sizing: border-box;box-sizing: border-box;}
-html {min-height: 100vh;}
-body {background: #f7f7f5;color: #333;font: 400 105%/1.4 "Work Sans", sans-serif;margin: 1.5em auto;width: 90%;}
-a:link,a:visited {border-bottom: 1px solid rgba(42, 122, 130, .5);color: #2b7a82;text-decoration: none;}
-a:hover {border-bottom: 2px solid;color: #1e565c;}
-button:focus,a:focus {box-shadow: none;outline-offset: 2px;outline: 3px solid rgba(42, 122, 130, .75);}
-a:focus {border-bottom: none;}
-a:active {background: #333;color: #fff;}
-code {font-family: Consolas, monaco, monospace;-moz-tab-size: 4;tab-size: 4;text-transform: none;white-space: pre-wrap;color:brown;}
-textarea {width: 100%}
-legend h2, legend h3 {margin: 0;}
-label {font-weight: bold;}
-.help {font-size: .7rem;}
-legend {font-weight: bold;}
-button {padding: 0.5em;font-weight: bold;font-size: 14px;display: inline-block;background-color: lightcyan ;border:2px solid gray;border-radius: 3px;margin: 5px 0;}
-button.wide {width: 100%;}
-textarea,input {border:1px solid gray;border-radius: 3px;padding: 5px;}
+* { box-sizing: border-box; -webkit-box-sizing: border-box; }
+a:active { background: #333; color: #fff; }
+a:focus { border-bottom: none; }
+a:hover { border-bottom: 2px solid; color: #1e565c; }
+a:link, a:visited { border-bottom: 1px solid rgba(42, 122, 130, .5); color: #2b7a82; text-decoration: none; }
+body { background: #f7f7f5; color: #333; font: 400 105%/1.4 "Work Sans", sans-serif; margin: 1.5em auto; width: 90%; }
+button { background-color: lightcyan; border: 2px solid gray; border-radius: 3px; display: inline-block; font-size: 14px; font-weight: bold; margin: 5px 0; padding: 0.5em; }
+button.wide { width: 100%; }
+button:focus, a:focus { box-shadow: none; outline: 3px solid rgba(42, 122, 130, .75); outline-offset: 2px; }
+code { color: brown; font-family: Consolas, monaco, monospace; tab-size: 4; -moz-tab-size: 4; text-transform: none; white-space: pre-wrap; }
+html { min-height: 100vh; }
+input, textarea { border: 1px solid gray; border-radius: 3px; padding: 5px; }
+label { font-weight: bold; }
+legend { font-weight: bold; }
+legend h2, legend h3 { margin: 0; }
+textarea { width: 100%; }
+.help { font-size: .7rem; }
+.visually-hidden, .visuallyhidden { clip: rect(1px, 1px, 1px, 1px); clip-path: inset(100%); height: 1px; overflow: hidden; position: absolute; white-space: nowrap; width: 1px; }
