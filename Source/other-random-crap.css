@@ -337,3 +337,6 @@ div.modal .actions {
  border-top: 1px dotted #333;
  text-align: center;
 }
+.vert label {
+  display: block;
+}
