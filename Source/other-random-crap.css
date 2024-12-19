@@ -138,7 +138,7 @@ fieldset {
  margin: 0 0 1em 0;
 }
 
-fieldset fieldset {
+.was-fieldset fieldset {
  border: 1px dotted rgb(61, 42, 42);
  padding: 5px;
  background: rgba(255, 255, 255, 0.4);
@@ -146,9 +146,14 @@ fieldset fieldset {
  transition-duration: 0.3s;
 }
 
-fieldset fieldset:hover,
-fieldset fieldset:focus-within {
+.was-fieldset fieldset:hover,
+.was-fieldset fieldset:focus-within {
  background: rgba(255, 255, 255, 0.8);
+}
+
+.was-legend {
+  font-size: 1.2em;
+
 }
 
 legend h2,
