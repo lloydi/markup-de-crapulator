@@ -55,3 +55,34 @@ div.poop { font-size: 600px; opacity: 0.1; text-align: center; position: fixed; 
     #otherFilters .column { width: calc(50% - 10px); margin: 0; }
     #otherFilters .column + .column { margin-left: 20px; }
 }
+
+body.light, body.light h1, body.light h2, body.light h3, body.light h4, body.light h5, body.light h6 {color: #382727;}
+body.light input[type=text],
+body.light textarea {background: white;color: #382727;}
+body.light div.poop {display: none;}
+body.light details {background: transparent;}
+body.light header {border-bottom-color: #382727;}
+
+body.poop a, body.poop a:link { color: #fff; border-bottom-color: #fff; }
+body.poop  { background: #332626; color: rgba(255, 255, 255, 0.8); }
+body.poop button { background: #2b1f1f; color: white;border-color: white;}
+body.poop button:focus, body.poop button:hover { background: #1f1717; }
+body.poop code { background: rgb(29, 22, 22); color: rgb(247, 201, 201); }
+body.poop div.modal { background: #332626; border: 5px solid #fff; }
+body.poop div.modal .modal-footer { background: #2b1f1f; }
+body.poop div.modal h2 { background: #2b1f1f; }
+body.poop h1 { background: #332626; color: rgba(255, 255, 255, 0.8); }
+body.poop h2, body.poop h3 { background: #332626; color: rgba(255, 255, 255, 0.8); }
+body.poop input[type="text"] { background: #fff; color: #333; }
+body.poop label:hover, label:focus-within { background: rgba(0, 0, 0, 0.3); box-shadow: 0px 0px 2px 2px rgb(255, 255, 255, 0.5); }
+body.poop legend { color: #fff; border: 1px dotted #fff; background: rgb(41, 28, 28); }
+body.poop legend h2, body.poop legend h3 { background: rgb(41, 28, 28); }
+body.poop textarea { background: rgb(34, 23, 23); color: #fff; }
+body.poop #log { background: rgba(255, 255, 255, 0.8); color: #332626; }
+body.poop *:focus { outline-color: #fff; }
+body.poop .modal-curtain { background: rgba(0,0,0,0.8); }
+body.poop div.poop { font-size: 600px; opacity: 0.1; text-align: center; position: fixed; bottom: -400px; left: 50%; transform: translateX(-50%); z-index: -1; }
+body.poop header {border-bottom-color:white;}
+body.poop #log:empty {background: transparent;}
+body.poop #convertedRichTextWrapper code {background: rgba(255, 255, 255, 0.8);}
+    
