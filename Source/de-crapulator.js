@@ -3,30 +3,47 @@ const outputRichText = document.querySelector("#txtConvertedRichText");
 const outputPlainText = document.querySelector("#txtConvertedPlainText");
 const convertedRichTextWrapper = document.querySelector("#convertedRichTextWrapper");
 const convertedPlainTextWrapper = document.querySelector("#convertedPlainTextWrapper");
+
+//prefs
+const indentRadios = document.querySelectorAll("[name=rad_Indentstyle],[name=rad_Indentdepth]");
+const formatBrailleFriendlyOutput = document.querySelector("#chk_brailleFriendlyOutput");
+const fartBigReductions = document.querySelector("#fartBigReductions");
+
+//strip tags
 const filterEmpty = document.querySelector("#chk_emptyTags");
+const filterAngularNgCrapTags = document.querySelector("#chk_stripAngularCrapTags");
+const filterEmptyComments = document.querySelector("#chk_emptyHTMLComments");
+const filterAllHTMLcomments = document.querySelector("#chk_allHTMLcomments");
+const filterAnyHTMLtag = document.querySelector("#txt_anyHTMLtag");
+
+//abbreviate attribs
+const chk_abbreviateClasses = document.querySelector("#chk_abbreviateClasses");
+const chk_abbreviateStyles = document.querySelector("#chk_abbreviateStyles");
+const chk_abbreviateHrefs = document.querySelector("#chk_abbreviateHrefs");
+const chk_abbreviateSrcs = document.querySelector("#chk_abbreviateSrcs");
+const chk_abbreviateSrcSets = document.querySelector("#chk_abbreviateSrcSets");
+const chk_abbreviateTitles = document.querySelector("#chk_abbreviateTitles");
+const chk_abbreviateIDs = document.querySelector("#chk_abbreviateIDs");
+
+//remove attribs
 const filterClass = document.querySelector("#chk_stripClassAttributes");
 const filterStyle = document.querySelector("#chk_stripStyleAttributes");
 const filterDir = document.querySelector("#chk_stripDirAttributes");
 const filterLang = document.querySelector("#chk_stripLangAttributes");
-const filterOnclick = document.querySelector("#chk_onclick");
-const filterOnClickReact = document.querySelector("#chk_stripOnClickReactAttributes");
 const filterDataDash = document.querySelector("#chk_stripDataDashAttributes");
 const filterARIADash = document.querySelector("#chk_stripARIADashAttributes");
+const filterOnclick = document.querySelector("#chk_onclick");
+const filterOnClickReact = document.querySelector("#chk_stripOnClickReactAttributes");
 const filterAngularNgCrapAttributes1 = document.querySelector("#chk_stripAngularCrapAttributes1");
 const filterAngularNgCrapAttributes2 = document.querySelector("#chk_stripAngularCrapAttributes2");
-const fartBigReductions = document.querySelector("#fartBigReductions");
-const filterAngularNgCrapTags = document.querySelector("#chk_stripAngularCrapTags");
-const formatBrailleFriendlyOutput = document.querySelector("#chk_brailleFriendlyOutput");
-const filterAllHTMLcomments = document.querySelector("#chk_allHTMLcomments");
-const filterEmptyComments = document.querySelector("#chk_emptyHTMLComments");
 const filterCustomAttrs = document.querySelector("#txt_customAttrs");
 const filterotherMiscAttrs = document.querySelector("#txt_otherMiscAttrs");
-const filterAnyHTMLtag = document.querySelector("#txt_anyHTMLtag");
+
+
 const removeAll = document.querySelector("#removeAll");
 const tempDOMDumpingGround = document.querySelector("#tempDOMDumpingGround");
 const testDivForPointlessElements = document.querySelector("#testDivForPointlessElements");
 const log = document.querySelector("#log");
-const indentRadios = document.querySelectorAll("[name=rad_Indentstyle],[name=rad_Indentdepth]");
 const allPrefInputs = document.querySelectorAll("#allPreferences input");
 const otherFilterCheckboxes = document.querySelectorAll("#otherFilters [type=checkbox]");
 const outputMarkupContainerTypeRads = document.querySelectorAll("[name='outputMarkupContainerType']");
@@ -37,14 +54,51 @@ const btnDoAnotherPass = document.querySelector("#btnDoAnotherPass");
 const btnRemovePointlessNestedElements = document.querySelector("#btnRemovePointlessNestedElements");
 const btnMorePreferences = document.querySelector("#btnMorePreferences");
 const btnResetEverything = document.querySelector("#btnResetEverything");
-const chk_abbreviateClasses = document.querySelector("#chk_abbreviateClasses");
-const chk_abbreviateStyles = document.querySelector("#chk_abbreviateStyles");
-const chk_abbreviateHrefs = document.querySelector("#chk_abbreviateHrefs");
-const chk_abbreviateSrcs = document.querySelector("#chk_abbreviateSrcs");
-const chk_abbreviateSrcSets = document.querySelector("#chk_abbreviateSrcSets");
-const chk_abbreviateTitles = document.querySelector("#chk_abbreviateTitles");
 const moreElAndAttributeOptionsButtons = document.querySelectorAll(".moreElAndAttributeOptions");
 const btnApplyAttributeSettings = document.querySelector("#btnApplyAttributeSettings");
+const applyPresetSection = document.querySelector("#applyPreset");
+
+const presetButtons = applyPresetSection.querySelectorAll("button");
+const config_GCPCustomAttribs = "do-not,pointer,_ng,banner,callout,cfc,class,console,data-,dir,ext,jslog,mat,message,sandbox,side,style,track,triggers,xap";
+const config_FBCustomAttribs = "accept,draggable,referrer";
+
+function removeUsualSuspects(){
+  //tags
+  filterEmpty.checked=true;
+  filterAllHTMLcomments.checked=true;
+  //attributes
+  filterClass.checked=true;
+  filterStyle.checked=true;
+  filterDir.checked=true;
+  filterLang.checked=true;
+  filterDataDash.checked=true;
+  filterAngularNgCrapAttributes1.checked=true;
+  filterAngularNgCrapAttributes2.checked=true;
+}
+function abbreviateUsualSuspects(){
+  chk_abbreviateHrefs.checked=true;
+  chk_abbreviateSrcs.checked=true;
+}
+
+Array.from(presetButtons).forEach(presetButton => {
+ presetButton.addEventListener('click', e => {
+  const configChoice = presetButton.getAttribute("id");
+  let customAttribsThatStartWith="";
+  if (configChoice==="config_gcp") {
+    customAttribsThatStartWith = config_GCPCustomAttribs;
+    removeUsualSuspects();
+    abbreviateUsualSuspects();
+  }
+  if (configChoice==="config_fb") {
+    customAttribsThatStartWith = config_FBCustomAttribs;
+    removeUsualSuspects();
+    abbreviateUsualSuspects();
+  }
+  filterCustomAttrs.value=customAttribsThatStartWith;
+  btnDecrapulate.click();
+ });
+});
+
 let raw = "";
 let indented = "";
 let indentStyle;
@@ -174,6 +228,11 @@ function addAllEventListeners() {
       generateMarkup();
     }
   });
+  chk_abbreviateIDs.addEventListener("click", (e) => {
+    if (updateMarkupWithEachChange) {
+      generateMarkup();
+    }
+  });
   removeAll.addEventListener("click", (e) => {
     removeAllCrap();
   });
@@ -284,6 +343,7 @@ function addAllEventListeners() {
     const src_abbrev = document.querySelector("#src_abbrev");
     const srcset_abbrev = document.querySelector("#srcset_abbrev");
     const title_abbrev = document.querySelector("#title_abbrev");
+    const id_abbrev = document.querySelector("#id_abbrev");
 
     const class_strip = document.querySelector("#class_strip");
     const style_strip = document.querySelector("#style_strip");
@@ -337,6 +397,9 @@ function addAllEventListeners() {
     });
     title_abbrev.addEventListener("click", (e) => {
       chk_abbreviateTitles.checked = true;
+    });
+    id_abbrev.addEventListener("click", (e) => {
+      chk_abbreviateIDs.checked = true;
     });
 
     class_strip.addEventListener("click", (e) => {
@@ -722,6 +785,11 @@ function generateMarkup() {
       abbreviateAttribute("title");
     }
   }
+  function abbreviateIDs() {
+    if (chk_abbreviateIDs.checked) {
+      abbreviateAttribute("id");
+    }
+  }
 
   function checkActionsAppliedInModal() {
     if (modal) {
@@ -830,6 +898,7 @@ function generateMarkup() {
   abbreviateSrcs();
   abbreviateSrcSets();
   abbreviateTitles();
+  abbreviateIDs();
   checkActionsAppliedInModal();
   convertTempDomNodeToIndentedOutputRichText();
   outputRichText.innerHTML = indented;

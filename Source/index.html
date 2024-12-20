@@ -2,14 +2,14 @@
 <html lang="en-GB">
   <head>
     <meta charset="utf-8">
-    <link rel="stylesheet" href="simple-grid.css?rev=26jul2021">
-    <link rel="stylesheet" href="common.css?rev=26jul2021">
-    <link rel="stylesheet" href="highlight/styles/a11y-light.css?rev=26jul2021">
-    <link rel="stylesheet" href="other-random-crap.css?rev=26jul2021">
+    <link rel="stylesheet" href="simple-grid.css?rev=20dec2024">
+    <link rel="stylesheet" href="common.css?rev=20dec2024">
+    <link rel="stylesheet" href="highlight/styles/a11y-light.css?rev=20dec2024">
+    <link rel="stylesheet" href="other-random-crap.css?rev=20dec2024">
+    <!-- <link rel="stylesheet" href="poop-overrides.css?rev=20dec2024"> -->
     <title>HTML De-crapulator</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, shrink-to-fit=no">
-    <style></style>
   </head>
 
   <body>
@@ -106,6 +106,9 @@
                       <div><label for="chk_abbreviateSrcs"><input id="chk_abbreviateSrcs" type="checkbox"> src</label></div>
                       <div><label for="chk_abbreviateSrcSets"><input id="chk_abbreviateSrcSets" type="checkbox"> srcset</label></div>
                       <div><label for="chk_abbreviateTitles"><input id="chk_abbreviateTitles" type="checkbox"> title</label></div>
+                      <div><label for="chk_abbreviateIDs"><input id="chk_abbreviateIDs" type="checkbox">cid</label></div>
+
+
                       <button type="button" class="moreElAndAttributeOptions modal-trigger" data-target="#attributePickList" id="moreElAndAttributeOptions1" aria-label="More options (abbreviate)">…</button>
                     </fieldset>
                   </div>
@@ -130,6 +133,21 @@
                       <div id="miscAttribs">
                         <div><label class="wide" for="txt_customAttrs">All attributes that begin with…<div><input id="txt_customAttrs" type="text" aria-describedby="note3" data-user-entered="false"></div></label></div>
                         <div><label class="wide" for="txt_otherMiscAttrs">Other misc attributes<div><input id="txt_otherMiscAttrs" type="text" aria-describedby="note4" data-user-entered="false"></div></label></div>
+                        <div>
+                          <details id="applyPreset">
+                            <summary>Apply a preset</summary>
+                            <ul>
+                              <li><button type="button" id="config_gcp">Google Cloud</button></li>
+                              <li><button type="button" id="config_fb">Facebook</button></li>
+                            </ul>
+                            <!-- 
+                            <label for="config-custom">Or add your own custom config</label>
+                            <textarea name="config-custom" id="config-custom" cols="30" rows="10" aria-describedby="config-custom-desc"></textarea>
+                            <p id="config-custom-desc">Enter all attributes that you want to strip out (one attribute per line)</p>
+                            <button type="button" id="config-gcp">Apply custom settings</button>
+                            -->  
+                          </details>
+                        </div>
                       </div>
                     </fieldset>
                   </div>
@@ -161,6 +179,7 @@
             </div>
           </div>
         </form>
+        
       </main>
       <div hidden id="tempDOMDumpingGround"></div>
       <div hidden id="testDivForPointlessElements"></div>
