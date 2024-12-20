@@ -9,6 +9,7 @@
     <!--#include virtual="/_inc/favicon.html" -->
     <link rel="stylesheet" href="highlight/styles/a11y-light.css?r=21dec2023" />
     <link rel="stylesheet" href="other-random-crap.css?rev=20dec2024">
+    <link rel="stylesheet" href="poop-overrides-new.css?r=20Dec202xdsssdffc4" />
     <style>
       .pr {position: relative;}
       .moreElAndAttributeOptions {position: absolute;bottom: 10px;right: 10px;}
@@ -28,7 +29,7 @@
     </style>
 
     <style>
-    .switch {padding: .3em;background: white;}
+    .switch {padding: .3em .3em .1em .3em;background: white;}
     body.light .switch label:hover,body.light .switch label:focus-within, body.poop .switch label:hover,body.poop .switch label:focus-within {background: transparent;box-shadow: none;}
     .switch label {margin: 10px 0;display: block;position: relative;color: black;width: 10em;}
     .switch label span:first-child {display: inline-block;}
@@ -41,19 +42,13 @@
     .switch [type="checkbox"]:focus + label span:first-child {outline: 3px solid #434257;outline-offset: 3px;}
     .switch [type="checkbox"]:checked:focus + label span:first-child {outline: 3px solid #3e7d3f;}
     </style>
-
-    <link rel="stylesheet" href="poop-overrides-new.css?r=20Dec202xdsssdffc4" />
     </head>
   <body class="poop">
     <div id="allPageContent">
     <!--#include virtual="/_inc/header.html" -->
     <div class="poop" aria-hidden="true">💩</div>
     <main>
-        <h1>HTML De-crapulator  INDEX-NEW.HTML INDEX-NEW.HTML INDEX-NEW.HTML</h1>
-
-
-
-
+        <h1>HTML De-crapulator</h1>
 
         <form action="">
           <div class="container">
@@ -72,13 +67,6 @@
                 <div role="region" id="allPreferences" aria-label="Preferences" class="chk_OrRads">
                   <div class="was-fieldset" id="indentLevel">
                     <h2 class="was-legend">Preferences</h2>
-                    <div class="switch">
-                     <input type="checkbox" role="switch" id="lightMode" class="visually-hidden">
-                     <label for="lightMode">
-                      <span></span>
-                      <span>Light mode</span>
-                    </label>
-                    </div>
                     <fieldset>
                       <legend>Indent Style</legend>
                       <span><label for="rad_Indentstyle_1"><input value="space" id="rad_Indentstyle_1" name="rad_Indentstyle" type="radio" checked> Spaces</label></span>
@@ -92,6 +80,19 @@
                       <span><label for="rad_Indentdepth_3"><input value="3" id="rad_Indentdepth_3" name="rad_Indentdepth" type="radio"> 3</label></span>
                       <span><label for="rad_Indentdepth_4"><input value="4" id="rad_Indentdepth_4" name="rad_Indentdepth" type="radio"> 4</label></span>
                     </fieldset>
+
+
+
+                    <div class="switch">
+                     <input type="checkbox" role="switch" id="lightMode" class="visually-hidden">
+                     <label for="lightMode">
+                      <span></span>
+                      <span>Light mode</span>
+                     </label>
+                    </div>
+
+
+
                     <button type="button" aria-expanded="false" id="btnMorePreferences">More preferences …</button>
                     <div class="was-fieldset vert" id="morePreferences">
                       <div class="row">
@@ -2269,44 +2270,48 @@
         </div>
       </div>
     </div>
-
-      <!-- <script src="/common.js"></script> -->
-      <script>
-      function selectElementContents(el) {
-        var range = document.createRange();
-        range.selectNodeContents(el);
-        var sel = window.getSelection();
-        sel.removeAllRanges();
-        sel.addRange(range);
-      }        
-      </script>
-      <script src="indent.js"></script>
-      <script src="highlight/highlight.pack.js"></script>
-      <script src="de-crapulator.js"></script>
-      <script src="modal.js"></script>
-      <script>
-        hljs.initHighlightingOnLoad();
-      </script>
-
+    <!-- <script src="/common.js"></script> -->
+  </body>
+<script>
+function selectElementContents(el) {
+  var range = document.createRange();
+  range.selectNodeContents(el);
+  var sel = window.getSelection();
+  sel.removeAllRanges();
+  sel.addRange(range);
+}        
+</script>
+<script src="indent.js"></script>
+<script src="highlight/highlight.pack.js"></script>
+<script src="de-crapulator-new.js"></script>
 <script>
 function checkDisplayMode(){
   const lightMode = document.querySelector('#lightMode');
-  const body = document.querySelector('body');
   let isLightMode = false;
   lightMode.addEventListener('change', e => {
-    //console.log('0');
     isLightMode = (lightMode.checked);
-    if (isLightMode) {
-      //console.log('1');
-      body.setAttribute('class','light');
-    } else {
-      //console.log('2');
-      body.setAttribute('class','poop');
-    }
+    setLightMode(isLightMode);
+    saveOtherPrefs();
   });
 }
+function setLightMode(isLightMode){
+    const body = document.querySelector('body');
+    if ((isLightMode==="true")||(isLightMode===true)) {
+      body.setAttribute('class','light');
+    } else {
+      body.setAttribute('class','poop');
+    }
+}
+function getDisplayMode(){
+  const isLightMode = localStorage.getItem("dataStorage-lightMode");
+  document.querySelector("#lightMode").checked = ((isLightMode==="true")||(isLightMode===true));
+  setLightMode(isLightMode);
+}
 checkDisplayMode();
+getDisplayMode();
 </script>
-
-      </body>
+<script src="modal.js"></script>
+<script>
+hljs.initHighlightingOnLoad();
+</script>
 </html>
