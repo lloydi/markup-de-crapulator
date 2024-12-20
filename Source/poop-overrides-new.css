@@ -1,0 +1,90 @@
+a, a:link { color: #fff; border-bottom-color: #fff; }
+body { background: #332626; color: rgba(255, 255, 255, 0.8); position: relative; }
+button { background: #2b1f1f; }
+button:focus, button:hover { background: #1f1717; }
+button[disabled] { display: none; }
+code { background: rgb(29, 22, 22); color: rgb(247, 201, 201); }
+details { background: transparent; padding: 1em 0; }
+div.modal { background: #332626; border: 5px solid #fff; }
+div.modal .modal-footer { background: #2b1f1f; margin: 0 -20px; }
+div.modal h2 { background: #2b1f1f; }
+fieldset { margin: 0 0 1em 0; }
+fieldset fieldset { border-radius: 5px; padding: 5px; }
+footer { background: rgb(102, 70, 70); }
+footer a:link { color: #fff; border-bottom-color: #fff; background: transparent; }
+h1 { display: inline-block; background: #332626; color: rgba(255, 255, 255, 0.8); }
+h1:before { background: url(poop.png); background-size: cover; display: inline-block; width: 25px; height: 25px; content: ""; margin-right: 10px; }
+h2, h3 { background: #332626; color: rgba(255, 255, 255, 0.8); }
+header { border-bottom-color: rgba(255, 255, 255, 0.5); }
+header a.crappy-logo:hover { border-bottom-color: #fff; }
+input[type="text"] { background: #fff; color: #333; padding: 10px; width: 100%; }
+label { display: inline-block; margin: 1px; border-radius: 5px; padding: 1px 6px; transition-duration: 0.3s; }
+label.wide { width: 100%; padding: 5px; }
+label:hover, label:focus-within { background: rgba(0, 0, 0, 0.3); box-shadow: 0px 0px 2px 2px rgb(255, 255, 255, 0.5); }
+legend { color: #fff; margin: 0; border: 1px dotted #fff; display: inline-block; padding: 2px 10px; border-radius: 5px; background: rgb(41, 28, 28); }
+legend h2, legend h3 { margin: 0; font-size: 1em; background: rgb(41, 28, 28); }
+main { position: relative; top: 0; left: 0; }
+pre { white-space: pre-wrap; margin: 0; }
+textarea { background: rgb(34, 23, 23); color: #fff; }
+textarea, code[contenteditable] { font-size: 16px; }
+
+#btnDecrapulate { font-size: 2em; width: 100%; }
+#btnDecrapulate img { display: inline-block; height: 1em; margin-right: 5px; transform: translateY(5px); }
+#convertedRichTextWrapper code { background: rgba(255, 255, 255, 0.8); }
+#indentControls span label { padding: 1px; }
+#indentLevel div, #indentLevel fieldset { margin: 10px 0; }
+#log { text-align: center; min-height: 6em; background: rgba(255, 255, 255, 0.8); padding: 0.5em; border-radius: 5px; color: #332626; }
+#log:empty { background: transparent; }
+#log span { font-weight: bold; }
+#morePreferences { margin: 0.5em 0; display: none; }
+#miscAttribs div { margin: 5px 0; }
+#otherFilters .column { width: 100%; margin: 0; }
+#turd { background: rgb(102, 70, 70); border-radius: 15px; border: 1px solid black; height: 30px; width: 100%; margin: 1em 0; position: static; text-align: left; }
+#turd:after { content: "Turd-o-Meter"; position: absolute; color: white; display: inline-block; padding: 2px 20px 4px 20px; white-space: nowrap; }
+#txtConvertedRichText, #txtConvertedPlainText { height: 25em; display: block; overflow: scroll; border: 1px solid rgb(102, 70, 70); padding: 5px; margin-top: 10px; }
+#txtRaw { height: 23em; }
+#wut { margin-left: 2em; transform: translateY(-0.4em); z-index: 1; }
+
+*:focus { outline-color: #fff; }
+.modal-curtain { background: rgba(0,0,0,0.8); }
+div.poop { font-size: 600px; opacity: 0.1; text-align: center; position: fixed; bottom: -400px; left: 50%; transform: translateX(-50%); z-index: -1; }
+[aria-expanded="true"] + #morePreferences { display: block; }
+
+@media (min-width: 1500px) {
+    #indentControls span label { padding: 1px 6px; }
+    #otherFilters .column { width: calc(50% - 10px); margin: 0; }
+    #otherFilters .column + .column { margin-left: 20px; }
+}
+
+body.light{background: rgb(102, 70, 70, 0.1)}
+body.light, body.light h1, body.light h2, body.light h3, body.light h4, body.light h5, body.light h6, body.light legend, body.light button {color: #382727;background: transparent;}
+body.light button {background: rgba(102, 70, 70, 0.1);}
+body.light input[type=text],
+body.light textarea {background: white;color: #382727;}
+body.light div.poop {display: none;}
+body.light details {background: transparent;}
+body.light header {border-bottom-color: #382727;}
+
+body.poop a, body.poop a:link { color: #fff; border-bottom-color: #fff; }
+body.poop  { background: #332626; color: rgba(255, 255, 255, 0.8); }
+body.poop button { background: #2b1f1f; color: white;border-color: white;}
+body.poop button:focus, body.poop button:hover { background: #1f1717; }
+body.poop code { background: rgb(29, 22, 22); color: rgb(247, 201, 201); }
+body.poop div.modal { background: #332626; border: 5px solid #fff; }
+body.poop div.modal .modal-footer { background: #2b1f1f; }
+body.poop div.modal h2 { background: #2b1f1f; }
+body.poop h1 { background: #332626; color: rgba(255, 255, 255, 0.8); }
+body.poop h2, body.poop h3 { background: #332626; color: rgba(255, 255, 255, 0.8); }
+body.poop input[type="text"] { background: #fff; color: #333; }
+body.poop label:hover, label:focus-within { background: rgba(0, 0, 0, 0.3); box-shadow: 0px 0px 2px 2px rgb(255, 255, 255, 0.5); }
+body.poop legend { color: #fff; border: 1px dotted #fff; background: rgb(41, 28, 28); }
+body.poop legend h2, body.poop legend h3 { background: rgb(41, 28, 28); }
+body.poop textarea { background: rgb(34, 23, 23); color: #fff; }
+body.poop #log { background: rgba(255, 255, 255, 0.8); color: #332626; }
+body.poop *:focus { outline-color: #fff; }
+body.poop .modal-curtain { background: rgba(0,0,0,0.8); }
+body.poop div.poop { font-size: 600px; opacity: 0.1; text-align: center; position: fixed; bottom: -400px; left: 50%; transform: translateX(-50%); z-index: -1; }
+body.poop header {border-bottom-color:white;}
+body.poop #log:empty {background: transparent;}
+body.poop #convertedRichTextWrapper code {background: rgba(255, 255, 255, 0.8);}
+    
