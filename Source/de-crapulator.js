@@ -539,6 +539,7 @@ function loadAndSaveData() {
     }
   }
 
+
   Array.from(userEnteredTextFields).forEach((field) => {
     field.setAttribute("data-user-entered", "true");
     let timeout = null;
@@ -555,6 +556,7 @@ function loadAndSaveData() {
   });
 }
 function saveOtherPrefs() {
+  localStorage.setItem("dataStorage-lightMode", document.querySelector("#lightMode").checked);
   localStorage.setItem("dataStorage-indentStyle", document.querySelector("[name='rad_Indentstyle']:checked").value);
   localStorage.setItem("dataStorage-indentDepth", document.querySelector("[name='rad_Indentdepth']:checked").value);
   localStorage.setItem("dataStorage-outputMarkupContainerType", document.querySelector("[name='outputMarkupContainerType']:checked").value);

@@ -56,7 +56,9 @@ div.poop { font-size: 600px; opacity: 0.1; text-align: center; position: fixed; 
     #otherFilters .column + .column { margin-left: 20px; }
 }
 
-body.light, body.light h1, body.light h2, body.light h3, body.light h4, body.light h5, body.light h6 {color: #382727;}
+body.light{background: rgb(102, 70, 70, 0.1)}
+body.light, body.light h1, body.light h2, body.light h3, body.light h4, body.light h5, body.light h6, body.light legend, body.light button {color: #382727;background: transparent;}
+body.light button {background: rgba(102, 70, 70, 0.1);}
 body.light input[type=text],
 body.light textarea {background: white;color: #382727;}
 body.light div.poop {display: none;}
