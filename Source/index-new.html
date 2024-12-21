@@ -91,6 +91,19 @@
                      </label>
                     </div>
 
+<script>
+function setLightMode(isLightMode){
+    const body = document.querySelector('body');
+    if ((isLightMode==="true")||(isLightMode===true)) {
+      body.setAttribute('class','light');
+      document.querySelector("#lightMode").checked = true;
+    } else {
+      body.setAttribute('class','poop');
+      document.querySelector("#lightMode").checked = false;
+    }
+}
+setLightMode(localStorage.getItem("dataStorage-lightMode"));
+</script>                    
 
 
                     <button type="button" aria-expanded="false" id="btnMorePreferences">More preferences …</button>
@@ -2294,21 +2307,7 @@ function checkDisplayMode(){
     saveOtherPrefs();
   });
 }
-function setLightMode(isLightMode){
-    const body = document.querySelector('body');
-    if ((isLightMode==="true")||(isLightMode===true)) {
-      body.setAttribute('class','light');
-    } else {
-      body.setAttribute('class','poop');
-    }
-}
-function getDisplayMode(){
-  const isLightMode = localStorage.getItem("dataStorage-lightMode");
-  document.querySelector("#lightMode").checked = ((isLightMode==="true")||(isLightMode===true));
-  setLightMode(isLightMode);
-}
 checkDisplayMode();
-getDisplayMode();
 </script>
 <script src="modal.js"></script>
 <script>
