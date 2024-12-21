@@ -146,9 +146,7 @@ setLightMode(localStorage.getItem("dataStorage-lightMode"));
                   <h2 class="was-legend">Options for amending the markup</h2>
                   <div class="column" id="stripTagsCol">
                     <fieldset class="strip">
-                      <legend>
-                        <h3>Strip these tags:</h3>
-                      </legend>
+                      <legend>Strip these tags:</legend>
                       <div class="chk_OrRads vert">
                         <div><label for="chk_emptyTags"><input id="chk_emptyTags" type="checkbox" aria-describedby="note2"> empty tags</label></div>
                         <div><label for="chk_stripAngularCrapTags"><input id="chk_stripAngularCrapTags" type="checkbox"> Angular tags &lt;ng-*&gt;</label></div>
@@ -173,9 +171,7 @@ setLightMode(localStorage.getItem("dataStorage-lightMode"));
                   </div>
                   <div class="column" id="stripAttributesCol">
                     <fieldset class="strip">
-                      <legend>
-                        <h3>Strip these attributes:</h3>
-                      </legend>
+                      <legend>Strip these attributes:</legend>
                       <div class="chk_OrRads pr vert">
                         <div><label for="chk_stripClassAttributes"><input id="chk_stripClassAttributes" type="checkbox" aria-label="strip class attributes"> class</label></div>
                         <div><label for="chk_stripStyleAttributes"><input id="chk_stripStyleAttributes" type="checkbox" aria-label="strip style attributes"> style</label></div>
@@ -245,10 +241,10 @@ setLightMode(localStorage.getItem("dataStorage-lightMode"));
       <div hidden id="testDivForPointlessElements"></div>
       <div id="log" aria-atomic="true" role="status"></div>
       <div role="region" aria-label="Notes">
-        <h3>Notes</h3>
+        <h2>Notes</h2>
         <ul>
           <li id="note1">Any HTML tag (field): you can enter any tag that you want to remove in a comma-separated list. IMPORTANT: if you choose a tag that has child elements, those child elements will be removed along with the parent.</li>
-          <li id="note2">Empty tags checkbox: means empty <code>&lt;div&gt;...&lt;/div&gt;</code> rather than empty elements liks <code>&lt;img&gt;</code> etc</li>
+          <li id="note2">Empty tags checkbox: means empty <code>&lt;div&gt;...&lt;/div&gt;</code> rather than empty elements like <code>&lt;img&gt;</code> etc</li>
           <li id="note3">Attributes that begin with (field): type the beginning of any range of attributes that you want to match, so entering `aria` will remove all `aria-*` attributes. Enter in this field as a comma-separated list.</li>
           <li id="note4">Other misc attributes (field): literally any other attribute that you want to remove. Enter in this field as a comma-separated list (type attributes in full).</li>
           <li id="note5">Celebrate big reductions with 'gusto': basically, it farts. A big, long old raspy fart (but only if you manage to achieve an HTML de-crapulation level of 15% of original markup size).</li>
