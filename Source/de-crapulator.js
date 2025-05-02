@@ -486,7 +486,9 @@ function removeAllCrap() {
 }
 function setAllCheckboxes() {
   Array.from(otherFilterCheckboxes).forEach((otherFilterCheckbox) => {
-    otherFilterCheckbox.checked = true;
+    if(otherFilterCheckbox.id!=="chk_stripARIADashAttributes") {
+      otherFilterCheckbox.checked = true;
+    }
   });
   if (updateMarkupWithEachChange) {
     generateMarkup();
