@@ -1,847 +1,783 @@
-const input = document.querySelector("#txtRaw");
-const outputRichText = document.querySelector("#txtConvertedRichText");
-const outputPlainText = document.querySelector("#txtConvertedPlainText");
-const convertedRichTextWrapper = document.querySelector("#convertedRichTextWrapper");
-const convertedPlainTextWrapper = document.querySelector("#convertedPlainTextWrapper");
-const filterEmpty = document.querySelector("#chk_emptyTags");
-const filterClass = document.querySelector("#chk_stripClassAttributes");
-const filterStyle = document.querySelector("#chk_stripStyleAttributes");
-const filterDir = document.querySelector("#chk_stripDirAttributes");
-const filterLang = document.querySelector("#chk_stripLangAttributes");
-const filterOnclick = document.querySelector("#chk_onclick");
-const filterOnClickReact = document.querySelector("#chk_stripOnClickReactAttributes");
-const filterDataDash = document.querySelector("#chk_stripDataDashAttributes");
-const filterARIADash = document.querySelector("#chk_stripARIADashAttributes");
-const filterAngularNgCrapAttributes1 = document.querySelector("#chk_stripAngularCrapAttributes1");
-const filterAngularNgCrapAttributes2 = document.querySelector("#chk_stripAngularCrapAttributes2");
-const fartBigReductions = document.querySelector("#fartBigReductions");
-const filterAngularNgCrapTags = document.querySelector("#chk_stripAngularCrapTags");
-const formatBrailleFriendlyOutput = document.querySelector("#chk_brailleFriendlyOutput");
-const filterAllHTMLcomments = document.querySelector("#chk_allHTMLcomments");
-const filterEmptyComments = document.querySelector("#chk_emptyHTMLComments");
-const filterCustomAttrs = document.querySelector("#txt_customAttrs");
-const filterotherMiscAttrs = document.querySelector("#txt_otherMiscAttrs");
-const filterAnyHTMLtag = document.querySelector("#txt_anyHTMLtag");
-const removeAll = document.querySelector("#removeAll");
-const tempDOMDumpingGround = document.querySelector("#tempDOMDumpingGround");
-const testDivForPointlessElements = document.querySelector("#testDivForPointlessElements");
-const log = document.querySelector("#log");
-const indentRadios = document.querySelectorAll("[name=rad_Indentstyle],[name=rad_Indentdepth]");
-const allPrefInputs = document.querySelectorAll("#allPreferences input");
-const otherFilterCheckboxes = document.querySelectorAll("#otherFilters [type=checkbox]");
-const outputMarkupContainerTypeRads = document.querySelectorAll("[name='outputMarkupContainerType']");
-const whenShouldTheMarkupUpdateRads = document.querySelectorAll("[name='whenShouldTheMarkupUpdate']");
-const btnDecrapulate = document.querySelector("#btnDecrapulate");
-const btnCopyToClipboard = document.querySelector("#btnCopyToClipboard");
-const btnDoAnotherPass = document.querySelector("#btnDoAnotherPass");
-const btnRemovePointlessNestedElements = document.querySelector("#btnRemovePointlessNestedElements");
-const btnMorePreferences = document.querySelector("#btnMorePreferences");
-const btnResetEverything = document.querySelector("#btnResetEverything");
-const chk_abbreviateClasses = document.querySelector("#chk_abbreviateClasses");
-const chk_abbreviateStyles = document.querySelector("#chk_abbreviateStyles");
-const chk_abbreviateHrefs = document.querySelector("#chk_abbreviateHrefs");
-const chk_abbreviateSrcs = document.querySelector("#chk_abbreviateSrcs");
-const chk_abbreviateSrcSets = document.querySelector("#chk_abbreviateSrcSets");
-const chk_abbreviateTitles = document.querySelector("#chk_abbreviateTitles");
-const moreElAndAttributeOptionsButtons = document.querySelectorAll(".moreElAndAttributeOptions");
-const btnApplyAttributeSettings = document.querySelector("#btnApplyAttributeSettings");
-let raw = "";
-let indented = "";
-let indentStyle;
-let indentDepth;
-let indentStr = "";
-let urlEncoded = location.href.split("?markup=")[1];
-let beforeSize;
-let afterSize;
-let addTableMarkupChoiceSet;
-let isTableCell;
-let isTableHeader;
-let isTableBody;
-let isTableRow;
-let updateMarkupWithEachChange;
-let isFirstPass;
-let suppressalerts = (location.href.indexOf("suppressalerts=true")!==-1);
-let resetOK=false;
+// Cache DOM elements
+const elements = {
+  input: document.querySelector("#txtRaw"),
+  outputRichText: document.querySelector("#txtConvertedRichText"),
+  outputPlainText: document.querySelector("#txtConvertedPlainText"),
+  convertedRichTextWrapper: document.querySelector("#convertedRichTextWrapper"),
+  convertedPlainTextWrapper: document.querySelector("#convertedPlainTextWrapper"),
+  tempDOMDumpingGround: document.querySelector("#tempDOMDumpingGround"),
+  testDivForPointlessElements: document.querySelector("#testDivForPointlessElements"),
+  log: document.querySelector("#log"),
+  
+  // Buttons
+  btnDecrapulate: document.querySelector("#btnDecrapulate"),
+  btnCopyToClipboard: document.querySelector("#btnCopyToClipboard"),
+  btnDoAnotherPass: document.querySelector("#btnDoAnotherPass"),
+  btnRemovePointlessNestedElements: document.querySelector("#btnRemovePointlessNestedElements"),
+  btnMorePreferences: document.querySelector("#btnMorePreferences"),
+  btnResetEverything: document.querySelector("#btnResetEverything"),
+  btnApplyAttributeSettings: document.querySelector("#btnApplyAttributeSettings"),
+  removeAll: document.querySelector("#removeAll"),
+  
+  // Filter checkboxes - organized by category
+  filters: {
+    empty: document.querySelector("#chk_emptyTags"),
+    class: document.querySelector("#chk_stripClassAttributes"),
+    style: document.querySelector("#chk_stripStyleAttributes"),
+    dir: document.querySelector("#chk_stripDirAttributes"),
+    lang: document.querySelector("#chk_stripLangAttributes"),
+    onclick: document.querySelector("#chk_onclick"),
+    onClickReact: document.querySelector("#chk_stripOnClickReactAttributes"),
+    dataDash: document.querySelector("#chk_stripDataDashAttributes"),
+    ariaDash: document.querySelector("#chk_stripARIADashAttributes"),
+    angularNg1: document.querySelector("#chk_stripAngularCrapAttributes1"),
+    angularNg2: document.querySelector("#chk_stripAngularCrapAttributes2"),
+    angularTags: document.querySelector("#chk_stripAngularCrapTags"),
+    allComments: document.querySelector("#chk_allHTMLcomments"),
+    emptyComments: document.querySelector("#chk_emptyHTMLComments"),
+    brailleFriendly: document.querySelector("#chk_brailleFriendlyOutput")
+  },
+  
+  // Abbreviation checkboxes
+  abbreviate: {
+    classes: document.querySelector("#chk_abbreviateClasses"),
+    styles: document.querySelector("#chk_abbreviateStyles"),
+    hrefs: document.querySelector("#chk_abbreviateHrefs"),
+    srcs: document.querySelector("#chk_abbreviateSrcs"),
+    srcSets: document.querySelector("#chk_abbreviateSrcSets"),
+    titles: document.querySelector("#chk_abbreviateTitles")
+  },
+  
+  // Text inputs
+  customAttrs: document.querySelector("#txt_customAttrs"),
+  otherMiscAttrs: document.querySelector("#txt_otherMiscAttrs"),
+  anyHTMLtag: document.querySelector("#txt_anyHTMLtag"),
+  fartBigReductions: document.querySelector("#fartBigReductions"),
+  
+  // Radio groups
+  indentRadios: document.querySelectorAll("[name=rad_Indentstyle],[name=rad_Indentdepth]"),
+  allPrefInputs: document.querySelectorAll("#allPreferences input"),
+  otherFilterCheckboxes: document.querySelectorAll("#otherFilters [type=checkbox]"),
+  outputMarkupContainerTypeRads: document.querySelectorAll("[name='outputMarkupContainerType']"),
+  whenShouldTheMarkupUpdateRads: document.querySelectorAll("[name='whenShouldTheMarkupUpdate']")
+};
 
-function initVals() {
-  beforeSize = 0;
-  afterSize = 0;
-  addTableMarkupChoiceSet = false;
-  isTableCell = false;
-  isTableHeader = false;
-  isTableBody = false;
-  isTableRow = false;
-  updateMarkupWithEachChange = true;
-  isFirstPass = true;
-}
-initVals();
+// State management
+const state = {
+  raw: "",
+  indented: "",
+  indentStyle: "",
+  indentDepth: "",
+  indentStr: "",
+  urlEncoded: location.href.split("?markup=")[1],
+  beforeSize: 0,
+  afterSize: 0,
+  addTableMarkupChoiceSet: false,
+  isTableCell: false,
+  isTableHeader: false,
+  isTableBody: false,
+  isTableRow: false,
+  updateMarkupWithEachChange: true,
+  isFirstPass: true,
+  suppressalerts: location.href.indexOf("suppressalerts=true") !== -1,
+  resetOK: false
+};
 
-function abbreviateAttribute(attr) {
-  const allElsToBeAbbreviated = tempDOMDumpingGround.querySelectorAll("[" + attr + "]");
-  Array.from(allElsToBeAbbreviated).forEach((el) => {
-    el.setAttribute(attr, "…");
-  });
-}
-function stripAttribute(attr) {
-  const allElsToBeStripped = tempDOMDumpingGround.querySelectorAll("[" + attr + "]");
-  Array.from(allElsToBeStripped).forEach((el) => {
-    el.removeAttribute(attr);
-  });
-}
+// Utility functions
+const utils = {
+  // Batch DOM operations for better performance
+  batchStripAttribute(attr) {
+    const elementsToStrip = elements.tempDOMDumpingGround.querySelectorAll(`[${attr}]`);
+    elementsToStrip.forEach(el => el.removeAttribute(attr));
+  },
 
+  batchAbbreviateAttribute(attr) {
+    const elementsToAbbreviate = elements.tempDOMDumpingGround.querySelectorAll(`[${attr}]`);
+    elementsToAbbreviate.forEach(el => el.setAttribute(attr, "…"));
+  },
+
+  // Optimized checkbox operations
+  setAllCheckboxes(checked = true) {
+    elements.otherFilterCheckboxes.forEach(checkbox => checkbox.checked = checked);
+    if (state.updateMarkupWithEachChange) generateMarkup();
+  },
+
+  // Local storage operations
+  saveToStorage(key, value) {
+    localStorage.setItem(`dataStorage-${key}`, value);
+  },
+
+  getFromStorage(key) {
+    return localStorage.getItem(`dataStorage-${key}`);
+  },
+
+  clearStorageByPrefix(prefix) {
+    Object.keys(localStorage)
+      .filter(key => key.includes(prefix))
+      .forEach(key => localStorage.removeItem(key));
+  },
+
+  // Get checked radio value
+  getCheckedRadioValue(name) {
+    return document.querySelector(`[name="${name}"]:checked`)?.value;
+  },
+
+  // Batch attribute processing
+  processAttributesByPattern(pattern, shouldStrip) {
+    const allElements = elements.tempDOMDumpingGround.querySelectorAll("*");
+    allElements.forEach(el => {
+      Array.from(el.attributes).forEach(attr => {
+        if (pattern(attr.name)) {
+          if (shouldStrip) {
+            el.removeAttribute(attr.name);
+          }
+        }
+      });
+    });
+  }
+};
+
+// Event handler factories
+const createEventHandlers = () => ({
+  // Generic change handler for markup updates
+  handleMarkupUpdate: () => {
+    if (state.updateMarkupWithEachChange) generateMarkup();
+  },
+
+  // Generic keyup handler with tab exclusion
+  handleKeyupUpdate: (e) => {
+    if (state.updateMarkupWithEachChange && e.keyCode !== 9) {
+      generateMarkup();
+    }
+  },
+
+  // Abbreviation checkbox handlers
+  createAbbreviationHandler: (abbreviateCheckbox, stripCheckbox) => () => {
+    if (stripCheckbox?.checked) {
+      stripCheckbox.checked = false;
+      abbreviateCheckbox.checked = true;
+    }
+    if (state.updateMarkupWithEachChange) generateMarkup();
+  }
+});
+
+// Initialize event listeners
 function addAllEventListeners() {
+  const handlers = createEventHandlers();
 
-  btnResetEverything.addEventListener("click", (e) => {
-    if (!suppressalerts) {
+  // Reset functionality
+  elements.btnResetEverything.addEventListener("click", () => {
+    if (!state.suppressalerts) {
       if (confirm("This will also remove any stored/saved values in the attributes to strip as well as preferences. Only press OK if you're, um, OK with that…")) {
-        resetOK=true;
+        state.resetOK = true;
       }
     } else {
-      resetOK=true;
+      state.resetOK = true;
     }
-    if (resetOK) {
+    
+    if (state.resetOK) {
       initVals();
-      input.value = "";
-      input.focus();
+      elements.input.value = "";
+      elements.input.focus();
       document.querySelector("#rad_Indentstyle_1").click();
       document.querySelector("#rad_Indentdepth_1").click();
-      unsetAllCheckboxes();
-      removeAll.setAttribute("aria-pressed", "false");
-      filterCustomAttrs.value = "";
-      filterotherMiscAttrs.value = "";
-      for (var key in localStorage) {
-        if (key.includes("dataStorage-")) {
-          localStorage.removeItem(key);
-        }
-      }
+      utils.setAllCheckboxes(false);
+      elements.removeAll.setAttribute("aria-pressed", "false");
+      elements.customAttrs.value = "";
+      elements.otherMiscAttrs.value = "";
+      utils.clearStorageByPrefix("dataStorage-");
     }
   });
 
-  Array.from(indentRadios).forEach((radio) => {
-    radio.addEventListener("change", (e) => {
-      if (updateMarkupWithEachChange) {
-        generateMarkup();
-      }
-    });
+  // Batch add event listeners for similar elements
+  elements.indentRadios.forEach(radio => 
+    radio.addEventListener("change", handlers.handleMarkupUpdate)
+  );
+  
+  elements.allPrefInputs.forEach(input => 
+    input.addEventListener("change", saveOtherPrefs)
+  );
+  
+  elements.otherFilterCheckboxes.forEach(checkbox => 
+    checkbox.addEventListener("click", handlers.handleMarkupUpdate)
+  );
+
+  // Abbreviation handlers with mutual exclusion
+  const abbreviationPairs = [
+    [elements.abbreviate.classes, elements.filters.class],
+    [elements.abbreviate.styles, elements.filters.style]
+  ];
+
+  abbreviationPairs.forEach(([abbrev, strip]) => {
+    abbrev.addEventListener("click", handlers.createAbbreviationHandler(abbrev, strip));
   });
-  Array.from(allPrefInputs).forEach((input) => {
-    input.addEventListener("change", (e) => {
-      saveOtherPrefs();
-    });
+
+  // Simple abbreviation handlers
+  [elements.abbreviate.srcs, elements.abbreviate.srcSets, 
+   elements.abbreviate.hrefs, elements.abbreviate.titles].forEach(element => {
+    element.addEventListener("click", handlers.handleMarkupUpdate);
   });
-  Array.from(otherFilterCheckboxes).forEach((otherFilterCheckboxes) => {
-    otherFilterCheckboxes.addEventListener("click", (e) => {
-      if (updateMarkupWithEachChange) {
-        generateMarkup();
-      }
-    });
+
+  // Text input handlers
+  [elements.customAttrs, elements.otherMiscAttrs, elements.anyHTMLtag].forEach(input => {
+    input.addEventListener("keyup", handlers.handleKeyupUpdate);
   });
-  chk_abbreviateClasses.addEventListener("click", (e) => {
-    if (chk_stripClassAttributes.checked) {
-      chk_stripClassAttributes.checked = false;
-      chk_abbreviateClasses.checked = true;
-    }
-    if (updateMarkupWithEachChange) {
-      generateMarkup();
-    }
+
+  // Button handlers
+  elements.removeAll.addEventListener("click", () => {
+    const isPressed = elements.removeAll.getAttribute("aria-pressed") === "true";
+    utils.setAllCheckboxes(!isPressed);
+    elements.removeAll.setAttribute("aria-pressed", !isPressed);
   });
-  chk_abbreviateStyles.addEventListener("click", (e) => {
-    if (chk_stripStyleAttributes.checked) {
-      chk_stripStyleAttributes.checked = false;
-      chk_abbreviateStyles.checked = true;
-    }
-    if (updateMarkupWithEachChange) {
-      generateMarkup();
-    }
-  });
-  chk_abbreviateSrcs.addEventListener("click", (e) => {
-    if (updateMarkupWithEachChange) {
-      generateMarkup();
-    }
-  });
-  chk_abbreviateSrcSets.addEventListener("click", (e) => {
-    if (updateMarkupWithEachChange) {
-      generateMarkup();
-    }
-  });
-  chk_abbreviateHrefs.addEventListener("click", (e) => {
-    if (updateMarkupWithEachChange) {
-      generateMarkup();
-    }
-  });
-  chk_abbreviateTitles.addEventListener("click", (e) => {
-    if (updateMarkupWithEachChange) {
-      generateMarkup();
-    }
-  });
-  removeAll.addEventListener("click", (e) => {
-    removeAllCrap();
-  });
-  filterCustomAttrs.addEventListener("keyup", (e) => {
-    if (updateMarkupWithEachChange) {
-      if (e.keyCode !== 9) {
-        generateMarkup();
-      }
-    }
-  });
-  filterotherMiscAttrs.addEventListener("keyup", (e) => {
-    if (updateMarkupWithEachChange) {
-      if (e.keyCode !== 9) {
-        generateMarkup();
-      }
-    }
-  });
-  filterAnyHTMLtag.addEventListener("keyup", (e) => {
-    if (updateMarkupWithEachChange) {
-      if (e.keyCode !== 9) {
-        generateMarkup();
-      }
-    }
-  });
-  formatBrailleFriendlyOutput.addEventListener("click", (e) => {
-    if (updateMarkupWithEachChange) {
-      generateMarkup();
-    }
-  });
-  btnDecrapulate.addEventListener("click", (e) => {
-    generateMarkup();
-  });
-  btnCopyToClipboard.addEventListener("click", (e) => {
-    let wasInPlaintextMode = false;
-    if (convertedRichTextWrapper.getAttribute("hidden")) {
-      wasInPlaintextMode = true;
-    }
+
+  elements.filters.brailleFriendly.addEventListener("click", handlers.handleMarkupUpdate);
+  elements.btnDecrapulate.addEventListener("click", generateMarkup);
+  
+  elements.btnCopyToClipboard.addEventListener("click", () => {
+    const wasInPlaintextMode = elements.convertedRichTextWrapper.hasAttribute("hidden");
     showPlainTextOutput();
-    outputPlainText.focus();
-    outputPlainText.select();
+    elements.outputPlainText.focus();
+    elements.outputPlainText.select();
     document.execCommand("copy");
-    if (wasInPlaintextMode) {
-      showPlainTextOutput();
-    } else {
-      showRichTextOutput();
-    }
-    btnCopyToClipboard.focus();
+    wasInPlaintextMode ? showPlainTextOutput() : showRichTextOutput();
+    elements.btnCopyToClipboard.focus();
   });
-  btnApplyAttributeSettings.addEventListener("click", (e) => {
+
+  elements.btnApplyAttributeSettings.addEventListener("click", () => {
     closeModal();
     generateMarkup();
   });
-  btnDoAnotherPass.addEventListener("click", (e) => {
-    isFirstPass = false;
-    input.value = outputPlainText.textContent;
-    input.value = input.value.split("> </").join("></");
-    input.value = input.value.split("<div></div>").join("");
-    input.value = input.value.split("<span></span>").join("");
+
+  elements.btnDoAnotherPass.addEventListener("click", () => {
+    state.isFirstPass = false;
+    elements.input.value = elements.outputPlainText.textContent
+      .split("> </").join("></")
+      .split("<div></div>").join("")
+      .split("<span></span>").join("");
     removeIndentsInInputText();
-    btnDecrapulate.click();
+    elements.btnDecrapulate.click();
   });
-  btnRemovePointlessNestedElements.addEventListener("click", (e) => {
-    let flattenOK = false;
-    if (!suppressalerts) {
-      if (confirm("This will remove *all* DIV or SPAN elements that have no attributes applied, flattening down the structure (and may no longer represent the reality of the markup you started with, nor any CSS that may have been wrtten based on that structure).\n\nIf that's what you want, hit the old 'OK' button…")) {
-        flattenOK=true;
-      }
-    } else {
-      flattenOK=true;
-    }
+
+  elements.btnRemovePointlessNestedElements.addEventListener("click", () => {
+    let flattenOK = state.suppressalerts || 
+      confirm("This will remove *all* DIV or SPAN elements that have no attributes applied, flattening down the structure (and may no longer represent the reality of the markup you started with, nor any CSS that may have been written based on that structure).\n\nIf that's what you want, hit the old 'OK' button…");
+    
     if (flattenOK) {
-      stripPointlessSpanOrDivElements(testDivForPointlessElements, ["span", "div"]);
+      stripPointlessSpanOrDivElements(elements.testDivForPointlessElements, ["span", "div"]);
     }
   });
-  btnMorePreferences.addEventListener("click", (e) => {
-    if (btnMorePreferences.getAttribute("aria-expanded") === "false") {
-      btnMorePreferences.setAttribute("aria-expanded", "true");
-    } else {
-      btnMorePreferences.setAttribute("aria-expanded", "false");
-    }
+
+  elements.btnMorePreferences.addEventListener("click", () => {
+    const isExpanded = elements.btnMorePreferences.getAttribute("aria-expanded") === "true";
+    elements.btnMorePreferences.setAttribute("aria-expanded", !isExpanded);
   });
-  Array.from(outputMarkupContainerTypeRads).forEach((radio) => {
-    radio.addEventListener("change", (e) => {
-      if (radio.value === "plaintext") {
-        showPlainTextOutput();
-      } else {
-        showRichTextOutput();
-      }
+
+  // Radio button handlers
+  elements.outputMarkupContainerTypeRads.forEach(radio => {
+    radio.addEventListener("change", () => {
+      radio.value === "plaintext" ? showPlainTextOutput() : showRichTextOutput();
     });
   });
-  Array.from(whenShouldTheMarkupUpdateRads).forEach((radio) => {
-    radio.addEventListener("change", (e) => {
-      if (radio.value === "allChanges") {
-        updateMarkupWithEachChange = true;
-      } else {
-        updateMarkupWithEachChange = false;
-      }
+
+  elements.whenShouldTheMarkupUpdateRads.forEach(radio => {
+    radio.addEventListener("change", () => {
+      state.updateMarkupWithEachChange = radio.value === "allChanges";
     });
   });
-  function keepCheckboxStatesBetweenMainDocumentAndModalInSync() {
 
-    const all_attributes_abbrev = document.querySelector("#all_attributes_abbrev");
-    const all_attributes_strip = document.querySelector("#all_attributes_strip");
-    const all_attributes_leave = document.querySelector("#all_attributes_leave");
-    const class_abbrev = document.querySelector("#class_abbrev");
-    const style_abbrev = document.querySelector("#style_abbrev");
-    const href_abbrev = document.querySelector("#href_abbrev");
-    const src_abbrev = document.querySelector("#src_abbrev");
-    const srcset_abbrev = document.querySelector("#srcset_abbrev");
-    const title_abbrev = document.querySelector("#title_abbrev");
-
-    const class_strip = document.querySelector("#class_strip");
-    const style_strip = document.querySelector("#style_strip");
-    const href_strip = document.querySelector("#href_strip");
-    const src_strip = document.querySelector("#src_strip");
-    const srcset_strip = document.querySelector("#srcset_strip");
-    const title_strip = document.querySelector("#title_strip");
-
-    const class_leave = document.querySelector("#class_leave");
-    const style_leave = document.querySelector("#style_leave");
-    const href_leave = document.querySelector("#href_leave");
-    const src_leave = document.querySelector("#src_leave");
-    const srcset_leave = document.querySelector("#srcset_leave");
-    const title_leave = document.querySelector("#title_leave");
-
-    all_attributes_abbrev.addEventListener("click", (e) => {
-      var allAbbrevRadios = document.querySelector("#listOfAttributes").querySelectorAll("[id*='_abbrev']");
-      Array.from(allAbbrevRadios).forEach((abbrevRadio) => {
-        abbrevRadio.click();
-      });
-    });
-    all_attributes_strip.addEventListener("click", (e) => {
-      var allStripRadios = document.querySelector("#listOfAttributes").querySelectorAll("[id*='_strip']");
-      Array.from(allStripRadios).forEach((stripRadio) => {
-        stripRadio.click();
-      });
-    });
-    all_attributes_leave.addEventListener("click", (e) => {
-      var allLeaveRadios = document.querySelector("#listOfAttributes").querySelectorAll("[id*='_leave']");
-      Array.from(allLeaveRadios).forEach((leaveRadio) => {
-        leaveRadio.click();
-      });
-    });
-
-    class_abbrev.addEventListener("click", (e) => {
-      chk_abbreviateClasses.checked = true;
-      chk_stripClassAttributes.checked = false;
-    });
-    style_abbrev.addEventListener("click", (e) => {
-      chk_abbreviateStyles.checked = true;
-      chk_stripStyleAttributes.checked = false;
-    });
-    href_abbrev.addEventListener("click", (e) => {
-      chk_abbreviateHrefs.checked = true;
-    });
-    src_abbrev.addEventListener("click", (e) => {
-      chk_abbreviateSrcs.checked = true;
-    });
-    srcset_abbrev.addEventListener("click", (e) => {
-      chk_abbreviateSrcSets.checked = true;
-    });
-    title_abbrev.addEventListener("click", (e) => {
-      chk_abbreviateTitles.checked = true;
-    });
-
-    class_strip.addEventListener("click", (e) => {
-      chk_abbreviateClasses.checked = false;
-      chk_stripClassAttributes.checked = true;
-    });
-    style_strip.addEventListener("click", (e) => {
-      chk_abbreviateStyles.checked = false;
-      chk_stripStyleAttributes.checked = true;
-    });
-    href_strip.addEventListener("click", (e) => {
-      chk_abbreviateHrefs.checked = false;
-    });
-    src_strip.addEventListener("click", (e) => {
-      chk_abbreviateSrcs.checked = false;
-    });
-    srcset_strip.addEventListener("click", (e) => {
-      chk_abbreviateSrcSets.checked = false;
-    });
-    title_strip.addEventListener("click", (e) => {
-      chk_abbreviateTitles.checked = false;
-    });
-
-    class_leave.addEventListener("click", (e) => {
-      chk_abbreviateClasses.checked = false;
-      chk_stripClassAttributes.checked = false;
-    });
-    style_leave.addEventListener("click", (e) => {
-      chk_abbreviateStyles.checked = false;
-      chk_stripStyleAttributes.checked = false;
-    });
-    href_leave.addEventListener("click", (e) => {
-      chk_abbreviateHrefs.checked = false;
-    });
-    src_leave.addEventListener("click", (e) => {
-      chk_abbreviateSrcs.checked = false;
-    });
-    srcset_leave.addEventListener("click", (e) => {
-      chk_abbreviateSrcSets.checked = false;
-    });
-    title_leave.addEventListener("click", (e) => {
-      chk_abbreviateTitles.checked = false;
-    });
-  }
   keepCheckboxStatesBetweenMainDocumentAndModalInSync();
   triggerClicksForUrlEncodedData();
 }
+
+function initVals() {
+  Object.assign(state, {
+    beforeSize: 0,
+    afterSize: 0,
+    addTableMarkupChoiceSet: false,
+    isTableCell: false,
+    isTableHeader: false,
+    isTableBody: false,
+    isTableRow: false,
+    updateMarkupWithEachChange: true,
+    isFirstPass: true
+  });
+}
+
 function removeIndentsInInputText() {
-  let arrInput = input.value.split("\n");
-  let trimmed = "";
-  for (let i = 0; i < arrInput.length; i++) {
-    trimmed += arrInput[i].trim();
-  }
-  input.value = trimmed;
+  elements.input.value = elements.input.value.split("\n").map(line => line.trim()).join("");
 }
+
 function showRichTextOutput() {
-  convertedRichTextWrapper.removeAttribute("hidden");
-  convertedPlainTextWrapper.setAttribute("hidden", "hidden");
+  elements.convertedRichTextWrapper.removeAttribute("hidden");
+  elements.convertedPlainTextWrapper.setAttribute("hidden", "hidden");
 }
+
 function showPlainTextOutput() {
-  convertedRichTextWrapper.setAttribute("hidden", "hidden");
-  convertedPlainTextWrapper.removeAttribute("hidden");
+  elements.convertedRichTextWrapper.setAttribute("hidden", "hidden");
+  elements.convertedPlainTextWrapper.removeAttribute("hidden");
 }
+
 function triggerClicksForUrlEncodedData() {
-  if (urlEncoded) {
-    unsetAllCheckboxes();
+  if (state.urlEncoded) {
+    utils.setAllCheckboxes(false);
     generateMarkup();
-    filterEmpty.click();
-    filterAngularNgCrapAttributes1.click();
-    filterAngularNgCrapAttributes2.click();
-    filterAngularNgCrapTags.click();
-    filterAllHTMLcomments.click();
-    filterEmptyComments.click();
+    [elements.filters.empty, elements.filters.angularNg1, elements.filters.angularNg2, 
+     elements.filters.angularTags, elements.filters.allComments, elements.filters.emptyComments]
+     .forEach(element => element.click());
   }
 }
-function removeAllCrap() {
-  if (removeAll.getAttribute("aria-pressed") === "false") {
-    setAllCheckboxes();
-    removeAll.setAttribute("aria-pressed", "true");
-  } else {
-    unsetAllCheckboxes();
-    removeAll.setAttribute("aria-pressed", "false");
-  }
-}
-function setAllCheckboxes() {
-  Array.from(otherFilterCheckboxes).forEach((otherFilterCheckbox) => {
-    otherFilterCheckbox.checked = true;
-  });
-  if (updateMarkupWithEachChange) {
-    generateMarkup();
-  }
-}
-function unsetAllCheckboxes() {
-  Array.from(otherFilterCheckboxes).forEach((otherFilterCheckbox) => {
-    otherFilterCheckbox.checked = false;
-  });
-  if (updateMarkupWithEachChange) {
-    generateMarkup();
-  }
-}
+
 function applyIndenting() {
-  indentStr = "";
-  indentStyle = document.querySelector("[name=rad_Indentstyle]:checked").value;
-  indentDepth = document.querySelector("[name=rad_Indentdepth]:checked").value;
-  if (indentStyle === "space") {
-    indentStyle = " "; //space character
-  } else {
-    indentStyle = " "; //tab character
-  }
-  for (let i = 0; i < indentDepth; i++) {
-    indentStr += indentStyle;
-  }
+  state.indentStyle = utils.getCheckedRadioValue("rad_Indentstyle");
+  state.indentDepth = utils.getCheckedRadioValue("rad_Indentdepth");
+  
+  const indentChar = state.indentStyle === "space" ? " " : "\t";
+  state.indentStr = indentChar.repeat(parseInt(state.indentDepth));
 }
+
+// Optimized data persistence
 function loadAndSaveData() {
-  let userEnteredData_id, userEnteredData_text;
   const userEnteredTextFields = document.querySelectorAll("[data-user-entered]");
+  
+  const savePreferredAttributesAndTagsToStrip = (field, timeout = 3000) => {
+    const id = field.getAttribute("id");
+    const text = field.value;
+    utils.saveToStorage(id, text);
+  };
 
-  function savePreferredAttributesAndTagsToStrip(timeout, field, time) {
-    clearTimeout(timeout);
-    timeout = setTimeout(function () {
-      userEnteredData_id = field.getAttribute("id");
-      userEnteredData_text = field.value;
-      localStorage.setItem("dataStorage-" + userEnteredData_id, userEnteredData_text);
-    }, time);
-    return timeout;
-  }
-  function loadPreferredAttributesAndTagsToStrip() {
-    for (var key in localStorage) {
-      if (key.includes("dataStorage-")) {
+  const loadPreferredAttributesAndTagsToStrip = () => {
+    Object.keys(localStorage)
+      .filter(key => key.includes("dataStorage-"))
+      .forEach(key => {
         const id = key.replace("dataStorage-", "");
-        if (document.querySelector("#" + id)) {
-          if (localStorage.getItem(key)) {
-            document.querySelector("#" + id).value = localStorage.getItem(key);
-          }
+        const element = document.querySelector(`#${id}`);
+        if (element) {
+          element.value = localStorage.getItem(key) || "";
         }
-      }
-    }
-  }
+      });
+  };
 
-  Array.from(userEnteredTextFields).forEach((field) => {
+  userEnteredTextFields.forEach(field => {
     field.setAttribute("data-user-entered", "true");
     let timeout = null;
-    field.addEventListener("blur", (e) => {
-      timeout = savePreferredAttributesAndTagsToStrip(timeout, field, 1);
+    
+    field.addEventListener("blur", () => {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => savePreferredAttributesAndTagsToStrip(field), 1);
     });
-    field.addEventListener("keyup", (e) => {
-      timeout = savePreferredAttributesAndTagsToStrip(timeout, field, 3000);
+    
+    field.addEventListener("keyup", () => {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => savePreferredAttributesAndTagsToStrip(field), 3000);
     });
   });
 
-  document.addEventListener("DOMContentLoaded", function () {
-    loadPreferredAttributesAndTagsToStrip();
-  });
+  document.addEventListener("DOMContentLoaded", loadPreferredAttributesAndTagsToStrip);
 }
+
 function saveOtherPrefs() {
-  localStorage.setItem("dataStorage-indentStyle", document.querySelector("[name='rad_Indentstyle']:checked").value);
-  localStorage.setItem("dataStorage-indentDepth", document.querySelector("[name='rad_Indentdepth']:checked").value);
-  localStorage.setItem("dataStorage-outputMarkupContainerType", document.querySelector("[name='outputMarkupContainerType']:checked").value);
-  localStorage.setItem("dataStorage-whenShouldTheMarkupUpdate", document.querySelector("[name='whenShouldTheMarkupUpdate']:checked").value);
-  if (document.querySelector("#fartBigReductions").checked) {
-    localStorage.setItem("dataStorage-fartBigReductions", "true");
-  } else {
-    localStorage.setItem("dataStorage-fartBigReductions", "false");
-  }
-  if (document.querySelector("#chk_brailleFriendlyOutput").checked) {
-    localStorage.setItem("dataStorage-brailleFriendlyOutput", "true");
-  } else {
-    localStorage.setItem("dataStorage-brailleFriendlyOutput", "false");
-  }
+  const prefs = {
+    indentStyle: utils.getCheckedRadioValue("rad_Indentstyle"),
+    indentDepth: utils.getCheckedRadioValue("rad_Indentdepth"),
+    outputMarkupContainerType: utils.getCheckedRadioValue("outputMarkupContainerType"),
+    whenShouldTheMarkupUpdate: utils.getCheckedRadioValue("whenShouldTheMarkupUpdate"),
+    fartBigReductions: elements.fartBigReductions.checked.toString(),
+    brailleFriendlyOutput: elements.filters.brailleFriendly.checked.toString()
+  };
+
+  Object.entries(prefs).forEach(([key, value]) => utils.saveToStorage(key, value));
 }
+
 function loadOtherPrefs() {
-  document.querySelector("[name='rad_Indentstyle'][value='" + localStorage.getItem("dataStorage-indentStyle") + "']").checked = true;
-  document.querySelector("[name='rad_Indentdepth'][value='" + localStorage.getItem("dataStorage-indentDepth") + "']").checked = true;
-  if (localStorage.getItem("dataStorage-brailleFriendlyOutput") === "true") {
-    document.querySelector("#chk_brailleFriendlyOutput").checked = true;
+  const loadRadio = (name, storageKey) => {
+    const value = utils.getFromStorage(storageKey);
+    if (value) {
+      const radio = document.querySelector(`[name='${name}'][value='${value}']`);
+      if (radio) radio.checked = true;
+    }
+  };
+
+  loadRadio("rad_Indentstyle", "indentStyle");
+  loadRadio("rad_Indentdepth", "indentDepth");
+
+  if (utils.getFromStorage("brailleFriendlyOutput") === "true") {
+    elements.filters.brailleFriendly.checked = true;
   }
-  if (localStorage.getItem("dataStorage-outputMarkupContainerType") === "plaintext") {
+
+  if (utils.getFromStorage("outputMarkupContainerType") === "plaintext") {
     document.querySelector("#outputMarkupContainerType_plaintext").checked = true;
     showPlainTextOutput();
   }
-  if (localStorage.getItem("dataStorage-whenShouldTheMarkupUpdate") === "OnlyWithSubmit") {
+
+  if (utils.getFromStorage("whenShouldTheMarkupUpdate") === "OnlyWithSubmit") {
     document.querySelector("#whenShouldTheMarkupUpdate_OnlyWithSubmit").checked = true;
-    updateMarkupWithEachChange = false;
+    state.updateMarkupWithEachChange = false;
   }
-  if (localStorage.getItem("dataStorage-fartBigReductions") === "true") {
-    document.querySelector("#fartBigReductions").checked = true;
+
+  if (utils.getFromStorage("fartBigReductions") === "true") {
+    elements.fartBigReductions.checked = true;
   }
 }
-function stripPointlessSpanOrDivElements(startElement, toStrip) {
-  testDivForPointlessElements.innerHTML = outputPlainText.value;
+
+function stripPointlessSpanOrDivElements(startElement, tagsToStrip) {
+  elements.testDivForPointlessElements.innerHTML = elements.outputPlainText.value;
   const test = document.createElement("div");
   test.innerHTML = startElement.innerHTML;
-  [...test.querySelectorAll("*")].forEach((elem) => {
-    if (!elem.attributes.length && toStrip.includes(elem.tagName.toLowerCase())) {
-      if (elem.children.length) elem.replaceWith(...elem.children);
-      else elem.replaceWith(elem.innerText);
+  
+  test.querySelectorAll("*").forEach(elem => {
+    if (!elem.attributes.length && tagsToStrip.includes(elem.tagName.toLowerCase())) {
+      elem.children.length ? elem.replaceWith(...elem.children) : elem.replaceWith(elem.innerText);
     }
   });
-  input.value = test.innerHTML;
+  
+  elements.input.value = test.innerHTML;
   removeIndentsInInputText();
-  btnDecrapulate.click();
+  elements.btnDecrapulate.click();
 }
+
 function generateMarkup() {
-  //String manipulations (on raw)
-  function addTableMarkupToOrphanedInnerTableElements() {
-    isTableCell = false;
-    isTableHeader = false;
-    isTableBody = false;
-    isTableRow = false;
-    if (raw.indexOf("<th") === 0 || raw.indexOf("<td") === 0) {
-      isTableCell = true;
-      isTableHeader = false;
-      isTableBody = false;
-      isTableRow = false;
-    }
-    if (raw.indexOf("<tr") === 0) {
-      isTableCell = false;
-      isTableHeader = false;
-      isTableBody = false;
-      isTableRow = true;
-    }
-    if (raw.indexOf("<thead") === 0) {
-      isTableCell = false;
-      isTableHeader = true;
-      isTableBody = false;
-      isTableRow = false;
-    }
-    if (raw.indexOf("<tbody") === 0) {
-      isTableCell = false;
-      isTableHeader = false;
-      isTableBody = true;
-      isTableRow = false;
-    }
-    if (isTableCell || isTableHeader || isTableBody || isTableRow) {
-      if (!addTableMarkupChoiceSet) {
-        addTableMarkupChoiceSet = true;
-      }
-      if (isTableCell) {
-        raw = "<table><tr>" + raw + "</tr></table>";
-      }
-      if (isTableHeader || isTableBody || isTableRow) {
-        raw = "<table>" + raw + "</table>";
+  // String manipulations
+  const addTableMarkupToOrphanedInnerTableElements = () => {
+    const tableStarts = ["<th", "<td", "<tr", "<thead", "<tbody"];
+    const foundStart = tableStarts.find(start => state.raw.indexOf(start) === 0);
+    
+    if (foundStart) {
+      state.addTableMarkupChoiceSet = true;
+      state.isTableCell = foundStart.includes("t");
+      state.isTableHeader = foundStart === "<thead";
+      state.isTableBody = foundStart === "<tbody";
+      state.isTableRow = foundStart === "<tr";
+      
+      if (state.isTableCell) {
+        state.raw = `<table><tr>${state.raw}</tr></table>`;
+      } else if (state.isTableHeader || state.isTableBody || state.isTableRow) {
+        state.raw = `<table>${state.raw}</table>`;
       }
     }
-  }
-  function filterComments() {
-    if (filterAllHTMLcomments.checked) {
-      raw = raw.replace(/<!--(.*?)-->/g, "");
+  };
+
+  const filterComments = () => {
+    if (elements.filters.allComments.checked) {
+      state.raw = state.raw.replace(/<!--(.*?)-->/g, "");
     }
-    if (filterEmptyComments.checked) {
-      raw = raw.replace(/<!--(-*?)-->/g, "");
+    if (elements.filters.emptyComments.checked) {
+      state.raw = state.raw.replace(/<!--(-*?)-->/g, "");
     }
-  }
-  function filterAngularTags() {
-    if (filterAngularNgCrapTags.checked) {
-      raw = raw.replace(/<ng-(.*?)>/g, "");
-      raw = raw.replace(/<\/ng-(.*?)>/g, "");
+  };
+
+  const filterAngularTags = () => {
+    if (elements.filters.angularTags.checked) {
+      state.raw = state.raw.replace(/<\/?ng-[^>]*>/g, "");
     }
-  }
+  };
+
   // DOM traversal operations
-  function filterHtmlElements() {
-    if (filterAnyHTMLtag.value !== "") {
-      let arrAnyHTMLtags = filterAnyHTMLtag.value.split(",");
-      Array.from(arrAnyHTMLtags).forEach((arrAnyHTMLtag) => {
-        arrAnyHTMLtag = arrAnyHTMLtag.trim();
-        let elsToStrip = tempDOMDumpingGround.querySelectorAll(arrAnyHTMLtag);
-        Array.from(elsToStrip).forEach((elToStrip) => {
-          elToStrip.parentNode.removeChild(elToStrip);
-        });
+  const filterHtmlElements = () => {
+    if (elements.anyHTMLtag.value.trim()) {
+      const tagsToRemove = elements.anyHTMLtag.value.split(",").map(tag => tag.trim());
+      tagsToRemove.forEach(tag => {
+        const elementsToRemove = elements.tempDOMDumpingGround.querySelectorAll(tag);
+        elementsToRemove.forEach(el => el.remove());
       });
     }
-  }
+  };
 
-  function filterAttributes() {
-    if (filterClass.checked) {
-      stripAttribute("class");
-      if (chk_abbreviateClasses.checked) {
-        chk_abbreviateClasses.checked = false;
-      }
-    }
-    if (filterStyle.checked) {
-      stripAttribute("style");
-      if (chk_abbreviateStyles.checked) {
-        chk_abbreviateStyles.checked = false;
-      }
-    }
-    if (filterDir.checked) {
-      stripAttribute("dir");
-    }
-    if (filterLang.checked) {
-      stripAttribute("lang");
-    }
-    if (filterOnclick.checked) {
-      stripAttribute("onclick");
-    }
-    if (filterOnClickReact.checked) {
-      stripAttribute("onClick");
-    }
-    Array.from(allElsInTempDom).forEach((el) => {
-      let attrs = el.attributes;
-      Array.from(attrs).forEach((attr) => {
-        if (filterARIADash.checked) {
-          if (attr.name.indexOf("aria-") === 0) {
-            stripAttribute(attr.name);
-          }
-        }
-        if (filterDataDash.checked) {
-          if (attr.name.indexOf("data-") === 0) {
-            stripAttribute(attr.name);
-          }
-        }
-        if (filterAngularNgCrapAttributes1.checked) {
-          if (attr.name.indexOf("ng-") === 0) {
-            stripAttribute(attr.name);
-          }
-        }
-        if (filterAngularNgCrapAttributes2.checked) {
-          if (attr.name.indexOf("_ng") === 0) {
-            stripAttribute(attr.name);
-          }
-        }
+  // Optimized attribute filtering using batch operations
+  const filterAttributes = () => {
+    const attributeFilters = {
+      class: elements.filters.class,
+      style: elements.filters.style,
+      dir: elements.filters.dir,
+      lang: elements.filters.lang,
+      onclick: elements.filters.onclick,
+      onClick: elements.filters.onClickReact
+    };
 
-        if (filterCustomAttrs.value !== "") {
-          let arrFilterCustomAttrs = filterCustomAttrs.value.split(",");
-          Array.from(arrFilterCustomAttrs).forEach((arrFilterCustomAttr) => {
-            arrFilterCustomAttr = arrFilterCustomAttr.trim();
-            if (arrFilterCustomAttr !== "") {
-              if (attr.name.indexOf(arrFilterCustomAttr) === 0) {
-                stripAttribute(attr.name);
-              }
-            }
-          });
+    // Process simple attribute removals
+    Object.entries(attributeFilters).forEach(([attr, checkbox]) => {
+      if (checkbox.checked) {
+        utils.batchStripAttribute(attr);
+        // Uncheck abbreviation if stripping
+        if (attr === "class" && elements.abbreviate.classes.checked) {
+          elements.abbreviate.classes.checked = false;
         }
-        if (filterotherMiscAttrs.value !== "") {
-          let arrOtherMiscAttrs = filterotherMiscAttrs.value.split(",");
-          Array.from(arrOtherMiscAttrs).forEach((arrOtherMiscAttr) => {
-            arrOtherMiscAttr = arrOtherMiscAttr.trim();
-            if (attr.name.toLowerCase() === arrOtherMiscAttr.toLowerCase()) {
-              stripAttribute(attr.name);
-            }
-          });
+        if (attr === "style" && elements.abbreviate.styles.checked) {
+          elements.abbreviate.styles.checked = false;
         }
-      });
+      }
     });
-  }
-  function filterEmptyElements() {
-    let emptyEls = tempDOMDumpingGround.querySelectorAll(":empty:not(area):not(base):not(br):not(col):not(embed):not(hr):not(img):not(input):not(keygen):not(link):not(meta):not(param):not(source):not(track):not(wbr)");
-    if (filterEmpty.checked) {
-      Array.from(emptyEls).forEach((el) => {
-        el.parentNode.removeChild(el);
+
+    // Process pattern-based attributes
+    const patternFilters = [
+      { checkbox: elements.filters.ariaDash, pattern: name => name.startsWith("aria-") },
+      { checkbox: elements.filters.dataDash, pattern: name => name.startsWith("data-") },
+      { checkbox: elements.filters.angularNg1, pattern: name => name.startsWith("ng-") },
+      { checkbox: elements.filters.angularNg2, pattern: name => name.startsWith("_ng") }
+    ];
+
+    patternFilters.forEach(({ checkbox, pattern }) => {
+      if (checkbox.checked) {
+        utils.processAttributesByPattern(pattern, true);
+      }
+    });
+
+    // Process custom attributes
+    if (elements.customAttrs.value.trim()) {
+      const customAttrs = elements.customAttrs.value.split(",").map(attr => attr.trim()).filter(Boolean);
+      customAttrs.forEach(attr => {
+        utils.processAttributesByPattern(name => name.startsWith(attr), true);
       });
-      emptyEls = tempDOMDumpingGround.querySelectorAll("*:empty");
     }
-  }
 
-  function abbreviateClasses() {
-    if (chk_abbreviateClasses.checked) {
-      abbreviateAttribute("class");
+    // Process other misc attributes
+    if (elements.otherMiscAttrs.value.trim()) {
+      const miscAttrs = elements.otherMiscAttrs.value.split(",").map(attr => attr.trim().toLowerCase()).filter(Boolean);
+      miscAttrs.forEach(attr => {
+        utils.processAttributesByPattern(name => name.toLowerCase() === attr, true);
+      });
     }
-  }
-  function abbreviateStyles() {
-    if (chk_abbreviateStyles.checked) {
-      abbreviateAttribute("style");
-    }
-  }
-  function abbreviateSrcs() {
-    if (chk_abbreviateSrcs.checked) {
-      abbreviateAttribute("src");
-    }
-  }
-  function abbreviateSrcSets() {
-    if (chk_abbreviateSrcSets.checked) {
-      abbreviateAttribute("srcset");
-    }
-  }
-  function abbreviateHrefs() {
-    if (chk_abbreviateHrefs.checked) {
-      abbreviateAttribute("href");
-    }
-  }
-  function abbreviateTitles() {
-    if (chk_abbreviateTitles.checked) {
-      abbreviateAttribute("title");
-    }
-  }
+  };
 
-  function checkActionsAppliedInModal() {
-    if (modal) {
-      //modal has been opened and something has (possibly) been set
+  const filterEmptyElements = () => {
+    if (elements.filters.empty.checked) {
+      const emptyEls = elements.tempDOMDumpingGround.querySelectorAll(":empty:not(area):not(base):not(br):not(col):not(embed):not(hr):not(img):not(input):not(keygen):not(link):not(meta):not(param):not(source):not(track):not(wbr)");
+      emptyEls.forEach(el => el.remove());
+    }
+  };
+
+  // Batch abbreviation operations
+  const applyAbbreviations = () => {
+    const abbreviations = {
+      class: elements.abbreviate.classes,
+      style: elements.abbreviate.styles,
+      src: elements.abbreviate.srcs,
+      srcset: elements.abbreviate.srcSets,
+      href: elements.abbreviate.hrefs,
+      title: elements.abbreviate.titles
+    };
+
+    Object.entries(abbreviations).forEach(([attr, checkbox]) => {
+      if (checkbox.checked) {
+        utils.batchAbbreviateAttribute(attr);
+      }
+    });
+  };
+
+  const checkActionsAppliedInModal = () => {
+    if (typeof modal !== 'undefined' && modal) {
       const radioButtonsSetInModal = modal.querySelectorAll("input[type=radio]:checked");
-      Array.from(radioButtonsSetInModal).forEach((radio) => {
-        const action = radio.getAttribute("id").split("_")[1];
+      radioButtonsSetInModal.forEach(radio => {
+        const [, action] = radio.getAttribute("id").split("_");
         const attribute = radio.getAttribute("data-attribute");
+        
         if (action === "abbrev") {
-          abbreviateAttribute(attribute);
-        }
-        if (action === "strip") {
-          stripAttribute(attribute);
-        }
-        if (action === "leave") {
-          // do bugger all
+          utils.batchAbbreviateAttribute(attribute);
+        } else if (action === "strip") {
+          utils.batchStripAttribute(attribute);
         }
       });
     }
-  }
+  };
 
-  // Convert back to indented outputRichText
-  function convertTempDomNodeToIndentedOutputRichText() {
-    indented = tempDOMDumpingGround.innerHTML
-      .split("><")
-      .join(">\n<")
+  const convertTempDomNodeToIndentedOutputRichText = () => {
+    state.indented = elements.tempDOMDumpingGround.innerHTML
+      .split("><").join(">\n<")
       .replaceAll(/<(?<tag>\w+)([^>]*)>\n<\/\k<tag>>/g, "<$1$2></$1>");
-    if (formatBrailleFriendlyOutput.checked) {
-      var arrayOfLines = indented.split("\n");
+
+    if (elements.filters.brailleFriendly.checked) {
+      const arrayOfLines = state.indented.split("\n");
       for (let i = 0; i < arrayOfLines.length; i++) {
         if (arrayOfLines[i].length > 80) {
           arrayOfLines[i] = arrayOfLines[i].replace(/(.{1,80})/g, "$1\n");
         }
       }
-      indented = arrayOfLines.join("\n");
-      indented = indented.replace(/\n\n/g, "\n");
+      state.indented = arrayOfLines.join("\n").replace(/\n\n/g, "\n");
     } else {
-      indented = indent.js(indented, { tabString: indentStr });
+      state.indented = indent.js(state.indented, { tabString: state.indentStr });
     }
-    indented = indented.split("<").join("&lt;");
-    indented = indented.split(">").join("&gt;");
-    indented = indented.split("QUESTION_MARK").join("?");
-  }
-  function removeAddedTableMarkup() {
-    if (isTableCell) {
-      outputRichText.textContent = outputRichText.textContent.replace("<table>\n" + indentStyle + "<tbody>\n" + indentStyle + indentStyle + "<tr>\n", "");
-      outputRichText.textContent = outputRichText.textContent.replace(indentStyle + indentStyle + "</tr>\n" + indentStyle + "</tbody>\n</table>", "");
+    
+    state.indented = state.indented
+      .split("<").join("&lt;")
+      .split(">").join("&gt;")
+      .split("QUESTION_MARK").join("?");
+  };
+
+  const removeAddedTableMarkup = () => {
+    let content = elements.outputRichText.textContent;
+    
+    if (state.isTableCell) {
+      content = content
+        .replace(`<table>\n${state.indentStyle}<tbody>\n${state.indentStyle}${state.indentStyle}<tr>\n`, "")
+        .replace(`${state.indentStyle}${state.indentStyle}</tr>\n${state.indentStyle}</tbody>\n</table>`, "");
     }
-    if (isTableHeader || isTableBody) {
-      outputRichText.textContent = outputRichText.textContent.replace("<table>\n", "");
-      outputRichText.textContent = outputRichText.textContent.replace("</table>", "");
+    if (state.isTableHeader || state.isTableBody) {
+      content = content.replace("<table>\n", "").replace("</table>", "");
     }
-    if (isTableRow) {
-      outputRichText.textContent = outputRichText.textContent.replace("<table>\n <tbody>\n  ", "");
-      outputRichText.textContent = outputRichText.textContent.replace("</tbody>\n</table>", "");
-      outputRichText.textContent = outputRichText.textContent.replace("\n" + indentStyle + indentStyle + "</tr>", "\n</tr>");
+    if (state.isTableRow) {
+      content = content
+        .replace("<table>\n <tbody>\n  ", "")
+        .replace("</tbody>\n</table>", "")
+        .replace(`\n${state.indentStyle}${state.indentStyle}</tr>`, "\n</tr>");
     }
-    outputRichText.textContent = outputRichText.textContent.trim();
-    outputPlainText.textContent = outputRichText.textContent.trim();
-    if (outputRichText.textContent.length > 0) {
-      btnCopyToClipboard.removeAttribute("disabled");
-      btnDoAnotherPass.removeAttribute("disabled");
-      btnRemovePointlessNestedElements.removeAttribute("disabled");
+    
+    elements.outputRichText.textContent = content.trim();
+    elements.outputPlainText.textContent = content.trim();
+    
+    const hasContent = elements.outputRichText.textContent.length > 0;
+    [elements.btnCopyToClipboard, elements.btnDoAnotherPass, elements.btnRemovePointlessNestedElements]
+      .forEach(btn => {
+        hasContent ? btn.removeAttribute("disabled") : btn.setAttribute("disabled", "disabled");
+      });
+  };
+
+  const unencodeURL = () => {
+    if (state.urlEncoded) {
+      state.raw = decodeURI(state.urlEncoded)
+        .replace(/%3D/g, "=")
+        .replace(/%2F/g, "/");
+      elements.input.value = state.raw;
     } else {
-      btnCopyToClipboard.setAttribute("disabled", "disabled");
-      btnDoAnotherPass.setAttribute("disabled", "disabled");
-      btnRemovePointlessNestedElements.setAttribute("disabled", "disabled");
+      state.raw = elements.input.value;
     }
-  }
-  // Other stuff
-  function unencodeURL() {
-    if (urlEncoded) {
-      raw = decodeURI(urlEncoded);
-      raw = raw.replace(/%3D/g, "=");
-      raw = raw.replace(/%2F/g, "/");
-      input.value = raw;
-    } else {
-      raw = document.querySelector("#txtRaw").value;
+  };
+
+  const celebrateBigReductionsWithANiceLongFart = () => {
+    if (elements.fartBigReductions.checked && percentage < 15) {
+      new Audio("longfart.mp3").play();
     }
-  }
-  function celebrateBigReductionsWithANiceLongFart() {
-    if (fartBigReductions.checked) {
-      if (percentage < 15) {
-        var audio = new Audio("longfart.mp3");
-        audio.play();
-      }
-    }
-  }
+  };
+
+  // Main execution
   applyIndenting();
   unencodeURL();
-  if (isFirstPass) {
-    beforeSize = raw.length;
+  
+  if (state.isFirstPass) {
+    state.beforeSize = state.raw.length;
   }
+  
   addTableMarkupToOrphanedInnerTableElements();
   filterAngularTags();
   filterComments();
-  raw = raw.replace(/\?/g, "QUESTION_MARK");
-  tempDOMDumpingGround.innerHTML = raw;
-  let allElsInTempDom = tempDOMDumpingGround.querySelectorAll("*");
+  
+  state.raw = state.raw.replace(/\?/g, "QUESTION_MARK");
+  elements.tempDOMDumpingGround.innerHTML = state.raw;
+  
   filterHtmlElements();
   filterAttributes();
   filterEmptyElements();
-  abbreviateClasses();
-  abbreviateStyles();
-  abbreviateHrefs();
-  abbreviateSrcs();
-  abbreviateSrcSets();
-  abbreviateTitles();
+  applyAbbreviations();
   checkActionsAppliedInModal();
   convertTempDomNodeToIndentedOutputRichText();
-  outputRichText.innerHTML = indented;
-  afterSize = outputRichText.textContent.length;
-  let percentage = ((afterSize / beforeSize) * 100).toFixed(2);
-  log.innerHTML = "<span class='visually-hidden'>Markup updated. </span>Size before: <span>" + beforeSize + " characters</span>. Size after: <span>" + afterSize + " characters</span>. Cleaned/indented = <span>" + percentage + '%</span> of original markup<div aria-hidden="true" id="turd"></div>';
+  
+  elements.outputRichText.innerHTML = state.indented;
+  state.afterSize = elements.outputRichText.textContent.length;
+  
+  const percentage = ((state.afterSize / state.beforeSize) * 100).toFixed(2);
+  elements.log.innerHTML = `<span class='visually-hidden'>Markup updated. </span>Size before: <span>${state.beforeSize} characters</span>. Size after: <span>${state.afterSize} characters</span>. Cleaned/indented = <span>${percentage}%</span> of original markup<div aria-hidden="true" id="turd"></div>`;
+  
   celebrateBigReductionsWithANiceLongFart();
   removeAddedTableMarkup();
-  hljs.highlightBlock(outputRichText);
+  
+  if (typeof hljs !== 'undefined') {
+    hljs.highlightBlock(elements.outputRichText);
+  }
+  
   const turd = document.querySelector("#turd");
-  turd.style.width = percentage + "%";
+  if (turd) {
+    turd.style.width = `${percentage}%`;
+  }
 }
+
+// Modal sync function (keeping original structure)
+function keepCheckboxStatesBetweenMainDocumentAndModalInSync() {
+  const modalElements = {
+    all_attributes_abbrev: document.querySelector("#all_attributes_abbrev"),
+    all_attributes_strip: document.querySelector("#all_attributes_strip"),
+    all_attributes_leave: document.querySelector("#all_attributes_leave")
+  };
+
+  const attributeTypes = ["class", "style", "href", "src", "srcset", "title"];
+  const actions = ["abbrev", "strip", "leave"];
+
+  // Batch create modal elements object
+  attributeTypes.forEach(attr => {
+    actions.forEach(action => {
+      modalElements[`${attr}_${action}`] = document.querySelector(`#${attr}_${action}`);
+    });
+  });
+
+  // All attributes handlers
+  modalElements.all_attributes_abbrev?.addEventListener("click", () => {
+    document.querySelector("#listOfAttributes").querySelectorAll("[id*='_abbrev']").forEach(radio => radio.click());
+  });
+
+  modalElements.all_attributes_strip?.addEventListener("click", () => {
+    document.querySelector("#listOfAttributes").querySelectorAll("[id*='_strip']").forEach(radio => radio.click());
+  });
+
+  modalElements.all_attributes_leave?.addEventListener("click", () => {
+    document.querySelector("#listOfAttributes").querySelectorAll("[id*='_leave']").forEach(radio => radio.click());
+  });
+
+  // Individual attribute handlers
+  const attributeHandlers = {
+    abbrev: {
+      class: () => {
+        elements.abbreviate.classes.checked = true;
+        elements.filters.class.checked = false;
+      },
+      style: () => {
+        elements.abbreviate.styles.checked = true;
+        elements.filters.style.checked = false;
+      },
+      href: () => elements.abbreviate.hrefs.checked = true,
+      src: () => elements.abbreviate.srcs.checked = true,
+      srcset: () => elements.abbreviate.srcSets.checked = true,
+      title: () => elements.abbreviate.titles.checked = true
+    },
+    strip: {
+      class: () => {
+        elements.abbreviate.classes.checked = false;
+        elements.filters.class.checked = true;
+      },
+      style: () => {
+        elements.abbreviate.styles.checked = false;
+        elements.filters.style.checked = true;
+      },
+      href: () => elements.abbreviate.hrefs.checked = false,
+      src: () => elements.abbreviate.srcs.checked = false,
+      srcset: () => elements.abbreviate.srcSets.checked = false,
+      title: () => elements.abbreviate.titles.checked = false
+    },
+    leave: {
+      class: () => {
+        elements.abbreviate.classes.checked = false;
+        elements.filters.class.checked = false;
+      },
+      style: () => {
+        elements.abbreviate.styles.checked = false;
+        elements.filters.style.checked = false;
+      },
+      href: () => elements.abbreviate.hrefs.checked = false,
+      src: () => elements.abbreviate.srcs.checked = false,
+      srcset: () => elements.abbreviate.srcSets.checked = false,
+      title: () => elements.abbreviate.titles.checked = false
+    }
+  };
+
+  // Batch add event listeners for modal elements
+  attributeTypes.forEach(attr => {
+    actions.forEach(action => {
+      const element = modalElements[`${attr}_${action}`];
+      if (element && attributeHandlers[action][attr]) {
+        element.addEventListener("click", attributeHandlers[action][attr]);
+      }
+    });
+  });
+}
+
+// Initialize everything
+initVals();
 addAllEventListeners();
 loadAndSaveData();
 loadOtherPrefs();
